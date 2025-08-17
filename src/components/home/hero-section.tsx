@@ -12,8 +12,11 @@ export default function HeroSection() {
   const displayCategories = popularCategories.slice(0, 4);
 
   return (
-    <section className="bg-background">
-      <div className="container grid lg:grid-cols-2 gap-12 items-center py-20 lg:py-32">
+    <section className="relative bg-background overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-[400px] h-[400px] lg:w-[800px] lg:h-[800px] bg-primary/10 rounded-full blur-3xl" />
+        </div>
+      <div className="container grid lg:grid-cols-2 gap-12 items-center py-20 lg:py-32 relative z-10">
         <div className="text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl font-headline">
             {t('hero_title')}
@@ -47,12 +50,10 @@ export default function HeroSection() {
             </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 p-4">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
               {displayCategories.map((category) => (
                   <CategoryCard key={category.id} category={category} />
               ))}
-          </div>
         </div>
       </div>
     </section>
