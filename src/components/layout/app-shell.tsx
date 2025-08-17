@@ -50,7 +50,7 @@ export default function AppShell({
   );
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[256px_1fr]">
+    <div className="grid min-h-screen w-full lg:grid-cols-[auto_1fr]">
       {/* Desktop Sidebar */}
       <aside className="hidden w-64 flex-col border-r bg-background lg:flex">
         <div className="flex h-16 items-center border-b px-6">
