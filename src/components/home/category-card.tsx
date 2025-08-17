@@ -14,10 +14,10 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const { t } = useLanguage();
 
   const textColors: { [key: string]: string } = {
-    'from-green-400 to-green-600': 'text-green-300',
-    'from-blue-400 to-blue-600': 'text-slate-300',
-    'from-purple-400 to-purple-600': 'text-slate-300',
-    'from-yellow-400 to-yellow-600': 'text-slate-300',
+    'from-green-400 to-green-600': 'text-green-200',
+    'from-blue-400 to-blue-600': 'text-blue-200',
+    'from-purple-400 to-purple-600': 'text-purple-200',
+    'from-yellow-400 to-yellow-600': 'text-yellow-200',
   }
 
   return (
@@ -28,7 +28,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
         "border border-white/10 group-hover:border-white/20"
       )}>
         <div className={cn(
-            "absolute inset-0 transition-all duration-300 opacity-20 group-hover:opacity-30",
+            "absolute inset-0 bg-gradient-to-br transition-all duration-300 opacity-20 group-hover:opacity-30",
             category.color
         )}></div>
          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
