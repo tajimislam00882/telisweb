@@ -17,8 +17,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Poppins', 'sans-serif'],
-        headline: ['Poppins', 'sans-serif'],
+        body: ['Poppins', 'var(--font-noto-serif-bengali)', 'sans-serif'],
+        headline: ['Poppins', 'var(--font-noto-serif-bengali)', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
