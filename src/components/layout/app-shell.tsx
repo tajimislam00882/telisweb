@@ -50,35 +50,37 @@ export default function AppShell({
   );
 
   return (
-    <div className="grid min-h-screen w-full lg:grid-cols-[auto_1fr]">
+    <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-64 flex-col border-r bg-background lg:flex">
-        <div className="flex h-16 items-center border-b px-6">
-          <Logo />
-        </div>
-        <div className="flex-1 overflow-y-auto py-4 px-4">
-          <SidebarNav items={navItems} />
-        </div>
-        {footerNavItems && (
+      <aside className="hidden border-r bg-background md:block">
+        <div className="flex h-full max-h-screen flex-col gap-2">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+             <Logo />
+          </div>
+          <div className="flex-1 overflow-auto py-2">
+            <SidebarNav items={navItems} className="px-2 lg:px-4" />
+          </div>
+          {footerNavItems && (
             <div className="mt-auto border-t p-4">
                 <SidebarNav items={footerNavItems} />
             </div>
         )}
+        </div>
       </aside>
 
       <div className="flex flex-col">
         {/* Header */}
-        <header className="flex h-16 shrink-0 items-center gap-4 border-b bg-background px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
           {/* Mobile Menu Trigger */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="lg:hidden">
-                <Menu className="h-6 w-6" />
+              <Button size="icon" variant="outline" className="shrink-0 md:hidden">
+                <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col p-4">
-              <div className="mb-4">
+               <div className="mb-4">
                 <Logo />
               </div>
               <SidebarNav items={navItems} className="gap-2 text-lg" />
@@ -92,12 +94,12 @@ export default function AppShell({
 
           {/* Header Content */}
           <div className="w-full flex-1">
-             {header || <div className="ml-auto lg:hidden"><Logo /></div>}
+             {header || <div className="ml-auto md:hidden"><Logo /></div>}
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 bg-muted/40 p-4 sm:p-6">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
             {children}
         </main>
       </div>
