@@ -15,6 +15,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { useState } from 'react';
+import { ThemeToggle } from '../shared/theme-toggle';
 
 const navItems: NavItem[] = [
   { href: '/', label: 'Home' },
@@ -64,6 +65,7 @@ export default function Header() {
 
         {/* Right side: Icons and Mobile Menu */}
         <div className="flex items-center justify-end gap-1 sm:gap-2">
+          <ThemeToggle />
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(true)}>
             <Search className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Search</span>
