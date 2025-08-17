@@ -68,7 +68,7 @@ export default function AppShell({
 
       <div className="flex flex-col">
         {/* Mobile Header */}
-        <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
+        <header className="flex h-16 items-center gap-4 border-b bg-background px-6 lg:border-none">
           <Sheet>
             <SheetTrigger asChild>
               <Button size="icon" variant="outline" className="lg:hidden">
@@ -90,7 +90,9 @@ export default function AppShell({
           </Sheet>
 
           {/* Header Content */}
-          {header || <div className="w-full text-right lg:hidden"><Logo /></div>}
+          <div className="w-full flex-1">
+            {header || <div className="w-full text-right lg:hidden"><Logo /></div>}
+          </div>
         </header>
 
         {/* Main Content */}
