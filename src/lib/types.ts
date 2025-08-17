@@ -32,4 +32,6 @@ export interface NavItem {
   label: string;
   icon?: LucideIcon;
   active?: boolean;
+  badge?: number | string;
+  className?: string;
 }
