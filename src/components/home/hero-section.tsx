@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
-import { ArrowRight, Download, Star } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import { popularCategories } from '@/lib/data';
 import CategoryCard from './category-card';
@@ -47,10 +47,12 @@ export default function HeroSection() {
             </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-            {displayCategories.map((category) => (
-                <CategoryCard key={category.id} category={category} />
-            ))}
+        <div className="rounded-2xl border border-white/10 p-4">
+          <div className="grid grid-cols-2 gap-4">
+              {displayCategories.map((category) => (
+                  <CategoryCard key={category.id} category={category} />
+              ))}
+          </div>
         </div>
       </div>
     </section>

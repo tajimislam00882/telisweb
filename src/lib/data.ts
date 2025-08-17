@@ -11,10 +11,9 @@ export const categories: Category[] = [
 
 export const popularCategories: PopularCategory[] = [
     { id: 'ebooks', name: 'pop_cat_ebook_name', description: 'pop_cat_ebook_desc', productCount: 100, icon: Book },
-    { id: 'templates', name: 'pop_cat_photoshop_name', description: 'pop_cat_photoshop_desc', productCount: 500, icon: Brush },
     { id: 'software', name: 'pop_cat_software_name', description: 'pop_cat_software_desc', productCount: 150, icon: Code },
-    { id: 'video-course', name: 'pop_cat_video_name', description: 'pop_cat_video_desc', productCount: 200, icon: Film },
-    { id: 'mobile-app', name: 'pop_cat_mobile_name', description: 'pop_cat_mobile_desc', productCount: 80, icon: Smartphone },
+    { id: 'templates', name: 'pop_cat_template_name', description: 'pop_cat_template_desc', productCount: 500, icon: Brush },
+    { id: 'course', name: 'pop_cat_course_name', description: 'pop_cat_course_desc', productCount: 200, icon: Film },
 ];
 
 export const products: Product[] = [

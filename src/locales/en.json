@@ -35,14 +35,12 @@
 
     "pop_cat_ebook_name": "E-book",
     "pop_cat_ebook_desc": "High quality books",
-    "pop_cat_photoshop_name": "Photoshop Template",
-    "pop_cat_photoshop_desc": "Professional digital templates",
+    "pop_cat_template_name": "Template",
+    "pop_cat_template_desc": "Professional digital templates",
     "pop_cat_software_name": "Software",
     "pop_cat_software_desc": "Ready software and scripts",
-    "pop_cat_video_name": "Video Course",
-    "pop_cat_video_desc": "Educational video courses",
-    "pop_cat_mobile_name": "Mobile App",
-    "pop_cat_mobile_desc": "Ready made app source code",
+    "pop_cat_course_name": "Course",
+    "pop_cat_course_desc": "Educational video courses",
 
     "testimonial_sarah_name": "Sarah Johnson",
     "testimonial_sarah_role": "Founder of TechCo",
