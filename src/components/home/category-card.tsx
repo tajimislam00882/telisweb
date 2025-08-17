@@ -13,18 +13,18 @@ interface CategoryCardProps {
 export default function CategoryCard({ category }: CategoryCardProps) {
   const { t } = useLanguage();
   
-  const cardColors: { [key: string]: string } = {
-    'ebooks': 'bg-[#082213] text-[#36d390]',
-    'templates': 'bg-[#102a1c]',
-    'software': 'bg-[#18192E]',
-    'course': 'bg-[#18192E]',
+  const cardStyles: { [key: string]: string } = {
+    'ebooks': 'bg-[#0a2a16] text-[#36d390] hover:bg-[#103A20]',
+    'software': 'bg-[#18192E] text-white hover:bg-[#20223e]',
+    'templates': 'bg-[#102a1c] text-gray-300 hover:bg-[#183a2a]',
+    'course': 'bg-[#18192E] text-white hover:bg-[#20223e]',
   };
 
   return (
     <Link href={`/shop?category=${category.id}`} className="group">
       <Card className={cn(
-        "h-40 rounded-2xl border-0 text-white transition-all duration-300",
-         cardColors[category.id] || 'bg-gray-800'
+        "h-40 rounded-2xl border-0 transition-all duration-300",
+         cardStyles[category.id] || 'bg-gray-800'
       )}>
         <CardContent className="p-6 flex items-center justify-center h-full">
           <h3 className="text-xl font-semibold text-center">{t(category.name)}</h3>
