@@ -25,10 +25,10 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       <Card className={cn(
         "h-40 rounded-2xl transition-all duration-300",
         "relative overflow-hidden",
-        "border border-white/10 group-hover:border-white/20"
+        "border border-white/10 group-hover:border-white/30"
       )}>
         <div className={cn(
-            "absolute inset-0 bg-gradient-to-br transition-all duration-300 opacity-20 group-hover:opacity-30",
+            "absolute inset-0 bg-gradient-to-br transition-all duration-300 opacity-20 group-hover:opacity-40",
             category.color
         )}></div>
          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
