@@ -52,7 +52,7 @@ export default function AdminLayout({
         </div>
       }
     >
-      <div className="p-4 sm:p-6">{children}</div>
+      {children}
     </AppShell>
   );
 }

@@ -31,7 +31,7 @@ export default function DashboardLayout({
 }) {
   return (
     <AppShell navItems={navItems} footerNavItems={footerNavItems}>
-      <div className="p-4 sm:p-6">{children}</div>
+      {children}
     </AppShell>
   );
 }
