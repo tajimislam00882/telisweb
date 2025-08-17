@@ -13,15 +13,32 @@ interface CategoryCardProps {
 export default function CategoryCard({ category }: CategoryCardProps) {
   const { t } = useLanguage();
 
+  const textColors: { [key: string]: string } = {
+    'from-green-400 to-green-600': 'text-green-300',
+    'from-blue-400 to-blue-600': 'text-slate-300',
+    'from-purple-400 to-purple-600': 'text-slate-300',
+    'from-yellow-400 to-yellow-600': 'text-slate-300',
+  }
+
   return (
     <Link href={`/shop?category=${category.id}`} className="group block">
       <Card className={cn(
-        "h-40 rounded-2xl transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-xl",
-        "bg-gradient-to-br",
-        category.color
+        "h-40 rounded-2xl transition-all duration-300",
+        "relative overflow-hidden",
+        "border border-white/10 group-hover:border-white/20"
       )}>
-        <CardContent className="p-6 flex items-center justify-center h-full">
-          <h3 className="text-xl font-bold text-center text-white drop-shadow-md">{t(category.name)}</h3>
+        <div className={cn(
+            "absolute inset-0 transition-all duration-300 opacity-20 group-hover:opacity-30",
+            category.color
+        )}></div>
+         <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+        <CardContent className="relative p-6 flex items-center justify-center h-full">
+          <h3 className={cn(
+              "text-xl font-bold text-center",
+               textColors[category.color] || 'text-white'
+            )}>
+              {t(category.name)}
+            </h3>
         </CardContent>
       </Card>
     </Link>
