@@ -90,11 +90,11 @@ export default function AppShell({
           </Sheet>
 
           {/* Header Content */}
-          {header || <div className="flex-1 text-right lg:hidden"><Logo /></div>}
+          {header || <div className="w-full text-right lg:hidden"><Logo /></div>}
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 bg-muted/40">{children}</main>
+        <main className="flex-1 overflow-y-auto bg-muted/40">{children}</main>
       </div>
     </div>
   );
