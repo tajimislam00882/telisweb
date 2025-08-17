@@ -9,6 +9,7 @@ export interface Category {
 export interface PopularCategory extends Category {
     description: string;
     icon: LucideIcon;
+    color: string;
 }
 
 export interface Product {
