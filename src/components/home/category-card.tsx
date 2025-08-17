@@ -21,7 +21,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   }
 
   return (
-    <Link href={`/shop?category=${category.id}`} className="group block">
+    <Link href={`/shop?category=${category.id}`} className="block group">
       <Card className={cn(
         "h-40 rounded-2xl",
         "relative overflow-hidden",
