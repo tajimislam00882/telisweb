@@ -5,7 +5,7 @@ import Filters from '@/components/shop/filters';
 
 export default function ShopPage() {
   return (
-    <div className="container py-12">
+    <div className="container py-12 text-foreground">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
           Our Products
@@ -17,7 +17,7 @@ export default function ShopPage() {
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
         <aside className="lg:col-span-1">
-          <div className="sticky top-20">
+          <div className="sticky top-28">
             <Filters />
           </div>
         </aside>

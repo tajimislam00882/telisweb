@@ -8,7 +8,7 @@ import Image from 'next/image';
 
 export default function ContactPage() {
   return (
-    <div className="container py-12">
+    <div className="container py-12 text-foreground">
        <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
           Get In Touch
@@ -19,7 +19,7 @@ export default function ContactPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-        <Card>
+        <Card className="bg-card border-border/20">
           <CardHeader>
             <CardTitle>Send us a message</CardTitle>
           </CardHeader>
@@ -46,7 +46,7 @@ export default function ContactPage() {
         
         <div className="space-y-8">
             <div className="flex items-start gap-4">
-                <div className="bg-primary/10 p-3 rounded-full">
+                <div className="bg-primary/10 p-3 rounded-lg">
                     <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -56,7 +56,7 @@ export default function ContactPage() {
                 </div>
             </div>
             <div className="flex items-start gap-4">
-                <div className="bg-primary/10 p-3 rounded-full">
+                <div className="bg-primary/10 p-3 rounded-lg">
                     <Phone className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -66,7 +66,7 @@ export default function ContactPage() {
                 </div>
             </div>
             <div className="flex items-start gap-4">
-                <div className="bg-primary/10 p-3 rounded-full">
+                <div className="bg-primary/10 p-3 rounded-lg">
                     <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <div>

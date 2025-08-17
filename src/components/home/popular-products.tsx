@@ -7,14 +7,14 @@ export default function PopularProducts() {
   const popularProducts = products.slice(0, 4);
 
   return (
-    <section className="py-20">
+    <section className="py-20 bg-card">
       <div className="container">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-            Popular Products
+            Featured Products
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Check out our most popular digital goods loved by the community.
+            Our handpicked best-selling products.
           </p>
         </div>
 

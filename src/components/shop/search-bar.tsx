@@ -8,7 +8,7 @@ export default function SearchBar() {
       <Input
         type="search"
         placeholder="Search for products..."
-        className="w-full pl-10"
+        className="w-full pl-10 bg-card border-border/20"
       />
     </div>
   );

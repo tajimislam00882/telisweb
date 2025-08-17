@@ -1,4 +1,5 @@
-import type { Product, Category, Testimonial } from './types';
+import type { Product, Category, Testimonial, PopularCategory } from './types';
+import { Book, Brush, Code, Film, Smartphone } from 'lucide-react';
 
 export const categories: Category[] = [
   { id: 'all', name: 'All Categories', productCount: 12 },
@@ -8,6 +9,14 @@ export const categories: Category[] = [
   { id: 'ebooks', name: 'E-books', productCount: 2 },
 ];
 
+export const popularCategories: PopularCategory[] = [
+    { id: 'ebooks', name: 'E-book', description: 'High quality books', productCount: 100, icon: Book },
+    { id: 'templates', name: 'Photoshop Template', description: 'Professional digital templates', productCount: 500, icon: Brush },
+    { id: 'software', name: 'Software', description: 'Ready software and scripts', productCount: 150, icon: Code },
+    { id: 'video-course', name: 'Video Course', description: 'Educational video courses', productCount: 200, icon: Film },
+    { id: 'mobile-app', name: 'Mobile App', description: 'Ready made app source code', productCount: 80, icon: Smartphone },
+];
+
 export const products: Product[] = [
   {
     id: 'prod-001',
@@ -15,7 +24,7 @@ export const products: Product[] = [
     description: 'A professional UI kit for modern web applications.',
     price: 49.99,
     category: 'ui-kits',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.8,
     reviews: 120,
     tags: ['web', 'react', 'tailwind'],
@@ -28,7 +37,7 @@ export const products: Product[] = [
     description: 'A set of 200+ minimalist icons for any project.',
     price: 19.99,
     category: 'icons',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.9,
     reviews: 250,
     tags: ['icons', 'minimal', 'svg'],
@@ -41,7 +50,7 @@ export const products: Product[] = [
     description: 'A complete Next.js template for creative agencies.',
     price: 79.99,
     category: 'templates',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.7,
     reviews: 80,
     tags: ['nextjs', 'agency', 'portfolio'],
@@ -54,7 +63,7 @@ export const products: Product[] = [
     description: 'An e-book on mastering digital product sales.',
     price: 29.99,
     category: 'ebooks',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.9,
     reviews: 450,
     tags: ['business', 'marketing', 'sales'],
@@ -67,7 +76,7 @@ export const products: Product[] = [
     description: 'Design your next mobile app with this extensive UI kit.',
     price: 59.99,
     category: 'ui-kits',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.8,
     reviews: 150,
     tags: ['mobile', 'ios', 'android'],
@@ -80,7 +89,7 @@ export const products: Product[] = [
     description: 'A pack of 5 high-converting landing page templates.',
     price: 69.99,
     category: 'templates',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.6,
     reviews: 75,
     tags: ['landing page', 'conversion', 'html'],
@@ -93,7 +102,7 @@ export const products: Product[] = [
     description: 'A unique set of icons for charts and graphs.',
     price: 24.99,
     category: 'icons',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.9,
     reviews: 180,
     tags: ['data', 'charts', 'icons'],
@@ -106,7 +115,7 @@ export const products: Product[] = [
     description: 'A complete UI kit for building SaaS dashboards.',
     price: 89.99,
     category: 'ui-kits',
-    imageUrl: 'https://placehold.co/600x400.png',
+    imageUrl: 'https://placehold.co/600x400/1DB954/FFFFFF.png',
     rating: 4.9,
     reviews: 210,
     tags: ['saas', 'dashboard', 'analytics'],
@@ -120,19 +129,22 @@ export const testimonials: Testimonial[] = [
         name: 'Sarah Johnson',
         role: 'Founder of TechCo',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "Digital Emporium has the best selection of digital assets. The quality is unmatched and has saved my team hundreds of hours."
+        quote: "Digital Emporium has the best selection of digital assets. The quality is unmatched and has saved my team hundreds of hours.",
+        rating: 5,
     },
     {
         name: 'Michael Chen',
         role: 'Freelance Designer',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "I found the perfect UI kit for my project in minutes. The instant download feature is a lifesaver. Highly recommended!"
+        quote: "I found the perfect UI kit for my project in minutes. The instant download feature is a lifesaver. Highly recommended!",
+        rating: 5,
     },
     {
         name: 'Emily Rodriguez',
         role: 'Marketing Manager',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "The e-books available here are incredibly insightful. Digital Emporium is my go-to place for learning and growing my skills."
+        quote: "The e-books available here are incredibly insightful. Digital Emporium is my go-to place for learning and growing my skills.",
+        rating: 4,
     }
 ];
 

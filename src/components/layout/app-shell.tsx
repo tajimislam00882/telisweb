@@ -40,7 +40,7 @@ export default function AppShell({
           {item.icon && <item.icon className="h-4 w-4" />}
           {item.label}
           {item.badge && (
-            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
               {item.badge}
             </Badge>
           )}
@@ -52,9 +52,9 @@ export default function AppShell({
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       {/* Desktop Sidebar */}
-      <aside className="hidden border-r bg-background md:block">
+      <aside className="hidden border-r bg-card md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+          <div className="flex h-16 items-center border-b px-4 lg:px-6">
              <Logo />
           </div>
           <div className="flex-1 overflow-auto py-2">
@@ -70,7 +70,7 @@ export default function AppShell({
 
       <div className="flex flex-col">
         {/* Header */}
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 lg:h-[60px] lg:px-6">
+        <header className="flex h-16 items-center gap-4 border-b bg-card px-4 lg:px-6 sticky top-0 z-30">
           {/* Mobile Menu Trigger */}
           <Sheet>
             <SheetTrigger asChild>
@@ -79,7 +79,7 @@ export default function AppShell({
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="flex flex-col p-4">
+            <SheetContent side="left" className="flex flex-col p-4 bg-card">
                <div className="mb-4">
                 <Logo />
               </div>
@@ -99,7 +99,7 @@ export default function AppShell({
         </header>
 
         {/* Main Content */}
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-muted/40">
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
             {children}
         </main>
       </div>

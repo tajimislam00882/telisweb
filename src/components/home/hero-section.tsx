@@ -1,26 +1,42 @@
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Download } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HeroSection() {
   return (
-    <section className="bg-secondary dark:bg-muted/40">
+    <section className="bg-background">
       <div className="container py-20 text-center lg:py-32">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl font-headline">
-          Premium Digital Products, Instantly.
+          Bangladesh's Best Digital Product Shop
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-          Discover top-quality UI kits, templates, icons, and e-books to
-          supercharge your creative projects.
+          Get quality e-books, software, templates and much more here.
         </p>
+         <div className="mt-8 flex justify-center items-center space-x-8 text-muted-foreground">
+            <div className="text-center">
+                <p className="text-2xl font-bold text-foreground">1000+</p>
+                <p>Products</p>
+            </div>
+             <div className="text-center">
+                <p className="text-2xl font-bold text-foreground">500+</p>
+                <p>Customers</p>
+            </div>
+             <div className="text-center">
+                <p className="text-2xl font-bold text-foreground">4.8★</p>
+                <p>Rating</p>
+            </div>
+        </div>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button asChild size="lg">
+          <Button asChild size="lg" className="h-12 px-8 text-base">
             <Link href="/shop">
-              Browse Products <ArrowRight className="ml-2 h-5 w-5" />
+              Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
-          <Button asChild variant="outline" size="lg">
-            <Link href="#features">Learn More</Link>
+          <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
+            <Link href="#features">
+              <Download className="mr-2 h-5 w-5" />
+              Free Items
+            </Link>
           </Button>
         </div>
       </div>

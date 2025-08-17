@@ -6,6 +6,11 @@ export interface Category {
   productCount: number;
 }
 
+export interface PopularCategory extends Category {
+    description: string;
+    icon: LucideIcon;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -25,6 +30,7 @@ export interface Testimonial {
   role: string;
   avatarUrl: string;
   quote: string;
+  rating: number;
 }
 
 export interface NavItem {
