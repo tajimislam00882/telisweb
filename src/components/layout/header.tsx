@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, ShoppingCart, X } from 'lucide-react';
+import { Menu, Search, ShoppingCart, X, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -16,16 +16,24 @@ import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { useState } from 'react';
 import { ThemeToggle } from '../shared/theme-toggle';
-
-const navItems: NavItem[] = [
-  { href: '/', label: 'Home' },
-  { href: '/shop', label: 'Shop' },
-  { href: '/contact', label: 'Contact Us' },
-];
+import { useLanguage } from '@/context/language-context';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function Header() {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { t, setLanguage, language } = useLanguage();
+
+  const navItems: NavItem[] = [
+    { href: '/', label: t('nav_home') },
+    { href: '/shop', label: t('nav_shop') },
+    { href: '/contact', label: t('nav_contact') },
+  ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm">
@@ -50,23 +58,43 @@ export default function Header() {
             ))}
           </nav>
         </div>
-        
+
         {/* Search Bar (Centered on Desktop) */}
         <div className="hidden md:flex flex-1 justify-center px-8">
-            <div className="relative w-full max-w-md">
-                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                    type="search"
-                    placeholder="Search for products..."
-                    className="w-full pl-10 bg-card border-border/20"
-                />
-            </div>
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={t('search_placeholder')}
+              className="w-full pl-10 bg-card border-border/20"
+            />
+          </div>
         </div>
 
         {/* Right side: Icons and Mobile Menu */}
         <div className="flex items-center justify-end gap-1 sm:gap-2">
           <ThemeToggle />
-          <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(true)}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Languages className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setLanguage('en')}>
+                English
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage('bn')}>
+                বাংলা
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setIsSearchOpen(true)}
+          >
             <Search className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Search</span>
           </Button>
@@ -75,9 +103,7 @@ export default function Header() {
             <span className="sr-only">Cart</span>
           </Button>
           <Button asChild>
-            <Link href="/login">
-              Login
-            </Link>
+            <Link href="/login">{t('login_button')}</Link>
           </Button>
 
           <Sheet>
@@ -96,7 +122,9 @@ export default function Header() {
                       href={item.href}
                       className={cn(
                         'hover:text-primary',
-                        pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                        pathname === item.href
+                          ? 'text-primary'
+                          : 'text-muted-foreground'
                       )}
                     >
                       {item.label}
@@ -108,19 +136,24 @@ export default function Header() {
           </Sheet>
         </div>
       </div>
-      
-       {/* Mobile Search Overlay */}
+
+      {/* Mobile Search Overlay */}
       {isSearchOpen && (
         <div className="absolute top-0 left-0 w-full h-full bg-background z-50 flex items-center justify-center md:hidden p-4">
           <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search for products..."
+              placeholder={t('search_placeholder')}
               className="w-full pl-10 pr-10 bg-card border-border/20"
               autoFocus
             />
-            <Button variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2" onClick={() => setIsSearchOpen(false)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2"
+              onClick={() => setIsSearchOpen(false)}
+            >
               <X className="h-5 w-5 text-muted-foreground" />
             </Button>
           </div>

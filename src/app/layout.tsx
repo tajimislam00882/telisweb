@@ -1,13 +1,19 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Noto_Serif_Bengali } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import Preloader from '@/components/shared/preloader';
+import { LanguageProvider } from '@/context/language-context';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const notoSerifBengali = Noto_Serif_Bengali({
+  subsets: ['bengali', 'latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-noto-serif-bengali',
+});
 
 export const metadata: Metadata = {
   title: 'Digital Emporium',
@@ -34,23 +40,27 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-body antialiased bg-background">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Preloader />
-          {children}
-          <div className="fixed bottom-4 right-4 z-50">
-            <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
-              <MessageSquare className="h-6 w-6" />
-              <span className="sr-only">Live Chat</span>
-            </Button>
-          </div>
-          <Toaster />
-        </ThemeProvider>
+      <body
+        className={`font-body antialiased bg-background ${inter.variable} ${notoSerifBengali.variable}`}
+      >
+        <LanguageProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Preloader />
+            {children}
+            <div className="fixed bottom-4 right-4 z-50">
+              <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
+                <MessageSquare className="h-6 w-6" />
+                <span className="sr-only">Live Chat</span>
+              </Button>
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

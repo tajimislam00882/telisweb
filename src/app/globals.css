@@ -6,6 +6,10 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+body.font-bn {
+  font-family: var(--font-noto-serif-bengali), sans-serif;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

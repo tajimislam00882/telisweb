@@ -2,19 +2,19 @@ import type { Product, Category, Testimonial, PopularCategory } from './types';
 import { Book, Brush, Code, Film, Smartphone } from 'lucide-react';
 
 export const categories: Category[] = [
-  { id: 'all', name: 'All Categories', productCount: 12 },
-  { id: 'ui-kits', name: 'UI Kits', productCount: 4 },
-  { id: 'icons', name: 'Icons', productCount: 3 },
-  { id: 'templates', name: 'Templates', productCount: 3 },
-  { id: 'ebooks', name: 'E-books', productCount: 2 },
+  { id: 'all', name: 'cat_all', productCount: 12 },
+  { id: 'ui-kits', name: 'cat_ui_kits', productCount: 4 },
+  { id: 'icons', name: 'cat_icons', productCount: 3 },
+  { id: 'templates', name: 'cat_templates', productCount: 3 },
+  { id: 'ebooks', name: 'cat_ebooks', productCount: 2 },
 ];
 
 export const popularCategories: PopularCategory[] = [
-    { id: 'ebooks', name: 'E-book', description: 'High quality books', productCount: 100, icon: Book },
-    { id: 'templates', name: 'Photoshop Template', description: 'Professional digital templates', productCount: 500, icon: Brush },
-    { id: 'software', name: 'Software', description: 'Ready software and scripts', productCount: 150, icon: Code },
-    { id: 'video-course', name: 'Video Course', description: 'Educational video courses', productCount: 200, icon: Film },
-    { id: 'mobile-app', name: 'Mobile App', description: 'Ready made app source code', productCount: 80, icon: Smartphone },
+    { id: 'ebooks', name: 'pop_cat_ebook_name', description: 'pop_cat_ebook_desc', productCount: 100, icon: Book },
+    { id: 'templates', name: 'pop_cat_photoshop_name', description: 'pop_cat_photoshop_desc', productCount: 500, icon: Brush },
+    { id: 'software', name: 'pop_cat_software_name', description: 'pop_cat_software_desc', productCount: 150, icon: Code },
+    { id: 'video-course', name: 'pop_cat_video_name', description: 'pop_cat_video_desc', productCount: 200, icon: Film },
+    { id: 'mobile-app', name: 'pop_cat_mobile_name', description: 'pop_cat_mobile_desc', productCount: 80, icon: Smartphone },
 ];
 
 export const products: Product[] = [
@@ -126,24 +126,24 @@ export const products: Product[] = [
 
 export const testimonials: Testimonial[] = [
     {
-        name: 'Sarah Johnson',
-        role: 'Founder of TechCo',
+        name: 'testimonial_sarah_name',
+        role: 'testimonial_sarah_role',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "Digital Emporium has the best selection of digital assets. The quality is unmatched and has saved my team hundreds of hours.",
+        quote: "testimonial_sarah_quote",
         rating: 5,
     },
     {
-        name: 'Michael Chen',
-        role: 'Freelance Designer',
+        name: 'testimonial_michael_name',
+        role: 'testimonial_michael_role',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "I found the perfect UI kit for my project in minutes. The instant download feature is a lifesaver. Highly recommended!",
+        quote: "testimonial_michael_quote",
         rating: 5,
     },
     {
-        name: 'Emily Rodriguez',
-        role: 'Marketing Manager',
+        name: 'testimonial_emily_name',
+        role: 'testimonial_emily_role',
         avatarUrl: 'https://placehold.co/100x100.png',
-        quote: "The e-books available here are incredibly insightful. Digital Emporium is my go-to place for learning and growing my skills.",
+        quote: "testimonial_emily_quote",
         rating: 4,
     }
 ];

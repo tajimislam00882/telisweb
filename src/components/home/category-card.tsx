@@ -1,12 +1,16 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { PopularCategory } from '@/lib/types';
 import Link from 'next/link';
+import { useLanguage } from '@/context/language-context';
 
 interface CategoryCardProps {
   category: PopularCategory;
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
+  const { t } = useLanguage();
   const Icon = category.icon;
   return (
     <Link href={`/shop?category=${category.id}`} className="group">
@@ -15,12 +19,12 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           <div className="bg-primary/10 rounded-lg w-12 h-12 flex items-center justify-center mb-4 transition-colors duration-300 group-hover:bg-primary/20">
             <Icon className="w-6 h-6 text-primary" />
           </div>
-          <CardTitle className="text-lg">{category.name}</CardTitle>
-          <CardDescription>{category.description}</CardDescription>
+          <CardTitle className="text-lg">{t(category.name)}</CardTitle>
+          <CardDescription>{t(category.description)}</CardDescription>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-primary group-hover:underline">
-            {category.productCount}+ Products
+            {category.productCount}+ {t('products_count')}
           </p>
         </CardContent>
       </Card>

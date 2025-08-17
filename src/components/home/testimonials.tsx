@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 import { testimonials } from '@/lib/data';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +11,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Star } from 'lucide-react';
+import { useLanguage } from '@/context/language-context';
 
 function renderStars(rating: number) {
     const stars = [];
@@ -21,15 +24,16 @@ function renderStars(rating: number) {
 }
 
 export default function Testimonials() {
+  const { t } = useLanguage();
   return (
     <section className="bg-background py-20">
       <div className="container">
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
-            What Our Customers Say
+            {t('testimonials_title')}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Real stories from satisfied creators and entrepreneurs.
+            {t('testimonials_subtitle')}
           </p>
         </div>
 
@@ -48,21 +52,21 @@ export default function Testimonials() {
                     <CardContent className="flex h-full flex-col justify-between p-6">
                         <div className="flex mb-4">{renderStars(testimonial.rating)}</div>
                       <p className="mb-6 text-muted-foreground flex-grow">
-                        "{testimonial.quote}"
+                        "{t(testimonial.quote)}"
                       </p>
                       <div className='flex items-center gap-4'>
                          <Image
                             src={testimonial.avatarUrl}
-                            alt={testimonial.name}
+                            alt={t(testimonial.name)}
                             width={48}
                             height={48}
                             className="rounded-full"
                             data-ai-hint="person"
                         />
                         <div>
-                            <p className="font-semibold">{testimonial.name}</p>
+                            <p className="font-semibold">{t(testimonial.name)}</p>
                             <p className="text-sm text-muted-foreground">
-                                {testimonial.role}
+                                {t(testimonial.role)}
                             </p>
                         </div>
                       </div>
