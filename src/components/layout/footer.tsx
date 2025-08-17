@@ -31,7 +31,7 @@ export default function Footer() {
                 </Button>
               </div>
           </div>
-          <div className="grid grid-cols-2 gap-8 md:col-span-3 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-3">
             <div>
               <h3 className="font-semibold text-foreground">Quick Links</h3>
               <ul className="mt-4 space-y-2">

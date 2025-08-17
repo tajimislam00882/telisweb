@@ -12,7 +12,7 @@ export default function HeroSection() {
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
           Get quality e-books, software, templates and much more here.
         </p>
-         <div className="mt-8 flex justify-center items-center space-x-8 text-muted-foreground">
+         <div className="mt-8 flex flex-wrap justify-center items-center gap-8 text-muted-foreground">
             <div className="text-center">
                 <p className="text-2xl font-bold text-foreground">1000+</p>
                 <p>Products</p>

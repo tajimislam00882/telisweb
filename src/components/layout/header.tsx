@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+import { Menu, Search, ShoppingCart, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -63,7 +63,7 @@ export default function Header() {
         </div>
 
         {/* Right side: Icons and Mobile Menu */}
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex items-center justify-end gap-1 sm:gap-2">
           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsSearchOpen(true)}>
             <Search className="h-5 w-5 text-muted-foreground" />
             <span className="sr-only">Search</span>
