@@ -12,6 +12,8 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   logout: () => Promise<void>;
+  updateUser: (credentials: { email?: string; password?: string; data?: object; }) => Promise<void>;
+  uploadAvatar: (file: File) => Promise<void>;
   supabase: SupabaseClient;
 }
 
@@ -22,7 +24,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   
-  // Initialize Supabase client using useMemo to ensure it's created only on the client-side.
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
@@ -51,15 +52,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   const logout = async () => {
     await supabase.auth.signOut();
-    // No need to redirect here, the onAuthStateChange will handle it.
   };
+
+  const updateUser = async (credentials: { email?: string; password?: string; data?: object; }) => {
+    const { data, error } = await supabase.auth.updateUser(credentials);
+    if (error) throw error;
+    setUser(data.user);
+  };
+  
+  const uploadAvatar = async (file: File) => {
+    if (!user) throw new Error("User not authenticated.");
+
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('profiles')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('profiles')
+      .getPublicUrl(filePath);
+
+    await updateUser({ data: { avatar_url: publicUrl } });
+  };
+
 
   if (loading) {
     return <Preloader />;
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, logout, supabase }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, logout, updateUser, uploadAvatar, supabase }}>
       {children}
     </AuthContext.Provider>
   );
