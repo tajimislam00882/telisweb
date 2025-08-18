@@ -1,3 +1,6 @@
+
+'use client';
+
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { products } from '@/lib/data';
@@ -5,14 +8,24 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Star, ShoppingCart, Zap, FileText, DownloadCloud } from 'lucide-react';
 import ProductCard from '@/components/shop/product-card';
+import { useCart } from '@/context/cart-context';
+import { useRouter } from 'next/navigation';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
+  const { addToCart } = useCart();
+  const router = useRouter();
+  
   const product = products.find((p) => p.id === params.id);
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
 
   if (!product) {
     notFound();
   }
+
+  const handleBuyNow = () => {
+    addToCart(product);
+    router.push('/cart');
+  };
 
   return (
     <div className="container py-12 text-foreground">
@@ -61,11 +74,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <p className="text-4xl font-bold text-primary">${product.price}</p>
           
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="w-full">
+            <Button size="lg" className="w-full" onClick={() => addToCart(product)}>
               <ShoppingCart className="mr-2 h-5 w-5" />
               Add to Cart
             </Button>
-            <Button size="lg" variant="outline" className="w-full">
+            <Button size="lg" variant="outline" className="w-full" onClick={handleBuyNow}>
               Buy Now
             </Button>
           </div>

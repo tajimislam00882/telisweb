@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -7,12 +8,14 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import type { Product } from '@/lib/types';
+import { useCart } from '@/context/cart-context';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { addToCart } = useCart();
   return (
     <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-lg bg-card border-border/20 hover:-translate-y-1">
       <CardHeader className="p-0 relative">
@@ -44,12 +47,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg font-bold text-primary">${product.price}</p>
-        <Button asChild size="sm">
-          <Link href={`/product/${product.id}`}>
+        <Button size="sm" onClick={() => addToCart(product)}>
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Buy Now
-          </Link>
-        </Button>
+            Add to cart
+          </Button>
       </CardFooter>
     </Card>
   );
