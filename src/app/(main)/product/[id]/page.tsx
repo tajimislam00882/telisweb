@@ -10,10 +10,9 @@ import { Star, ShoppingCart, Zap, FileText, DownloadCloud } from 'lucide-react';
 import ProductCard from '@/components/shop/product-card';
 import { useCart } from '@/context/cart-context';
 import { useRouter } from 'next/navigation';
-import { use } from 'react';
 
 export default function ProductDetailPage() {
-  const params = use(useParams());
+  const params = useParams();
   const { addToCart } = useCart();
   const router = useRouter();
   
