@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Inter, Noto_Serif_Bengali } from 'next/font/google';
 import './globals.css';
