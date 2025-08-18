@@ -49,6 +49,16 @@ export default function Footer() {
                     {t('nav_shop')}
                   </Link>
                 </li>
+                 <li>
+                  <Link href="/dropshipping" className="text-muted-foreground hover:text-primary">
+                    {t('nav_dropshipping')}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/affiliate-marketing" className="text-muted-foreground hover:text-primary">
+                    {t('nav_affiliate')}
+                  </Link>
+                </li>
                 <li>
                   <Link href="/contact" className="text-muted-foreground hover:text-primary">
                     {t('nav_contact')}

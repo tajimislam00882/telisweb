@@ -68,6 +68,8 @@ export default function Header() {
   const navItems: NavItem[] = [
     { href: '/', label: t('nav_home') },
     { href: '/shop', label: t('nav_shop') },
+    { href: '/dropshipping', label: t('nav_dropshipping') },
+    { href: '/affiliate-marketing', label: t('nav_affiliate') },
     { href: '/contact', label: t('nav_contact') },
   ];
 
