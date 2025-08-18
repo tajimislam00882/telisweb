@@ -9,6 +9,7 @@ import Logo from '@/components/shared/logo';
 import { cn } from '@/lib/utils';
 import type { NavItem } from '@/lib/types';
 import { Badge } from '../ui/badge';
+import { useAuth } from '@/context/auth-context';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -24,6 +25,8 @@ export default function AppShell({
   header,
 }: AppShellProps) {
   const pathname = usePathname();
+  const { user } = useAuth();
+
 
   const SidebarNav = ({ items, className }: { items: NavItem[], className?: string }) => (
     <nav className={cn('grid items-start text-sm font-medium', className)}>
@@ -48,6 +51,10 @@ export default function AppShell({
       ))}
     </nav>
   );
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">

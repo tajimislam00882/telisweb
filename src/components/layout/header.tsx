@@ -9,6 +9,8 @@ import {
   Languages,
   Loader2,
   Camera,
+  User,
+  LayoutDashboard,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -30,6 +32,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/context/auth-context';
 import { useCart } from '@/context/cart-context';
@@ -37,6 +40,7 @@ import { useSearchSuggestions } from '@/hooks/use-search-suggestions';
 import Image from 'next/image';
 import { imageSearch } from '@/ai/flows/image-search-flow';
 import { useToast } from '@/hooks/use-toast';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function Header() {
   const pathname = usePathname();
@@ -46,7 +50,7 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [isImageSearching, setIsImageSearching] = useState(false);
   const { t, setLanguage } = useLanguage();
-  const { user, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
   const { cart } = useCart();
   const { toast } = useToast();
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -94,10 +98,6 @@ export default function Header() {
     }
   };
 
-  const handleLogout = async () => {
-    await logout();
-    router.push('/login');
-  };
 
   const handleSuggestionClick = () => {
     setIsSuggestionsVisible(false);
@@ -113,7 +113,7 @@ export default function Header() {
     setIsImageSearching(true);
     toast({
       title: 'Analyzing Image...',
-      description: 'Please wait while we figure out what\'s in your image.',
+      description: "Please wait while we figure out what's in your image.",
     });
 
     try {
@@ -123,12 +123,12 @@ export default function Header() {
         const result = await imageSearch({ imageDataUri });
         if (result.searchQuery) {
           router.push(`/shop?q=${encodeURIComponent(result.searchQuery)}`);
-           toast({
+          toast({
             title: 'Search Complete!',
             description: `Showing results for: "${result.searchQuery}"`,
           });
         } else {
-           throw new Error("AI couldn't generate a search query.");
+          throw new Error("AI couldn't generate a search query.");
         }
       };
       reader.readAsDataURL(file);
@@ -138,12 +138,12 @@ export default function Header() {
         variant: 'destructive',
         title: 'Image Search Failed',
         description:
-          'Sorry, we couldn\'t analyze that image. Please try another one.',
+          "Sorry, we couldn't analyze that image. Please try another one.",
       });
     } finally {
       setIsImageSearching(false);
       // Reset file input
-       if (imageInputRef.current) {
+      if (imageInputRef.current) {
         imageInputRef.current.value = '';
       }
     }
@@ -197,20 +197,20 @@ export default function Header() {
                 onFocus={() => setIsSuggestionsVisible(true)}
               />
             </form>
-             <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-                onClick={() => imageInputRef.current?.click()}
-                disabled={isImageSearching}
-                aria-label="Search by image"
-              >
-                {isImageSearching ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Camera className="h-5 w-5 text-muted-foreground" />
-                )}
-              </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+              onClick={() => imageInputRef.current?.click()}
+              disabled={isImageSearching}
+              aria-label="Search by image"
+            >
+              {isImageSearching ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Camera className="h-5 w-5 text-muted-foreground" />
+              )}
+            </Button>
             {isSuggestionsVisible && searchQuery && (
               <div className="absolute top-full mt-2 w-full rounded-md border bg-card shadow-lg">
                 {isLoading ? (
@@ -309,19 +309,24 @@ export default function Header() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <img
-                    src={user.photoURL || 'https://placehold.co/32x32.png'}
-                    alt="user"
-                    className="rounded-full h-8 w-8"
-                  />
+                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.photoURL || undefined} alt={user.displayName || 'User'} />
+                        <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/dashboard"><User className="mr-2 h-4 w-4" />Profile</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                {isAdmin && (
+                    <DropdownMenuItem asChild>
+                         <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" />Admin</Link>
+                    </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -377,22 +382,22 @@ export default function Header() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-             <div className="absolute right-10 top-1/2 -translate-y-1/2">
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => imageInputRef.current?.click()}
-                    disabled={isImageSearching}
-                    aria-label="Search by image"
-                >
-                    {isImageSearching ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                    <Camera className="h-5 w-5 text-muted-foreground" />
-                    )}
-                </Button>
+            <div className="absolute right-10 top-1/2 -translate-y-1/2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={isImageSearching}
+                aria-label="Search by image"
+              >
+                {isImageSearching ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Camera className="h-5 w-5 text-muted-foreground" />
+                )}
+              </Button>
             </div>
             <Button
               type="button"

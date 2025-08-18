@@ -42,4 +42,5 @@ export interface NavItem {
   active?: boolean;
   badge?: number | string;
   className?: string;
+  action?: () => void;
 }

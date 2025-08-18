@@ -34,6 +34,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/language-context';
+import { useAuth } from '@/context/auth-context';
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
@@ -77,6 +78,7 @@ export default function RegisterPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { t } = useLanguage();
+  const { isAdmin } = useAuth();
   const auth = getAuth(firebaseApp);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -89,6 +91,18 @@ export default function RegisterPage() {
     },
   });
 
+  const handleRegisterSuccess = () => {
+     toast({
+        title: 'Account Created',
+        description: "We've created your account for you.",
+      });
+      if (isAdmin) {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
@@ -96,11 +110,7 @@ export default function RegisterPage() {
       await updateProfile(userCredential.user, {
         displayName: `${values.firstName} ${values.lastName}`,
       });
-      toast({
-        title: 'Account Created',
-        description: "We've created your account for you.",
-      });
-      router.push('/dashboard');
+      handleRegisterSuccess();
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -117,11 +127,7 @@ export default function RegisterPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast({
-        title: 'Login Successful',
-        description: 'Welcome!',
-      });
-      router.push('/dashboard');
+      handleRegisterSuccess();
     } catch (error: any) {
       toast({
         variant: 'destructive',

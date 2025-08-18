@@ -35,6 +35,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/language-context';
+import { useAuth } from '@/context/auth-context';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Invalid email address.' }),
@@ -77,6 +78,7 @@ export default function LoginPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { t } = useLanguage();
+  const { isAdmin } = useAuth();
   const auth = getAuth(firebaseApp);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -88,15 +90,23 @@ export default function LoginPage() {
     },
   });
 
+  const handleLoginSuccess = () => {
+     toast({
+        title: 'Login Successful',
+        description: 'Welcome back!',
+      });
+      if (isAdmin) {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
+  }
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      toast({
-        title: 'Login Successful',
-        description: 'Welcome back!',
-      });
-      router.push('/dashboard');
+      handleLoginSuccess();
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -113,11 +123,7 @@ export default function LoginPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      toast({
-        title: 'Login Successful',
-        description: 'Welcome!',
-      });
-      router.push('/dashboard');
+      handleLoginSuccess();
     } catch (error: any) {
       toast({
         variant: 'destructive',
