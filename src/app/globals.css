@@ -30,13 +30,22 @@ body.font-bn {
     --destructive-foreground: 0 0% 98%;
     --border: 220 13% 89%;
     --input: 220 13% 89%;
-    --ring: 224 71.4% 4.1%;
+    --ring: 142 76% 36%;
     --radius: 0.5rem;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    
+    --sidebar-background: 220 18% 97%;
+    --sidebar-foreground: 224 71.4% 4.1%;
+    --sidebar-primary: 142 76% 36%;
+    --sidebar-primary-foreground: 355.7 100% 97.3%;
+    --sidebar-accent: 220 13% 91%;
+    --sidebar-accent-foreground: 220 14.3% 34.3%;
+    --sidebar-border: 220 13% 89%;
+    --sidebar-ring: 142 76% 36%;
   }
  
   .dark {
@@ -52,7 +61,7 @@ body.font-bn {
     --secondary-foreground: 210 40% 98%;
     --muted: 220 20% 15%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 142 76% 30%;
+    --accent: 220 20% 18%;
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
@@ -64,6 +73,15 @@ body.font-bn {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --sidebar-background: 220 20% 9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 142 76% 43%;
+    --sidebar-primary-foreground: 142 80% 98%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 20% 20%;
+    --sidebar-ring: 142 76% 43%;
   }
 }
 

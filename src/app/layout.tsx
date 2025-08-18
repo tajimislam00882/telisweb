@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
 import Preloader from '@/components/shared/preloader';
 import { LanguageProvider } from '@/context/language-context';
+import { AuthProvider } from '@/context/auth-context';
+import { CartProvider } from '@/context/cart-context';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const notoSerifBengali = Noto_Serif_Bengali({
@@ -43,24 +45,28 @@ export default function RootLayout({
       <body
         className={`font-body antialiased bg-background ${inter.variable} ${notoSerifBengali.variable}`}
       >
-        <LanguageProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Preloader />
-            {children}
-            <div className="fixed bottom-4 right-4 z-50">
-              <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
-                <MessageSquare className="h-6 w-6" />
-                <span className="sr-only">Live Chat</span>
-              </Button>
-            </div>
-            <Toaster />
-          </ThemeProvider>
-        </LanguageProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            <CartProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
+                <Preloader />
+                {children}
+                <div className="fixed bottom-4 right-4 z-50">
+                  <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
+                    <MessageSquare className="h-6 w-6" />
+                    <span className="sr-only">Live Chat</span>
+                  </Button>
+                </div>
+                <Toaster />
+              </ThemeProvider>
+            </CartProvider>
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );
