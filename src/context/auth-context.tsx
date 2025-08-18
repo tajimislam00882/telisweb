@@ -1,12 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {
-  onAuthStateChanged,
-  signOut,
-  User,
-} from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import type { User } from '@supabase/supabase-js';
+import { createClient } from '@/lib/supabase';
 import Preloader from '@/components/shared/preloader';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -21,38 +17,48 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const supabase = createClient();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       setUser(user);
       const userIsAdmin = user ? ADMIN_EMAILS.includes(user.email || '') : false;
       setIsAdmin(userIsAdmin);
+      setLoading(false);
+    };
+
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      const userIsAdmin = currentUser ? ADMIN_EMAILS.includes(currentUser.email || '') : false;
+      setIsAdmin(userIsAdmin);
       
-      // Protection for admin routes
       if (!loading) {
          if (pathname.startsWith('/admin') && !userIsAdmin) {
             router.push('/login');
         }
-        if ((pathname.startsWith('/dashboard') || pathname.startsWith('/cart')) && !user) {
+        if ((pathname.startsWith('/dashboard') || pathname.startsWith('/cart')) && !currentUser) {
             router.push('/login');
         }
       }
-
-      setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [loading, pathname, router]);
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [loading, pathname, router, supabase.auth]);
   
   const logout = async () => {
-      await signOut(auth);
+      await supabase.auth.signOut();
       router.push('/login');
   }
 
