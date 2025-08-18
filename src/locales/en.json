@@ -56,5 +56,23 @@
     "cat_ui_kits": "UI Kits",
     "cat_icons": "Icons",
     "cat_templates": "Templates",
-    "cat_ebooks": "E-books"
+    "cat_ebooks": "E-books",
+
+    "shop_title": "Our Products",
+    "shop_subtitle": "Explore our curated collection of high-quality digital assets.",
+    "shop_no_products_title": "No Products Found",
+    "shop_no_products_subtitle": "Try adjusting your search or filters.",
+    "filters_title": "Filters",
+    "filters_category_title": "Category",
+    "filters_price_range_title": "Price Range",
+    "filters_rating_title": "Rating",
+    "filters_rating_up": "& Up",
+    "filters_rating_all": "All",
+    "sort_by_label": "Sort by:",
+    "sort_relevance": "Relevance",
+    "sort_best_selling": "Best Selling",
+    "sort_top_rated": "Top Rated",
+    "sort_newest": "Newest",
+    "sort_price_asc": "Price: Low to High",
+    "sort_price_desc": "Price: High to Low"
 }

@@ -8,6 +8,7 @@ import { Slider } from '@/components/ui/slider';
 import { Input } from '../ui/input';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { Star } from 'lucide-react';
+import { useLanguage } from '@/context/language-context';
 
 interface FiltersProps {
   priceRange: [number, number];
@@ -26,6 +27,7 @@ export default function Filters({
   selectedRating,
   setSelectedRating,
 }: FiltersProps) {
+  const { t } = useLanguage();
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategories(
       selectedCategories.includes(categoryId)
@@ -39,11 +41,11 @@ export default function Filters({
   return (
     <Card className="bg-card border-border/20">
       <CardHeader>
-        <CardTitle>Filters</CardTitle>
+        <CardTitle>{t('filters_title')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-8">
         <div>
-          <h3 className="font-semibold mb-4">Category</h3>
+          <h3 className="font-semibold mb-4">{t('filters_category_title')}</h3>
           <div className="space-y-3">
             {allProductCategories.map((category) => (
               <div key={category.id} className="flex items-center space-x-2">
@@ -56,7 +58,7 @@ export default function Filters({
                   htmlFor={`cat-${category.id}`}
                   className="flex-1 cursor-pointer hover:text-primary"
                 >
-                  {category.name}
+                  {t(category.name)}
                 </Label>
                 <span className="text-xs text-muted-foreground">
                   {category.productCount}
@@ -66,7 +68,7 @@ export default function Filters({
           </div>
         </div>
         <div>
-          <h3 className="font-semibold mb-4">Price Range</h3>
+          <h3 className="font-semibold mb-4">{t('filters_price_range_title')}</h3>
           <Slider
             min={0}
             max={100}
@@ -93,7 +95,7 @@ export default function Filters({
           </div>
         </div>
         <div>
-          <h3 className="font-semibold mb-4">Rating</h3>
+          <h3 className="font-semibold mb-4">{t('filters_rating_title')}</h3>
           <RadioGroup
             value={String(selectedRating)}
             onValueChange={(value) => setSelectedRating(Number(value))}
@@ -101,18 +103,18 @@ export default function Filters({
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="4" id="r1" />
               <Label htmlFor="r1" className="flex items-center gap-1 cursor-pointer">
-                4 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & Up
+                4 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & {t('filters_rating_up')}
               </Label>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="3" id="r2" />
               <Label htmlFor="r2" className="flex items-center gap-1 cursor-pointer">
-                3 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & Up
+                3 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & {t('filters_rating_up')}
               </Label>
             </div>
              <div className="flex items-center space-x-2">
               <RadioGroupItem value="0" id="r3" />
-              <Label htmlFor="r3" className="cursor-pointer">All</Label>
+              <Label htmlFor="r3" className="cursor-pointer">{t('filters_rating_all')}</Label>
             </div>
           </RadioGroup>
         </div>

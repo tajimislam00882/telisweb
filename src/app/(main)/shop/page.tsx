@@ -5,8 +5,10 @@ import ProductCard from '@/components/shop/product-card';
 import Filters from '@/components/shop/filters';
 import { useProductFilters } from '@/hooks/use-product-filters';
 import SearchAndSort from '@/components/shop/search-and-sort';
+import { useLanguage } from '@/context/language-context';
 
 export default function ShopPage() {
+  const { t } = useLanguage();
   const {
     filteredProducts,
     searchTerm,
@@ -25,10 +27,10 @@ export default function ShopPage() {
     <div className="container py-12 text-foreground">
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-          Our Products
+          {t('shop_title')}
         </h1>
         <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          Explore our curated collection of high-quality digital assets.
+          {t('shop_subtitle')}
         </p>
       </div>
 
@@ -62,9 +64,9 @@ export default function ShopPage() {
             </div>
           ) : (
              <div className="text-center py-20">
-              <h2 className="text-2xl font-semibold">No Products Found</h2>
+              <h2 className="text-2xl font-semibold">{t('shop_no_products_title')}</h2>
               <p className="text-muted-foreground mt-2">
-                Try adjusting your search or filters.
+                {t('shop_no_products_subtitle')}
               </p>
             </div>
           )}
