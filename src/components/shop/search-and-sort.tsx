@@ -43,6 +43,8 @@ export default function SearchAndSort({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="relevance">Relevance</SelectItem>
+            <SelectItem value="best-selling">Best Selling</SelectItem>
+            <SelectItem value="top-rated">Top Rated</SelectItem>
             <SelectItem value="newest">Newest</SelectItem>
             <SelectItem value="price-asc">Price: Low to High</SelectItem>
             <SelectItem value="price-desc">Price: High to Low</SelectItem>

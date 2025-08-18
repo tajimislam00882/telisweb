@@ -21,6 +21,7 @@ export interface Product {
   imageUrl: string;
   rating: number;
   reviews: number;
+  sales?: number;
   tags: string[];
   fileType: string;
   fileSize: string;

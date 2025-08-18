@@ -17,6 +17,8 @@ export default function ShopPage() {
     setPriceRange,
     selectedCategories,
     setSelectedCategories,
+    selectedRating,
+    setSelectedRating,
   } = useProductFilters(products);
 
   return (
@@ -38,6 +40,8 @@ export default function ShopPage() {
               setPriceRange={setPriceRange}
               selectedCategories={selectedCategories}
               setSelectedCategories={setSelectedCategories}
+              selectedRating={selectedRating}
+              setSelectedRating={setSelectedRating}
             />
           </div>
         </aside>

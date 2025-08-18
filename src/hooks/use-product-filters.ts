@@ -10,6 +10,7 @@ export function useProductFilters(allProducts: Product[]) {
   const [sortOption, setSortOption] = useState('relevance');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedRating, setSelectedRating] = useState<number>(0);
   
   useEffect(() => {
     const query = searchParams.get('q');
@@ -41,6 +42,11 @@ export function useProductFilters(allProducts: Product[]) {
       (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
     );
 
+    // Filter by rating
+    if (selectedRating > 0) {
+        products = products.filter((p) => p.rating >= selectedRating);
+    }
+
     // Sort products
     switch (sortOption) {
       case 'price-asc':
@@ -54,6 +60,12 @@ export function useProductFilters(allProducts: Product[]) {
         // For now, we'll reverse the array to simulate newest
         products.reverse();
         break;
+      case 'best-selling':
+          products.sort((a, b) => (b.sales ?? 0) - (a.sales ?? 0));
+          break;
+      case 'top-rated':
+          products.sort((a, b) => b.rating - a.rating);
+          break;
       case 'relevance':
       default:
         // Default order, or implement a more complex relevance logic
@@ -61,7 +73,7 @@ export function useProductFilters(allProducts: Product[]) {
     }
 
     return products;
-  }, [searchTerm, sortOption, priceRange, selectedCategories, allProducts]);
+  }, [searchTerm, sortOption, priceRange, selectedCategories, selectedRating, allProducts]);
 
   return {
     filteredProducts,
@@ -73,5 +85,7 @@ export function useProductFilters(allProducts: Product[]) {
     setPriceRange,
     selectedCategories,
     setSelectedCategories,
+    selectedRating,
+    setSelectedRating,
   };
 }

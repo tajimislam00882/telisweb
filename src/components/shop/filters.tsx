@@ -6,12 +6,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { Input } from '../ui/input';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Star } from 'lucide-react';
 
 interface FiltersProps {
   priceRange: [number, number];
   setPriceRange: (range: [number, number]) => void;
   selectedCategories: string[];
   setSelectedCategories: (categories: string[]) => void;
+  selectedRating: number;
+  setSelectedRating: (rating: number) => void;
 }
 
 export default function Filters({
@@ -19,6 +23,8 @@ export default function Filters({
   setPriceRange,
   selectedCategories,
   setSelectedCategories,
+  selectedRating,
+  setSelectedRating,
 }: FiltersProps) {
   const handleCategoryChange = (categoryId: string) => {
     setSelectedCategories(
@@ -27,8 +33,8 @@ export default function Filters({
         : [...selectedCategories, categoryId]
     );
   };
-  
-  const allProductCategories = categories.filter(c => c.id !== 'all');
+
+  const allProductCategories = categories.filter((c) => c.id !== 'all');
 
   return (
     <Card className="bg-card border-border/20">
@@ -85,6 +91,30 @@ export default function Filters({
               max={100}
             />
           </div>
+        </div>
+        <div>
+          <h3 className="font-semibold mb-4">Rating</h3>
+          <RadioGroup
+            value={String(selectedRating)}
+            onValueChange={(value) => setSelectedRating(Number(value))}
+          >
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="4" id="r1" />
+              <Label htmlFor="r1" className="flex items-center gap-1 cursor-pointer">
+                4 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & Up
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="3" id="r2" />
+              <Label htmlFor="r2" className="flex items-center gap-1 cursor-pointer">
+                3 <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" /> & Up
+              </Label>
+            </div>
+             <div className="flex items-center space-x-2">
+              <RadioGroupItem value="0" id="r3" />
+              <Label htmlFor="r3" className="cursor-pointer">All</Label>
+            </div>
+          </RadioGroup>
         </div>
       </CardContent>
     </Card>
