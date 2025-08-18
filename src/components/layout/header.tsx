@@ -1,7 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, Search, ShoppingCart, X, Languages, Loader2 } from 'lucide-react';
+import {
+  Menu,
+  Search,
+  ShoppingCart,
+  X,
+  Languages,
+  Loader2,
+  Camera,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -27,6 +35,8 @@ import { useAuth } from '@/context/auth-context';
 import { useCart } from '@/context/cart-context';
 import { useSearchSuggestions } from '@/hooks/use-search-suggestions';
 import Image from 'next/image';
+import { imageSearch } from '@/ai/flows/image-search-flow';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Header() {
   const pathname = usePathname();
@@ -34,10 +44,13 @@ export default function Header() {
   const searchParams = useSearchParams();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+  const [isImageSearching, setIsImageSearching] = useState(false);
   const { t, setLanguage } = useLanguage();
   const { user, logout } = useAuth();
   const { cart } = useCart();
+  const { toast } = useToast();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const headerRef = useRef<HTMLElement>(null);
 
   const {
@@ -77,7 +90,7 @@ export default function Header() {
     }
     setIsSearchOpen(false);
     if (searchInputRef.current) {
-        searchInputRef.current.blur();
+      searchInputRef.current.blur();
     }
   };
 
@@ -85,17 +98,69 @@ export default function Header() {
     await logout();
     router.push('/login');
   };
-  
+
   const handleSuggestionClick = () => {
     setIsSuggestionsVisible(false);
     setSearchQuery('');
-  }
+  };
+
+  const handleImageFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImageSearching(true);
+    toast({
+      title: 'Analyzing Image...',
+      description: 'Please wait while we figure out what\'s in your image.',
+    });
+
+    try {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const imageDataUri = reader.result as string;
+        const result = await imageSearch({ imageDataUri });
+        if (result.searchQuery) {
+          router.push(`/shop?q=${encodeURIComponent(result.searchQuery)}`);
+           toast({
+            title: 'Search Complete!',
+            description: `Showing results for: "${result.searchQuery}"`,
+          });
+        } else {
+           throw new Error("AI couldn't generate a search query.");
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Image search failed:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Image Search Failed',
+        description:
+          'Sorry, we couldn\'t analyze that image. Please try another one.',
+      });
+    } finally {
+      setIsImageSearching(false);
+      // Reset file input
+       if (imageInputRef.current) {
+        imageInputRef.current.value = '';
+      }
+    }
+  };
 
   return (
     <header
       ref={headerRef}
       className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm"
     >
+      <input
+        type="file"
+        ref={imageInputRef}
+        onChange={handleImageFileChange}
+        className="hidden"
+        accept="image/*"
+      />
       <div className="container flex h-16 items-center justify-between gap-4">
         {/* Left side: Logo and Nav */}
         <div className="flex items-center gap-6">
@@ -126,12 +191,26 @@ export default function Header() {
               <Input
                 type="search"
                 placeholder={t('search_placeholder')}
-                className="w-full pl-10 bg-card border-border/20"
+                className="w-full pl-10 pr-10 bg-card border-border/20"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSuggestionsVisible(true)}
               />
             </form>
+             <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                onClick={() => imageInputRef.current?.click()}
+                disabled={isImageSearching}
+                aria-label="Search by image"
+              >
+                {isImageSearching ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Camera className="h-5 w-5 text-muted-foreground" />
+                )}
+              </Button>
             {isSuggestionsVisible && searchQuery && (
               <div className="absolute top-full mt-2 w-full rounded-md border bg-card shadow-lg">
                 {isLoading ? (
@@ -166,13 +245,13 @@ export default function Header() {
                         </Link>
                       </li>
                     ))}
-                     <li className="border-t">
+                    <li className="border-t">
                       <Link
                         href={`/shop?q=${searchQuery}`}
                         onClick={handleSuggestionClick}
                         className="block w-full p-3 text-center font-medium text-primary hover:bg-accent"
                       >
-                       View all results for &quot;{searchQuery}&quot;
+                        View all results for &quot;{searchQuery}&quot;
                       </Link>
                     </li>
                   </ul>
@@ -294,10 +373,27 @@ export default function Header() {
               ref={searchInputRef}
               type="search"
               placeholder={t('search_placeholder')}
-              className="w-full pl-10 pr-10 bg-card border-border/20"
+              className="w-full pl-10 pr-20 bg-card border-border/20"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+             <div className="absolute right-10 top-1/2 -translate-y-1/2">
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => imageInputRef.current?.click()}
+                    disabled={isImageSearching}
+                    aria-label="Search by image"
+                >
+                    {isImageSearching ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                    <Camera className="h-5 w-5 text-muted-foreground" />
+                    )}
+                </Button>
+            </div>
             <Button
               type="button"
               variant="ghost"
