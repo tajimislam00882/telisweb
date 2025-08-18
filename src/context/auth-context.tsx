@@ -2,12 +2,11 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
-  getAuth,
   onAuthStateChanged,
   signOut,
   User,
 } from 'firebase/auth';
-import { firebaseApp } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import Preloader from '@/components/shared/preloader';
 import { useRouter, usePathname } from 'next/navigation';
 
@@ -22,7 +21,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const auth = getAuth(firebaseApp);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);

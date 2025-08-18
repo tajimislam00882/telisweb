@@ -23,13 +23,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   updateProfile,
   GoogleAuthProvider,
   signInWithPopup,
 } from 'firebase/auth';
-import { firebaseApp } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
@@ -79,8 +78,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { isAdmin } = useAuth();
-  const auth = getAuth(firebaseApp);
-
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
