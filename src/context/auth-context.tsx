@@ -1,10 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import type { User } from '@supabase/supabase-js';
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import type { User, SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase';
 import Preloader from '@/components/shared/preloader';
-import { useRouter, usePathname } from 'next/navigation';
 
 const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
@@ -13,6 +12,7 @@ interface AuthContextType {
   isAdmin: boolean;
   loading: boolean;
   logout: () => Promise<void>;
+  supabase: SupabaseClient;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,9 +21,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const pathname = usePathname();
-  const supabase = createClient();
+  
+  // Initialize Supabase client using useMemo to ensure it's created only on the client-side.
+  const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -41,33 +41,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(currentUser);
       const userIsAdmin = currentUser ? ADMIN_EMAILS.includes(currentUser.email || '') : false;
       setIsAdmin(userIsAdmin);
-      
-      if (!loading) {
-         if (pathname.startsWith('/admin') && !userIsAdmin) {
-            router.push('/login');
-        }
-        if ((pathname.startsWith('/dashboard') || pathname.startsWith('/cart')) && !currentUser) {
-            router.push('/login');
-        }
-      }
+      setLoading(false);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [loading, pathname, router, supabase.auth]);
+  }, [supabase.auth]);
   
   const logout = async () => {
-      await supabase.auth.signOut();
-      router.push('/login');
-  }
+    await supabase.auth.signOut();
+    // No need to redirect here, the onAuthStateChange will handle it.
+  };
 
   if (loading) {
     return <Preloader />;
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, loading, logout }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading, logout, supabase }}>
       {children}
     </AuthContext.Provider>
   );
