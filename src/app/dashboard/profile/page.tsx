@@ -15,10 +15,11 @@ import { useAuth } from '@/context/auth-context';
 import { useState, useEffect, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Upload } from 'lucide-react';
+import { Form, FormField, FormControl, FormMessage, FormLabel } from '@/components/ui/form';
 
 const profileSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -27,7 +28,6 @@ const profileSchema = z.object({
 });
 
 const passwordSchema = z.object({
-  currentPassword: z.string().min(6, 'Password must be at least 6 characters'),
   newPassword: z.string().min(6, 'New password must be at least 6 characters'),
   confirmPassword: z.string().min(6, 'Confirm password must be at least 6 characters'),
 }).refine(data => data.newPassword === data.confirmPassword, {
@@ -54,6 +54,10 @@ export default function ProfilePage() {
 
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
     resolver: zodResolver(passwordSchema),
+     defaultValues: {
+      newPassword: '',
+      confirmPassword: '',
+    },
   });
 
   useEffect(() => {
@@ -146,114 +150,129 @@ export default function ProfilePage() {
         accept="image/png, image/jpeg"
       />
       <Card>
-        <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <Avatar className="h-20 w-20">
-                  <AvatarImage src={user.user_metadata.avatar_url} />
-                  <AvatarFallback className="text-3xl">
-                    {user.user_metadata.first_name?.[0] || user.email?.[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <Button
-                  type="button"
-                  size="icon"
-                  className="absolute bottom-0 right-0 h-7 w-7 rounded-full"
-                  onClick={() => avatarInputRef.current?.click()}
-                  disabled={isAvatarLoading}
-                >
-                  {isAvatarLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                </Button>
+        <Form {...profileForm}>
+          <form onSubmit={profileForm.handleSubmit(onProfileSubmit)}>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <Avatar className="h-20 w-20">
+                    <AvatarImage src={user.user_metadata.avatar_url} />
+                    <AvatarFallback className="text-3xl">
+                      {user.user_metadata.first_name?.[0] || user.email?.[0].toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <Button
+                    type="button"
+                    size="icon"
+                    className="absolute bottom-0 right-0 h-7 w-7 rounded-full"
+                    onClick={() => avatarInputRef.current?.click()}
+                    disabled={isAvatarLoading}
+                  >
+                    {isAvatarLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+                  </Button>
+                </div>
+                <div>
+                  <CardTitle>Profile Information</CardTitle>
+                  <CardDescription>Update your personal details here.</CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle>Profile Information</CardTitle>
-                <CardDescription>Update your personal details here.</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="first-name">First Name</Label>
-                <Controller
-                  name="firstName"
-                  control={profileForm.control}
-                  render={({ field }) => <Input id="first-name" {...field} />}
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={profileForm.control}
+                    name="firstName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
                 />
-                {profileForm.formState.errors.firstName && <p className="text-sm text-destructive">{profileForm.formState.errors.firstName.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="last-name">Last Name</Label>
-                <Controller
-                  name="lastName"
-                  control={profileForm.control}
-                  render={({ field }) => <Input id="last-name" {...field} />}
+                 <FormField
+                    control={profileForm.control}
+                    name="lastName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
                 />
-                 {profileForm.formState.errors.lastName && <p className="text-sm text-destructive">{profileForm.formState.errors.lastName.message}</p>}
               </div>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Controller
-                name="email"
-                control={profileForm.control}
-                render={({ field }) => <Input id="email" type="email" {...field} />}
-              />
-               {profileForm.formState.errors.email && <p className="text-sm text-destructive">{profileForm.formState.errors.email.message}</p>}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={isProfileLoading}>
-                {isProfileLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Update Profile
-            </Button>
-          </CardFooter>
-        </form>
+              <FormField
+                    control={profileForm.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                            <Input type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </CardContent>
+            <CardFooter>
+              <Button type="submit" disabled={isProfileLoading}>
+                  {isProfileLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  Update Profile
+              </Button>
+            </CardFooter>
+          </form>
+        </Form>
       </Card>
 
       <Card>
-        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
-          <CardHeader>
-            <CardTitle>Change Password</CardTitle>
-            <CardDescription>For your security, please choose a strong password.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="current-password">Current Password</Label>
-               <Controller
-                name="currentPassword"
-                control={passwordForm.control}
-                render={({ field }) => <Input id="current-password" type="password" {...field} />}
-              />
-               {passwordForm.formState.errors.currentPassword && <p className="text-sm text-destructive">{passwordForm.formState.errors.currentPassword.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new-password">New Password</Label>
-              <Controller
-                name="newPassword"
-                control={passwordForm.control}
-                render={({ field }) => <Input id="new-password" type="password" {...field} />}
-              />
-               {passwordForm.formState.errors.newPassword && <p className="text-sm text-destructive">{passwordForm.formState.errors.newPassword.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm-password">Confirm New Password</Label>
-              <Controller
-                name="confirmPassword"
-                control={passwordForm.control}
-                render={({ field }) => <Input id="confirm-password" type="password" {...field} />}
-              />
-               {passwordForm.formState.errors.confirmPassword && <p className="text-sm text-destructive">{passwordForm.formState.errors.confirmPassword.message}</p>}
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" disabled={isPasswordLoading}>
-                {isPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Change Password
-            </Button>
-          </CardFooter>
-        </form>
+         <Form {...passwordForm}>
+            <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
+            <CardHeader>
+                <CardTitle>Change Password</CardTitle>
+                <CardDescription>For your security, please choose a strong password.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                 <FormField
+                    control={passwordForm.control}
+                    name="newPassword"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>New Password</FormLabel>
+                        <FormControl>
+                            <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={passwordForm.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Confirm New Password</FormLabel>
+                        <FormControl>
+                            <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </CardContent>
+            <CardFooter>
+                <Button type="submit" disabled={isPasswordLoading}>
+                    {isPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Change Password
+                </Button>
+            </CardFooter>
+            </form>
+        </Form>
       </Card>
     </div>
   );
