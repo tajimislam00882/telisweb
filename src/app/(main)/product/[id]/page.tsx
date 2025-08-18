@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { products } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,17 +10,22 @@ import { Star, ShoppingCart, Zap, FileText, DownloadCloud } from 'lucide-react';
 import ProductCard from '@/components/shop/product-card';
 import { useCart } from '@/context/cart-context';
 import { useRouter } from 'next/navigation';
+import { use } from 'react';
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
+export default function ProductDetailPage() {
+  const params = use(useParams());
   const { addToCart } = useCart();
   const router = useRouter();
   
-  const product = products.find((p) => p.id === params.id);
-  const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
-
+  const productId = typeof params.id === 'string' ? params.id : '';
+  const product = products.find((p) => p.id === productId);
+  
   if (!product) {
     notFound();
   }
+
+  const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
+
 
   const handleBuyNow = () => {
     addToCart(product);
