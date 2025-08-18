@@ -25,13 +25,13 @@ export default function CategoryCard({ category }: CategoryCardProps) {
       <Card className={cn(
         "h-40 rounded-2xl",
         "relative overflow-hidden",
-        "border-0"
+        "border-0 transition-all duration-300 group-hover:shadow-xl group-hover:scale-105 group-hover:-translate-y-1"
       )}>
         <div className={cn(
-            "absolute inset-0 bg-gradient-to-br transition-all duration-300 group-hover:scale-110",
+            "absolute inset-0 bg-gradient-to-br transition-all duration-300",
             category.color
         )}></div>
-        <div className="absolute inset-0 bg-black/30"></div>
+        <div className="absolute inset-0 bg-black/20"></div>
         <CardContent className="relative p-6 flex items-center justify-center h-full">
           <h3 className={cn(
               "text-xl font-bold text-center",
