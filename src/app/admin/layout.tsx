@@ -9,6 +9,7 @@ import {
   LogOut,
   Search,
   Truck,
+  Handshake,
 } from 'lucide-react';
 import AppShell from '@/components/layout/app-shell';
 import { Button } from '@/components/ui/button';
@@ -22,6 +23,7 @@ const navItems = [
   { href: '/admin/products', label: 'Products', icon: Box },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: 2 },
   { href: '/admin/users', label: 'Users', icon: Users2 },
+  { href: '/admin/affiliates', label: 'Affiliates', icon: Handshake },
   { href: '/admin/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];

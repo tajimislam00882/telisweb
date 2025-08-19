@@ -103,6 +103,12 @@ export interface Affiliate {
     payment_method: 'bank' | 'bkash' | 'nagad' | 'rocket';
     payment_details?: any; // JSON
     created_at: string;
+    users: {
+        raw_user_meta_data?: {
+            first_name?: string;
+            last_name?: string;
+        }
+    } | null;
 }
 
 export interface Commission {
