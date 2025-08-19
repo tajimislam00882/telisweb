@@ -5,9 +5,12 @@ import { Github, Twitter, Linkedin } from 'lucide-react';
 import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
+import { useAuth } from '@/context/auth-context';
 
 export default function Footer() {
   const { t } = useLanguage();
+  const { user } = useAuth();
+
   return (
     <footer className="border-t border-border/20 bg-card">
       <div className="container py-12 text-foreground">
@@ -64,11 +67,13 @@ export default function Footer() {
                     {t('nav_contact')}
                   </Link>
                 </li>
-                <li>
-                  <Link href="/dashboard" className="text-muted-foreground hover:text-primary">
-                    {t('footer_dashboard')}
-                  </Link>
-                </li>
+                {user && (
+                    <li>
+                        <Link href="/dashboard" className="text-muted-foreground hover:text-primary">
+                        {t('footer_dashboard')}
+                        </Link>
+                    </li>
+                )}
               </ul>
             </div>
             <div>
