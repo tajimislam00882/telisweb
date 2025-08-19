@@ -66,7 +66,7 @@ export default function AffiliateMarketingPage() {
              <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
                 {t('affiliate_cta_desc')}
              </p>
-            <div className="flex justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button size="lg" asChild>
                     <Link href="/register">{t('affiliate_register_button')}</Link>
                 </Button>
