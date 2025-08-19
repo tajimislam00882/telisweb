@@ -16,8 +16,9 @@ export const popularCategories: PopularCategory[] = [
     { id: 'course', name: 'pop_cat_course_name', description: 'pop_cat_course_desc', productCount: 200, icon: Film, color: 'from-yellow-400 to-yellow-600' },
 ];
 
-export const products: Omit<Product, 'id'>[] = [
+export const products: Product[] = [
   {
+    id: 'prod_001',
     name: 'Pro UI Kit',
     description: 'A professional UI kit for modern web applications.',
     price: 49.99,
@@ -31,6 +32,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '120MB',
   },
   {
+    id: 'prod_002',
     name: 'Minimalist Icon Set',
     description: 'A set of 200+ minimalist icons for any project.',
     price: 19.99,
@@ -44,6 +46,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '15MB',
   },
   {
+    id: 'prod_003',
     name: 'Agency Website Template',
     description: 'A complete Next.js template for creative agencies.',
     price: 79.99,
@@ -57,6 +60,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '25MB',
   },
   {
+    id: 'prod_004',
     name: 'The Art of Digital Sales',
     description: 'An e-book on mastering digital product sales.',
     price: 29.99,
@@ -70,6 +74,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '5MB',
   },
   {
+    id: 'prod_005',
     name: 'Mobile App UI Kit',
     description: 'Design your next mobile app with this extensive UI kit.',
     price: 59.99,
@@ -83,6 +88,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '180MB',
   },
   {
+    id: 'prod_006',
     name: 'Landing Page Template Pack',
     description: 'A pack of 5 high-converting landing page templates.',
     price: 69.99,
@@ -96,6 +102,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '10MB',
   },
   {
+    id: 'prod_007',
     name: 'Data Visualization Icons',
     description: 'A unique set of icons for charts and graphs.',
     price: 24.99,
@@ -109,6 +116,7 @@ export const products: Omit<Product, 'id'>[] = [
     file_size: '8MB',
   },
   {
+    id: 'prod_008',
     name: 'SaaS Dashboard UI Kit',
     description: 'A complete UI kit for building SaaS dashboards.',
     price: 89.99,
