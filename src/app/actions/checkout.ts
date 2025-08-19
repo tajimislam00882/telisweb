@@ -1,6 +1,7 @@
+
 'use server';
 
-import { createRouteHandlerClient } from '@supabase/ssr';
+import { createServerActionClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { z } from 'zod';
 import type { CartItem } from '@/context/cart-context';
@@ -19,7 +20,7 @@ const checkoutSchema = z.object({
 
 export async function handleCheckout(prevState: any, formData: FormData) {
   const cookieStore = cookies();
-  const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+  const supabase = createServerActionClient({ cookies: () => cookieStore });
 
   const validatedFields = checkoutSchema.safeParse(
     Object.fromEntries(formData.entries())
