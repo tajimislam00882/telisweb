@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { CreditCard, Landmark } from 'lucide-react';
+import { CreditCard, Landmark, Loader2 } from 'lucide-react';
 import { handleCheckout } from '@/app/actions/checkout';
 import { useFormState, useFormStatus } from 'react-dom';
 import { useToast } from '@/hooks/use-toast';
@@ -20,6 +20,7 @@ function SubmitButton() {
     const { pending } = useFormStatus();
     return (
         <Button className="w-full" type="submit" disabled={pending}>
+            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {pending ? 'Processing...' : 'Proceed to Payment'}
         </Button>
     );
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
     const router = useRouter();
     const { toast } = useToast();
     
-    const [initialState, setInitialState] = useState({ message: '', orderId: null, error: null });
+    const initialState = { message: '', orderId: null, error: null };
 
     const [state, formAction] = useFormState(handleCheckout, initialState);
 
@@ -45,10 +46,8 @@ export default function CheckoutPage() {
         if (state.message === 'success' && state.orderId) {
             toast({
                 title: "Order Placed!",
-                description: "You are being redirected to payment."
+                description: "You are being redirected to confirmation."
             });
-            // Here you would redirect to the payment gateway
-            // For now, we'll just clear the cart and go to a placeholder confirmation page
             clearCart();
             router.push(`/order-confirmation/${state.orderId}`);
         } else if (state.error) {
@@ -65,10 +64,14 @@ export default function CheckoutPage() {
     const total = subtotal + shipping;
 
     if (authLoading || !user) {
-        return <div className="container py-12 text-center">Loading...</div>;
+        return (
+            <div className="container py-12 text-center flex justify-center items-center h-[60vh]">
+                 <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+        );
     }
 
-    if (cart.length === 0 && !state.orderId) {
+    if (cart.length === 0 && !state?.orderId) {
         return (
             <div className="container py-12 text-center">
                 <h1 className="text-3xl font-bold">Your cart is empty</h1>
