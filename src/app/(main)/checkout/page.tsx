@@ -12,19 +12,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CreditCard, Landmark, Loader2 } from 'lucide-react';
-import { handleCheckout } from '@/app/actions/checkout';
-import { useFormState, useFormStatus } from 'react-dom';
 import { useToast } from '@/hooks/use-toast';
-
-function SubmitButton() {
-    const { pending } = useFormStatus();
-    return (
-        <Button className="w-full" type="submit" disabled={pending}>
-            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {pending ? 'Processing...' : 'Proceed to Payment'}
-        </Button>
-    );
-}
 
 function PipraPayIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -41,37 +29,65 @@ export default function CheckoutPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const { toast } = useToast();
+    const [isProcessing, setIsProcessing] = useState(false);
     
-    const initialState = { message: '', orderId: null, error: null };
-
-    const [state, formAction] = useFormState(handleCheckout, initialState);
-
     useEffect(() => {
         if (!authLoading && !user) {
             router.push('/login?redirect=/checkout');
         }
     }, [user, authLoading, router]);
 
-    useEffect(() => {
-        if (state.message === 'success' && state.orderId) {
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const shipping = 5.00;
+    const total = subtotal + shipping;
+    
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsProcessing(true);
+
+        const formData = new FormData(event.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+
+        const payload = {
+            ...data,
+            cart: cart,
+            userId: user?.id,
+            totalAmount: total,
+        };
+
+        try {
+            const response = await fetch('/api/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'An unknown error occurred.');
+            }
+
             toast({
                 title: "Order Placed!",
                 description: "You are being redirected to confirmation."
             });
             clearCart();
-            router.push(`/order-confirmation/${state.orderId}`);
-        } else if (state.error) {
-             toast({
+            router.push(`/order-confirmation/${result.orderId}`);
+
+        } catch (error: any) {
+            toast({
                 variant: 'destructive',
                 title: "Checkout Failed",
-                description: state.error
+                description: error.message,
             });
+        } finally {
+            setIsProcessing(false);
         }
-    }, [state, router, clearCart, toast]);
+    };
 
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 5.00;
-    const total = subtotal + shipping;
 
     if (authLoading || !user) {
         return (
@@ -81,7 +97,7 @@ export default function CheckoutPage() {
         );
     }
 
-    if (cart.length === 0 && !state?.orderId) {
+    if (cart.length === 0) {
         return (
             <div className="container py-12 text-center">
                 <h1 className="text-3xl font-bold">Your cart is empty</h1>
@@ -97,12 +113,7 @@ export default function CheckoutPage() {
     return (
         <div className="container py-12">
             <h1 className="text-3xl font-bold mb-8">Checkout</h1>
-            <form action={formAction}>
-                {/* Hidden input for cart data */}
-                <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-                <input type="hidden" name="userId" value={user.id} />
-                <input type="hidden" name="totalAmount" value={total} />
-                
+            <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2">
                         <Card>
@@ -113,20 +124,20 @@ export default function CheckoutPage() {
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-2">
                                         <Label htmlFor="firstName">First Name</Label>
-                                        <Input id="firstName" name="firstName" defaultValue={user.user_metadata?.first_name || ''} required />
+                                        <Input id="firstName" name="firstName" defaultValue={user.user_metadata?.first_name || ''} required disabled={isProcessing}/>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="lastName">Last Name</Label>
-                                        <Input id="lastName" name="lastName" defaultValue={user.user_metadata?.last_name || ''} required />
+                                        <Input id="lastName" name="lastName" defaultValue={user.user_metadata?.last_name || ''} required disabled={isProcessing}/>
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" name="email" type="email" defaultValue={user.email || ''} required />
+                                    <Input id="email" name="email" type="email" defaultValue={user.email || ''} required disabled={isProcessing}/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="address">Shipping Address</Label>
-                                    <Input id="address" name="address" placeholder="1234 Main St" required />
+                                    <Input id="address" name="address" placeholder="1234 Main St" required disabled={isProcessing}/>
                                 </div>
                             </CardContent>
                         </Card>
@@ -137,7 +148,7 @@ export default function CheckoutPage() {
                             <CardContent>
                                 <RadioGroup defaultValue="sslcommerz" name="paymentMethod" className="space-y-4">
                                     <Label htmlFor="sslcommerz" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
-                                        <RadioGroupItem value="sslcommerz" id="sslcommerz" />
+                                        <RadioGroupItem value="sslcommerz" id="sslcommerz" disabled={isProcessing}/>
                                         <CreditCard className="h-6 w-6" />
                                         <div className="flex-1">
                                             <p className="font-semibold">SSL Commerz</p>
@@ -145,7 +156,7 @@ export default function CheckoutPage() {
                                         </div>
                                     </Label>
                                      <Label htmlFor="stripe" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
-                                        <RadioGroupItem value="stripe" id="stripe" />
+                                        <RadioGroupItem value="stripe" id="stripe" disabled={isProcessing}/>
                                         <Landmark className="h-6 w-6" />
                                         <div className="flex-1">
                                             <p className="font-semibold">Stripe / PayPal</p>
@@ -153,7 +164,7 @@ export default function CheckoutPage() {
                                         </div>
                                     </Label>
                                      <Label htmlFor="piprapay" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
-                                        <RadioGroupItem value="piprapay" id="piprapay" />
+                                        <RadioGroupItem value="piprapay" id="piprapay" disabled={isProcessing}/>
                                         <PipraPayIcon className="h-6 w-6" />
                                         <div className="flex-1">
                                             <p className="font-semibold">Pipra Pay</p>
@@ -198,7 +209,10 @@ export default function CheckoutPage() {
                                 </div>
                             </CardContent>
                             <CardFooter>
-                                <SubmitButton />
+                                <Button className="w-full" type="submit" disabled={isProcessing}>
+                                    {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    {isProcessing ? 'Processing...' : 'Proceed to Payment'}
+                                </Button>
                             </CardFooter>
                         </Card>
                     </aside>
