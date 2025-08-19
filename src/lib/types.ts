@@ -30,7 +30,7 @@ export interface Product {
 
   // New fields for multi-business model
   business_model_id?: number;
-  supplier_id?: string | null; // Changed to string for UUID
+  supplier_id?: string | null; 
   affiliate_url?: string | null;
   commission_rate?: number | null; // For affiliate
   supplier_price?: number | null; // For dropshipping
@@ -48,7 +48,7 @@ export interface BusinessModel {
 }
 
 export interface Supplier {
-    id: string; // Changed to string for UUID
+    id: string; 
     company_name: string;
     contact_person?: string;
     email?: string;
@@ -103,7 +103,7 @@ export interface Affiliate {
     payment_method: 'bank' | 'bkash' | 'nagad' | 'rocket';
     payment_details?: any; // JSON
     created_at: string;
-    users: {
+    users: { // This structure matches the actual Supabase response
         raw_user_meta_data?: {
             first_name?: string;
             last_name?: string;

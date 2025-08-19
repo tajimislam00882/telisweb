@@ -42,15 +42,45 @@ export default function AdminAffiliatesPage() {
     const fetchAffiliates = async () => {
       setLoading(true);
       const supabase = createClient();
-      const { data, error } = await supabase
+       // Fetching affiliates and related user data correctly.
+       // The previous query `select(*, users(raw_user_meta_data))` was likely failing
+       // due to misconfigured RLS or relationship setup.
+       // A more robust way is to fetch affiliates, then fetch user data for each.
+      const { data: affiliatesData, error: affiliatesError } = await supabase
         .from('affiliates')
-        .select(`*, users(raw_user_meta_data)`)
+        .select(`*`)
         .order('created_at', { ascending: false });
-      if (error) {
-        console.error('Error fetching affiliates:', error);
-      } else if (data) {
-        setAffiliates(data as any[] as Affiliate[]);
+
+      if (affiliatesError) {
+        console.error('Error fetching affiliates:', affiliatesError);
+        setLoading(false);
+        return;
       }
+      
+      if (affiliatesData) {
+        // Now, for each affiliate, fetch the user metadata
+        const affiliatesWithUsers = await Promise.all(
+          affiliatesData.map(async (affiliate) => {
+            const { data: userData, error: userError } = await supabase
+              .from('users')
+              .select('raw_user_meta_data')
+              .eq('id', affiliate.user_id)
+              .single();
+            
+            if (userError) {
+              console.error(`Error fetching user ${affiliate.user_id}:`, userError);
+              return affiliate; // Return affiliate without user data on error
+            }
+            
+            return {
+              ...affiliate,
+              users: userData, // Supabase returns the table name as the key
+            };
+          })
+        );
+        setAffiliates(affiliatesWithUsers as any[] as Affiliate[]);
+      }
+      
       setLoading(false);
     };
 
