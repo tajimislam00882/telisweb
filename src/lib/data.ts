@@ -174,18 +174,8 @@ export const downloadItems = [
     { id: 'prod-002', name: 'Minimalist Icon Set', downloadUrl: '#', purchaseDate: '2023-09-28' },
 ];
 
-export const adminProducts = [
-  ...products.slice(0, 5),
-];
-
 export const adminOrders = [
   { orderId: '#DE80123', date: '2023-11-05', customer: 'John Doe', total: 79.99, status: 'Completed', paymentMethod: 'Bkash' },
   { orderId: '#DE80124', date: '2023-11-05', customer: 'Jane Smith', total: 29.99, status: 'Pending', paymentMethod: 'Manual' },
   { orderId: '#DE80125', date: '2023-11-04', customer: 'Sam Wilson', total: 89.99, status: 'Completed', paymentMethod: 'Nagad' },
-];
-
-export const adminUsers = [
-  { id: 'user-001', name: 'John Doe', email: 'john@example.com', registered: '2023-01-15', totalSpent: 150.50 },
-  { id: 'user-002', name: 'Jane Smith', email: 'jane@example.com', registered: '2023-02-20', totalSpent: 29.99 },
-  { id: 'user-003', name: 'Sam Wilson', email: 'sam@example.com', registered: '2023-03-10', totalSpent: 89.99 },
 ];
