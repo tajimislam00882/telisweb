@@ -92,6 +92,12 @@ export default function Header() {
     }
   }, [searchParams, setIsSuggestionsVisible]);
 
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
+
   const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSuggestionsVisible(false);
@@ -157,56 +163,44 @@ export default function Header() {
       }
     }
   };
-
-  return (
-    <header
-      ref={headerRef}
-      className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm"
-    >
-      <input
-        type="file"
-        ref={imageInputRef}
-        onChange={handleImageFileChange}
-        className="hidden"
-        accept="image/*"
-      />
-      <div className="container flex h-16 items-center justify-between gap-4">
-        {/* Left side: Logo and Nav */}
-        <div className="flex items-center gap-6">
-          <Logo />
-          <nav className="hidden gap-6 md:flex">
+  
+  const DesktopNav = () => (
+     <div className="hidden md:flex items-center gap-6">
+        <Logo />
+        <nav className="flex gap-6">
             {navItems.map((item) => (
-              <Link
+            <Link
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  'flex items-center text-sm font-medium transition-colors hover:text-primary',
-                  pathname === item.href
+                'flex items-center text-sm font-medium transition-colors hover:text-primary',
+                pathname === item.href
                     ? 'text-primary'
                     : 'text-muted-foreground'
                 )}
-              >
+            >
                 {item.label}
-              </Link>
+            </Link>
             ))}
-          </nav>
-        </div>
+        </nav>
+    </div>
+  );
 
-        {/* Search Bar (Centered on Desktop) */}
-        <div className="hidden md:flex flex-1 justify-center px-8">
-          <div className="relative w-full max-w-md">
+  const DesktopActions = () => (
+    <div className="hidden md:flex items-center gap-2">
+        <div className="relative w-full max-w-xs">
             <form onSubmit={handleSearchSubmit}>
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder={t('search_placeholder')}
-                className="w-full pl-10 pr-10 bg-card border-border/20"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSuggestionsVisible(true)}
-              />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                    type="search"
+                    placeholder={t('search_placeholder')}
+                    className="w-full pl-10 pr-10 bg-card border-border/20"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsSuggestionsVisible(true)}
+                />
             </form>
-            <Button
+             <Button
               variant="ghost"
               size="icon"
               className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
@@ -221,7 +215,7 @@ export default function Header() {
               )}
             </Button>
             {isSuggestionsVisible && searchQuery && (
-              <div className="absolute top-full mt-2 w-full rounded-md border bg-card shadow-lg">
+              <div className="absolute top-full mt-2 w-full rounded-md border bg-card shadow-lg z-50">
                 {isLoading ? (
                   <div className="p-4 text-center text-muted-foreground flex items-center justify-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -271,57 +265,9 @@ export default function Header() {
                 )}
               </div>
             )}
-          </div>
         </div>
-
-        {/* Right side: Icons and Mobile Menu */}
-        <div className="flex items-center justify-end gap-1 sm:gap-2">
-          {/* Desktop Icons */}
-          <div className="hidden md:flex items-center gap-1 sm:gap-2">
-            <ThemeToggle />
-            <Button variant="ghost" size="icon" className="relative" asChild>
-              <Link href="/cart">
-                <ShoppingCart className="h-5 w-5" />
-                <span className="sr-only">Cart</span>
-                {totalCartItems > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                    {totalCartItems}
-                  </span>
-                )}
-              </Link>
-            </Button>
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.first_name || 'User'} />
-                          <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
-                      </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard"><User className="mr-2 h-4 w-4" />Profile</Link>
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                      <DropdownMenuItem asChild>
-                          <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" />Admin</Link>
-                      </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Button asChild>
-                <Link href="/login">{t('login_button')}</Link>
-              </Button>
-            )}
-          </div>
-          
-          {/* Language Toggle (Visible on all screen sizes) */}
-          <DropdownMenu>
+        <ThemeToggle />
+        <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
                 <Languages className="h-5 w-5" />
@@ -336,31 +282,77 @@ export default function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        <Button variant="ghost" size="icon" className="relative" asChild>
+          <Link href="/cart">
+            <ShoppingCart className="h-5 w-5" />
+            <span className="sr-only">Cart</span>
+            {totalCartItems > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                {totalCartItems}
+              </span>
+            )}
+          </Link>
+        </Button>
+        {user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.first_name || 'User'} />
+                      <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                  </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard"><User className="mr-2 h-4 w-4" />Profile</Link>
+              </DropdownMenuItem>
+              {isAdmin && (
+                  <DropdownMenuItem asChild>
+                      <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" />Admin</Link>
+                  </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout}><LogOut className="mr-2 h-4 w-4" />Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <Button asChild>
+            <Link href="/login">{t('login_button')}</Link>
+          </Button>
+        )}
+    </div>
+  );
 
-          {/* Mobile Menu */}
-          <Sheet>
+  const MobileHeader = () => (
+    <div className="flex w-full items-center justify-between md:hidden">
+        <Logo />
+        <div className="flex items-center gap-1">
+             <Button variant="ghost" size="icon" onClick={() => setIsSearchOpen(true)}>
+                <Search className="h-5 w-5" />
+                <span className="sr-only">Search</span>
+            </Button>
+             <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link href="/cart">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">Cart</span>
+                {totalCartItems > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {totalCartItems}
+                  </span>
+                )}
+              </Link>
+            </Button>
+            <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="bg-card flex flex-col p-4">
               <Logo />
-              <div className="mt-4 relative flex-1">
-                <form onSubmit={handleSearchSubmit}>
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                    ref={searchInputRef}
-                    type="search"
-                    placeholder={t('search_placeholder')}
-                    className="w-full pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </form>
-              </div>
-              <nav className="grid gap-4 text-lg font-medium">
+              <nav className="grid gap-4 text-lg font-medium mt-8">
                 {navItems.map((item) => (
                   <SheetClose asChild key={item.label}>
                     <Link
@@ -379,17 +371,23 @@ export default function Header() {
               </nav>
               <Separator className="my-4" />
               <div className="grid gap-4">
-                <SheetClose asChild>
-                    <Link href="/cart" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
-                        <ShoppingCart className="h-5 w-5" />
-                        Cart 
-                        {totalCartItems > 0 && (
-                            <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                            {totalCartItems}
-                            </span>
-                        )}
-                    </Link>
-                </SheetClose>
+                 <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="flex items-center justify-start gap-4 text-lg font-medium text-muted-foreground hover:text-primary p-0 h-auto">
+                            <Languages className="h-5 w-5" />
+                             <span>Language</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                        <DropdownMenuItem onClick={() => setLanguage('en')}>
+                            English
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setLanguage('bn')}>
+                            বাংলা
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                
                  <button
                     onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                     className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary"
@@ -423,7 +421,56 @@ export default function Header() {
             </SheetContent>
           </Sheet>
         </div>
-      </div>
-    </header>
+    </div>
+  )
+
+  return (
+    <>
+      <header
+        ref={headerRef}
+        className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/80 backdrop-blur-sm"
+      >
+        <input
+            type="file"
+            ref={imageInputRef}
+            onChange={handleImageFileChange}
+            className="hidden"
+            accept="image/*"
+        />
+        <div className="container flex h-16 items-center justify-between gap-4">
+            <DesktopNav />
+            <MobileHeader />
+            <DesktopActions />
+        </div>
+      </header>
+       {/* Mobile Search Overlay */}
+       <div className={cn(
+            "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm md:hidden",
+            isSearchOpen ? 'block' : 'hidden'
+        )}>
+            <div className="container pt-4">
+                <form onSubmit={handleSearchSubmit} className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                        ref={searchInputRef}
+                        type="search"
+                        placeholder={t('search_placeholder')}
+                        className="w-full pl-10 pr-10 text-lg h-12"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10"
+                        onClick={() => setIsSearchOpen(false)}
+                    >
+                        <X className="h-6 w-6" />
+                    </Button>
+                </form>
+            </div>
+        </div>
+    </>
   );
 }
