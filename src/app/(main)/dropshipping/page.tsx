@@ -59,27 +59,27 @@ export default function DropshippingPage() {
           </div>
       </section>
        {/* How it works */}
-       <section className="text-center bg-card p-12 rounded-lg border">
+       <section className="text-center bg-card p-8 sm:p-12 rounded-lg border">
              <h3 className="text-3xl font-bold mb-4">{t('dropship_how_it_works_title')}</h3>
              <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
                 {t('dropship_how_it_works_subtitle')}
              </p>
             <div className="grid md:grid-cols-3 gap-8 text-left">
-                <div className="flex gap-4">
+                <div className="flex gap-4 items-start">
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">1</div>
                     <div>
                         <h4 className="font-semibold text-lg">{t('dropship_step1_title')}</h4>
                         <p className="text-muted-foreground text-sm">{t('dropship_step1_desc')}</p>
                     </div>
                 </div>
-                 <div className="flex gap-4">
+                 <div className="flex gap-4 items-start">
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">2</div>
                     <div>
                         <h4 className="font-semibold text-lg">{t('dropship_step2_title')}</h4>
                         <p className="text-muted-foreground text-sm">{t('dropship_step2_desc')}</p>
                     </div>
                 </div>
-                 <div className="flex gap-4">
+                 <div className="flex gap-4 items-start">
                     <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">3</div>
                     <div>
                         <h4 className="font-semibold text-lg">{t('dropship_step3_title')}</h4>

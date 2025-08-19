@@ -42,7 +42,7 @@ export default function Testimonials() {
             align: 'start',
             loop: true,
           }}
-          className="mx-auto mt-12 w-full max-w-6xl"
+          className="mx-auto mt-12 w-full max-w-xs sm:max-w-xl lg:max-w-6xl"
         >
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
@@ -76,8 +76,8 @@ export default function Testimonials() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="text-foreground" />
-          <CarouselNext className="text-foreground" />
+          <CarouselPrevious className="text-foreground hidden sm:inline-flex" />
+          <CarouselNext className="text-foreground hidden sm:inline-flex" />
         </Carousel>
       </div>
     </section>

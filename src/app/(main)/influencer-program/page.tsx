@@ -61,7 +61,7 @@ export default function InfluencerProgramPage() {
       </section>
 
       {/* Program Perks */}
-      <section id="apply" className="text-center bg-card p-12 rounded-lg border">
+      <section id="apply" className="text-center bg-card p-8 sm:p-12 rounded-lg border">
         <h3 className="text-3xl font-bold mb-4">{t('influencer_perks_title')}</h3>
         <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
           {t('influencer_perks_desc')}

@@ -14,10 +14,10 @@ export default function Footer() {
   return (
     <footer className="border-t border-border/20 bg-card">
       <div className="container py-12 text-foreground">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          <div className="flex flex-col gap-4 md:col-span-1">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-5">
+          <div className="flex flex-col gap-4 md:col-span-1 lg:col-span-2">
             <Logo />
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground max-w-xs">
               {t('footer_tagline')}
             </p>
              <div className="flex space-x-2">
@@ -38,7 +38,7 @@ export default function Footer() {
                 </Button>
               </div>
           </div>
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:col-span-3 lg:col-span-3">
             <div>
               <h3 className="font-semibold text-foreground">{t('footer_quick_links')}</h3>
               <ul className="mt-4 space-y-2">

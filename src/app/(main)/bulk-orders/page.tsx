@@ -21,7 +21,7 @@ export default function BulkOrdersPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
         <div className="space-y-6">
           <h2 className="text-2xl font-bold">{t('bulk_why_order')}</h2>
           <ul className="space-y-4">

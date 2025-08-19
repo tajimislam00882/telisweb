@@ -61,7 +61,7 @@ export default function AffiliateMarketingPage() {
         </section>
         
         {/* Registration CTA */}
-        <section className="text-center bg-card p-12 rounded-lg border">
+        <section className="text-center bg-card p-8 sm:p-12 rounded-lg border">
              <h3 className="text-3xl font-bold mb-4">{t('affiliate_ready_to_start')}</h3>
              <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
                 {t('affiliate_cta_desc')}

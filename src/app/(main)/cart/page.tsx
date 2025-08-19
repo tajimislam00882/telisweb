@@ -33,10 +33,10 @@ export default function CartPage() {
   return (
     <div className="container py-12">
       <h1 className="text-3xl font-bold mb-8">Your Shopping Cart</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         <div className="lg:col-span-2">
           <Card>
-            <CardContent className="p-0">
+            <CardContent className="p-0 overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -59,7 +59,7 @@ export default function CartPage() {
                           className="rounded-md object-cover"
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="min-w-[200px]">
                         <p className="font-medium">{item.name}</p>
                         <p className="text-sm text-muted-foreground">{item.category}</p>
                       </TableCell>
@@ -95,7 +95,7 @@ export default function CartPage() {
                 <Button variant="outline" onClick={clearCart}>Clear Cart</Button>
             </div>
         </div>
-        <aside>
+        <aside className="sticky top-24">
           <Card>
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>

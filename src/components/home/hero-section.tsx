@@ -24,7 +24,7 @@ export default function HeroSection() {
             <p className="mx-auto lg:mx-0 mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
             {t('hero_subtitle')}
             </p>
-            <div className="mt-8 flex flex-wrap justify-center lg:justify-start items-center gap-6 text-muted-foreground">
+            <div className="mt-8 flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-2 text-muted-foreground">
                 <div className="flex items-center gap-2">
                     <Star className="h-5 w-5 text-yellow-400"/>
                     <p><span className="font-bold text-foreground">4.8★</span> {t('hero_rating')}</p>

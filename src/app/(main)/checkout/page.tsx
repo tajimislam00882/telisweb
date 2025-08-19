@@ -112,9 +112,9 @@ export default function CheckoutPage() {
 
     return (
         <div className="container py-12">
-            <h1 className="text-3xl font-bold mb-8">Checkout</h1>
+            <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
             <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     <div className="lg:col-span-2">
                         <Card>
                             <CardHeader>
@@ -175,7 +175,7 @@ export default function CheckoutPage() {
                             </CardContent>
                         </Card>
                     </div>
-                    <aside>
+                    <aside className="sticky top-24">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Order Summary</CardTitle>
