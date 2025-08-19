@@ -80,12 +80,12 @@ export default function Footer() {
                   </Link>
                 </li>
                  <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="/influencer-program" className="text-muted-foreground hover:text-primary">
                     Influencer Program
                   </Link>
                 </li>
                  <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="/bulk-orders" className="text-muted-foreground hover:text-primary">
                     Bulk Orders
                   </Link>
                 </li>
@@ -95,12 +95,12 @@ export default function Footer() {
               <h3 className="font-semibold text-foreground">{t('footer_support')}</h3>
                <ul className="mt-4 space-y-2">
                  <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="/terms-of-service" className="text-muted-foreground hover:text-primary">
                     {t('footer_terms')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                  <Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">
                    {t('footer_privacy')}
                   </Link>
                 </li>
