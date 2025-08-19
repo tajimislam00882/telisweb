@@ -39,7 +39,7 @@ export default function AdminProductsPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from('products').select('*');
+      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
       if (error) {
         console.error('Error fetching products:', error);
       } else if (data) {
@@ -130,7 +130,7 @@ export default function AdminProductsPage() {
                     ${product.price}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    {product.reviews}
+                    {product.reviews || 0}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
