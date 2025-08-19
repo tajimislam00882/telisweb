@@ -26,6 +26,16 @@ function SubmitButton() {
     );
 }
 
+function PipraPayIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} width="24" height="24" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M972.8 384H51.2C22.9248 384 0 406.925 0 435.2V588.8C0 617.075 22.9248 640 51.2 640H972.8C1001.08 640 1024 617.075 1024 588.8V435.2C1024 406.925 1001.08 384 972.8 384Z" fill="#2D3748"/>
+        <path d="M128 471.04L323.84 471.04C327.258 471.04 330.579 469.939 333.331 467.936C336.083 465.933 338.125 463.123 339.168 459.872L390.4 291.84C392.499 285.587 398.502 281.6 405.011 281.6H618.989C625.498 281.6 631.501 285.587 633.6 291.84L684.832 459.872C685.875 463.123 687.917 465.933 690.669 467.936C693.421 469.939 696.742 471.04 700.16 471.04L896 471.04L896 552.96L700.16 552.96C696.742 552.96 693.421 554.061 690.669 556.064C687.917 558.067 685.875 560.877 684.832 564.128L633.6 732.16C631.501 738.413 625.498 742.4 618.989 742.4H405.011C398.502 742.4 392.499 738.413 390.4 732.16L339.168 564.128C338.125 560.877 336.083 558.067 333.331 556.064C330.579 554.061 327.258 552.96 323.84 552.96L128 552.96L128 471.04Z" fill="white"/>
+    </svg>
+  );
+}
+
+
 export default function CheckoutPage() {
     const { cart, clearCart } = useCart();
     const { user, loading: authLoading } = useAuth();
@@ -140,6 +150,14 @@ export default function CheckoutPage() {
                                         <div className="flex-1">
                                             <p className="font-semibold">Stripe / PayPal</p>
                                             <p className="text-sm text-muted-foreground">Pay with International Credit/Debit Card</p>
+                                        </div>
+                                    </Label>
+                                     <Label htmlFor="piprapay" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
+                                        <RadioGroupItem value="piprapay" id="piprapay" />
+                                        <PipraPayIcon className="h-6 w-6" />
+                                        <div className="flex-1">
+                                            <p className="font-semibold">Pipra Pay</p>
+                                            <p className="text-sm text-muted-foreground">Another popular payment gateway</p>
                                         </div>
                                     </Label>
                                 </RadioGroup>

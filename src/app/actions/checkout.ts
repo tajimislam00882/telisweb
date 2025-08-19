@@ -39,6 +39,7 @@ export async function handleCheckout(prevState: any, formData: FormData) {
   // Here you would fetch payment gateway credentials from a secure table
   // For now, we simulate this.
   const isSslCommerz = paymentMethod === 'sslcommerz';
+  const isPipraPay = paymentMethod === 'piprapay';
   
   if (isSslCommerz) {
       // TODO: Fetch credentials from DB
@@ -78,6 +79,12 @@ export async function handleCheckout(prevState: any, formData: FormData) {
           //  For now, we will just log it and proceed as if payment is pending.
           console.log("Would redirect to SSL Commerz with data:", paymentData);
       }
+  }
+
+  if (isPipraPay) {
+      // TODO: Fetch Pipra Pay credentials from DB
+      console.warn("Pipra Pay selected, but integration is not yet live. Order will be 'pending'.");
+      // Placeholder for Pipra Pay logic
   }
 
 

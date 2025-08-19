@@ -121,6 +121,36 @@ export default function AdminSettingsPage() {
                 </div>
               </CardContent>
             </Card>
+
+             {/* Pipra Pay Card */}
+             <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle>Pipra Pay</CardTitle>
+                        <CardDescription>
+                        Configuration for Pipra Pay gateway.
+                        </CardDescription>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <Label htmlFor="piprapay-enable">Enable</Label>
+                        <Switch id="piprapay-enable" />
+                    </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="piprapay-api-key">API Key</Label>
+                        <Input id="piprapay-api-key" placeholder="Your Pipra Pay API Key" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="piprapay-api-secret">API Secret</Label>
+                        <Input id="piprapay-api-secret" type="password" placeholder="Your API Secret" />
+                    </div>
+                </div>
+              </CardContent>
+            </Card>
             
             <Card>
                 <CardHeader>
