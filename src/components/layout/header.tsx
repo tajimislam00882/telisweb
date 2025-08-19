@@ -13,6 +13,10 @@ import {
   User,
   LayoutDashboard,
   ChevronDown,
+  Moon,
+  Sun,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -43,6 +47,8 @@ import Image from 'next/image';
 import { imageSearch } from '@/ai/flows/image-search-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Separator } from '../ui/separator';
+import { useTheme } from 'next-themes';
 
 export default function Header() {
   const pathname = usePathname();
@@ -58,6 +64,7 @@ export default function Header() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const { theme, setTheme } = useTheme();
 
   const {
     suggestions,
@@ -269,7 +276,51 @@ export default function Header() {
 
         {/* Right side: Icons and Mobile Menu */}
         <div className="flex items-center justify-end gap-1 sm:gap-2">
-          <ThemeToggle />
+          {/* Desktop Icons */}
+          <div className="hidden md:flex items-center gap-1 sm:gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link href="/cart">
+                <ShoppingCart className="h-5 w-5" />
+                <span className="sr-only">Cart</span>
+                {totalCartItems > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    {totalCartItems}
+                  </span>
+                )}
+              </Link>
+            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                      <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.first_name || 'User'} />
+                          <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard"><User className="mr-2 h-4 w-4" />Profile</Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                      <DropdownMenuItem asChild>
+                          <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" />Admin</Link>
+                      </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild>
+                <Link href="/login">{t('login_button')}</Link>
+              </Button>
+            )}
+          </div>
+          
+          {/* Language Toggle (Visible on all screen sizes) */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -285,58 +336,8 @@ export default function Header() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => {
-              setIsSearchOpen(true);
-              setTimeout(() => searchInputRef.current?.focus(), 100);
-            }}
-          >
-            <Search className="h-5 w-5" />
-            <span className="sr-only">Search</span>
-          </Button>
-          <Button variant="ghost" size="icon" className="relative" asChild>
-            <Link href="/cart">
-              <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Cart</span>
-              {totalCartItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
-                  {totalCartItems}
-                </span>
-              )}
-            </Link>
-          </Button>
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.first_name || 'User'} />
-                        <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard"><User className="mr-2 h-4 w-4" />Profile</Link>
-                </DropdownMenuItem>
-                {isAdmin && (
-                    <DropdownMenuItem asChild>
-                         <Link href="/admin"><LayoutDashboard className="mr-2 h-4 w-4" />Admin</Link>
-                    </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Button asChild>
-              <Link href="/login">{t('login_button')}</Link>
-            </Button>
-          )}
 
+          {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -344,15 +345,28 @@ export default function Header() {
                 <span className="sr-only">Toggle Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="bg-card">
-              <nav className="grid gap-6 text-lg font-medium mt-6">
-                <Logo />
+            <SheetContent side="left" className="bg-card flex flex-col p-4">
+              <Logo />
+              <div className="mt-4 relative flex-1">
+                <form onSubmit={handleSearchSubmit}>
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                    ref={searchInputRef}
+                    type="search"
+                    placeholder={t('search_placeholder')}
+                    className="w-full pl-10"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                </form>
+              </div>
+              <nav className="grid gap-4 text-lg font-medium">
                 {navItems.map((item) => (
                   <SheetClose asChild key={item.label}>
                     <Link
                       href={item.href}
                       className={cn(
-                        'hover:text-primary',
+                        'flex items-center gap-4 hover:text-primary',
                         pathname === item.href
                           ? 'text-primary'
                           : 'text-muted-foreground'
@@ -363,56 +377,53 @@ export default function Header() {
                   </SheetClose>
                 ))}
               </nav>
+              <Separator className="my-4" />
+              <div className="grid gap-4">
+                <SheetClose asChild>
+                    <Link href="/cart" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
+                        <ShoppingCart className="h-5 w-5" />
+                        Cart 
+                        {totalCartItems > 0 && (
+                            <span className="ml-auto flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                            {totalCartItems}
+                            </span>
+                        )}
+                    </Link>
+                </SheetClose>
+                 <button
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary"
+                >
+                    <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span>Toggle Theme</span>
+                </button>
+              </div>
+              <div className="mt-auto">
+                <Separator className="my-4" />
+                {user ? (
+                     <SheetClose asChild>
+                        <Link href="/dashboard" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
+                             <Avatar className="h-8 w-8">
+                                <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.first_name || 'User'} />
+                                <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <span>Profile</span>
+                        </Link>
+                    </SheetClose>
+                ) : (
+                     <SheetClose asChild>
+                        <Link href="/login" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
+                            <LogIn className="h-5 w-5" />
+                            <span>{t('login_button')}</span>
+                        </Link>
+                    </SheetClose>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
         </div>
       </div>
-
-      {/* Mobile Search Overlay */}
-      {isSearchOpen && (
-        <div className="absolute top-0 left-0 w-full h-full bg-background z-50 flex items-center justify-center md:hidden p-4">
-          <form
-            onSubmit={handleSearchSubmit}
-            className="relative w-full max-w-md"
-          >
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              ref={searchInputRef}
-              type="search"
-              placeholder={t('search_placeholder')}
-              className="w-full pl-10 pr-20 bg-card border-border/20"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <div className="absolute right-10 top-1/2 -translate-y-1/2">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => imageInputRef.current?.click()}
-                disabled={isImageSearching}
-                aria-label="Search by image"
-              >
-                {isImageSearching ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                ) : (
-                  <Camera className="h-5 w-5 text-muted-foreground" />
-                )}
-              </Button>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2"
-              onClick={() => setIsSearchOpen(false)}
-            >
-              <X className="h-5 w-5 text-muted-foreground" />
-            </Button>
-          </form>
-        </div>
-      )}
     </header>
   );
 }
