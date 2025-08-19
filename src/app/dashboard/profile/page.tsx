@@ -140,6 +140,19 @@ export default function ProfilePage() {
     return null;
   }
 
+  const getInitials = () => {
+    const firstName = user?.user_metadata?.first_name || '';
+    const lastName = user?.user_metadata?.last_name || '';
+    const email = user?.email || '';
+    if (firstName && lastName) {
+      return `${firstName[0]}${lastName[0]}`;
+    }
+    if (firstName) {
+      return firstName.substring(0, 2);
+    }
+    return email[0]?.toUpperCase() || '';
+  }
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <input
@@ -156,9 +169,9 @@ export default function ProfilePage() {
               <div className="flex items-center gap-4">
                 <div className="relative">
                   <Avatar className="h-20 w-20">
-                    <AvatarImage src={user.user_metadata.avatar_url} />
+                    <AvatarImage src={user.user_metadata.avatar_url} alt="User avatar" />
                     <AvatarFallback className="text-3xl">
-                      {user.user_metadata.first_name?.[0] || user.email?.[0].toUpperCase()}
+                      {getInitials()}
                     </AvatarFallback>
                   </Avatar>
                   <Button

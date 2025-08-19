@@ -29,6 +29,8 @@ import { createClient } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Terminal } from 'lucide-react';
 
 interface AppUser extends User {
     totalSpent?: number;
@@ -38,24 +40,22 @@ interface AppUser extends User {
 export default function AdminUsersPage() {
     const [users, setUsers] = useState<AppUser[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const supabase = createClient();
-            // Note: This is a simplification. Listing all users is a protected operation
-            // and requires admin privileges configured in Supabase.
-            // This will likely fail without proper RLS policies.
-            const { data, error } = await supabase.auth.admin.listUsers();
-            
-            if (error) {
-                console.error('Error fetching users:', error);
-            } else {
-                 const formattedUsers = data.users.map(user => ({
-                    ...user,
-                    totalSpent: 0 // This should be calculated from orders table in a real scenario
-                }));
-                setUsers(formattedUsers);
-            }
+            // NOTE: Listing users is a protected operation and requires admin privileges
+            // configured in Supabase RLS (Row Level Security) and potentially a server-side call
+            // with a service_role key.
+            // The 'AuthApiError: User not allowed' error indicates the current client-side
+            // user does not have permission to perform this action.
+            // This is expected for security reasons.
+            // A proper implementation requires a secure backend endpoint (e.g., a Next.js API route)
+            // that uses the Supabase service role key to fetch users.
+
+            // For now, we will simulate loading and show an informative message.
+            setLoading(true);
+            setError("Fetching users from the client-side is disabled for security reasons. This functionality requires a secure server-side implementation.");
             setLoading(false);
         };
 
@@ -69,7 +69,16 @@ export default function AdminUsersPage() {
         <CardDescription>Manage your website's users.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
+        {error && (
+            <Alert>
+              <Terminal className="h-4 w-4" />
+              <AlertTitle>Feature Not Available</AlertTitle>
+              <AlertDescription>
+                {error} Please implement a secure API route to fetch user data.
+              </AlertDescription>
+            </Alert>
+        )}
+        <Table className={error ? 'mt-4' : ''}>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
@@ -119,6 +128,11 @@ export default function AdminUsersPage() {
                 </TableCell>
               </TableRow>
              ))
+            )}
+            {!loading && users.length === 0 && !error && (
+                 <TableRow>
+                    <TableCell colSpan={5} className="text-center">No users found.</TableCell>
+                </TableRow>
             )}
           </TableBody>
         </Table>

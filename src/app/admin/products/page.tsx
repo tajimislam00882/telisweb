@@ -42,7 +42,7 @@ export default function AdminProductsPage() {
       const { data, error } = await supabase.from('products').select('*');
       if (error) {
         console.error('Error fetching products:', error);
-      } else {
+      } else if (data) {
         setProducts(data as Product[]);
       }
       setLoading(false);
@@ -112,10 +112,10 @@ export default function AdminProductsPage() {
                 <TableRow key={product.id}>
                   <TableCell className="hidden sm:table-cell">
                     <Image
-                      alt={product.name}
+                      alt={product.name ?? 'Product image'}
                       className="aspect-square rounded-md object-cover"
                       height="64"
-                      src={product.imageUrl || 'https://placehold.co/64x64.png'}
+                      src={product.image_url || 'https://placehold.co/64x64.png'}
                       width="64"
                       data-ai-hint="product"
                     />
