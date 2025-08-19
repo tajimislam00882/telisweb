@@ -14,6 +14,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { useFormStatus } from "react-dom"
 
 const Form = FormProvider
 
@@ -166,6 +167,21 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = "FormMessage"
 
+const FormSubmit = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ children, ...props }, ref) => {
+  const { pending } = useFormStatus();
+
+  return (
+    <button ref={ref} type="submit" disabled={pending} {...props}>
+      {children}
+    </button>
+  );
+});
+FormSubmit.displayName = "FormSubmit";
+
+
 export {
   useFormField,
   Form,
@@ -175,4 +191,5 @@ export {
   FormDescription,
   FormMessage,
   FormField,
+  FormSubmit,
 }
