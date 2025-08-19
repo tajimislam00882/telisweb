@@ -138,3 +138,36 @@ export interface NavItem {
   className?: string;
   action?: () => void;
 }
+
+export interface SiteSettings {
+  general: {
+    site_name: string;
+    currency: string;
+    contact_email: string;
+    company_address: string;
+  };
+  appearance: {
+    logo_url: string;
+    primary_color: string;
+    background_color: string;
+    accent_color: string;
+  };
+  payment_gateways: {
+    [key: string]: {
+      enabled: boolean;
+      api_key?: string;
+      api_secret?: string;
+      store_id?: string;
+      store_password?: string;
+    };
+  };
+  integrations: {
+    google_analytics_id?: string;
+    facebook_pixel_id?: string;
+  };
+  email: {
+    admin_email: string;
+    from_email: string;
+    send_order_confirmation: boolean;
+  }
+}
