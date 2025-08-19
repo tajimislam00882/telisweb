@@ -275,11 +275,10 @@ export default function UploadProductPage() {
                 <CardDescription>Upload the downloadable product file.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Label htmlFor="digital-file">Product File (.zip)</Label>
+                <Label htmlFor="digital-file">Product File (.zip, .pdf, etc.)</Label>
                 <Input 
                     id="digital-file" 
                     type="file"
-                    accept=".zip"
                     {...form.register('digital_file')} 
                     disabled={isLoading}
                 />

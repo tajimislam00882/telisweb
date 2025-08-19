@@ -16,13 +16,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 
 export default function AdminSettingsPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Settings</h1>
       <Tabs defaultValue="payment" className="w-full">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="payment">Payment Gateways</TabsTrigger>
           <TabsTrigger value="general">General</TabsTrigger>
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
@@ -30,48 +31,114 @@ export default function AdminSettingsPage() {
 
         <TabsContent value="payment">
           <div className="grid gap-6 mt-6">
+            
+            {/* SSL Commerz Card */}
             <Card>
               <CardHeader>
-                <CardTitle>Automatic Payment Gateways</CardTitle>
-                <CardDescription>
-                  Enter your API keys for Bkash, Nagad, and Rocket.
-                </CardDescription>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle>SSL Commerz</CardTitle>
+                        <CardDescription>
+                        Configuration for Bangladeshi local payments.
+                        </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Label htmlFor="ssl-enable">Enable</Label>
+                        <Switch id="ssl-enable" />
+                    </div>
+                </div>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="bkash-key">Bkash API Key</Label>
-                  <Input id="bkash-key" placeholder="Your Bkash API Key" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="nagad-key">Nagad API Key</Label>
-                  <Input id="nagad-key" placeholder="Your Nagad API Key" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="rocket-key">Rocket API Key</Label>
-                  <Input id="rocket-key" placeholder="Your Rocket API Key" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="ssl-store-id">Store ID</Label>
+                        <Input id="ssl-store-id" placeholder="Your Store ID" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="ssl-store-password">Store Password</Label>
+                        <Input id="ssl-store-password" type="password" placeholder="Your Store Password" />
+                    </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button>Save API Keys</Button>
-              </CardFooter>
             </Card>
+
+            {/* aamarPay Card */}
              <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle>aamarPay</CardTitle>
+                        <CardDescription>
+                        Configuration for another popular Bangladeshi gateway.
+                        </CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Label htmlFor="aamarpay-enable">Enable</Label>
+                        <Switch id="aamarpay-enable" />
+                    </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="aamarpay-store-id">Store ID</Label>
+                        <Input id="aamarpay-store-id" placeholder="Your aamarPay Store ID" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="aamarpay-signature-key">Signature Key</Label>
+                        <Input id="aamarpay-signature-key" type="password" placeholder="Your Signature Key" />
+                    </div>
+                </div>
+              </CardContent>
+            </Card>
+
+             {/* PortWallet Card */}
+             <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <CardTitle>PortWallet</CardTitle>
+                        <CardDescription>
+                        Alternative gateway for local payments.
+                        </CardDescription>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <Label htmlFor="portwallet-enable">Enable</Label>
+                        <Switch id="portwallet-enable" />
+                    </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="portwallet-api-key">API Key</Label>
+                        <Input id="portwallet-api-key" placeholder="Your PortWallet API Key" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="portwallet-api-secret">API Secret</Label>
+                        <Input id="portwallet-api-secret" type="password" placeholder="Your API Secret" />
+                    </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
                 <CardHeader>
                     <CardTitle>Manual Payment Instructions</CardTitle>
                     <CardDescription>
-                    Provide instructions for manual payments. This will be shown to customers at checkout.
+                    Provide instructions for manual payments. This will be shown to customers at checkout if no automatic gateway is selected.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="grid gap-2">
                         <Label htmlFor="manual-instructions">Instructions</Label>
-                        <Textarea id="manual-instructions" placeholder="e.g., 'Please send payment to Bkash number 01xxxxxxxxx and enter the transaction ID below.'" rows={5}/>
+                        <Textarea id="manual-instructions" placeholder="e.g., 'Please send payment to bKash number 01xxxxxxxxx and enter the transaction ID below.'" rows={5}/>
                     </div>
                 </CardContent>
-                <CardFooter>
-                    <Button>Save Instructions</Button>
-                </CardFooter>
             </Card>
+             <CardFooter className="border-t pt-6">
+                <Button>Save Payment Settings</Button>
+              </CardFooter>
           </div>
         </TabsContent>
         <TabsContent value="general">
