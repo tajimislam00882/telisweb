@@ -35,6 +35,7 @@ export const defaultSettings: SiteSettings = {
   integrations: {
     google_analytics_id: '',
     facebook_pixel_id: '',
+    google_translate_api_key: '',
   },
   email: {
     admin_email: 'admin@digitalemporium.com',
