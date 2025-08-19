@@ -115,7 +115,7 @@ export default function CheckoutPage() {
             <h1 className="text-3xl font-bold mb-8 text-center">Checkout</h1>
             <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-2 space-y-8">
                         <Card>
                             <CardHeader>
                                 <CardTitle>Customer Information</CardTitle>
@@ -141,13 +141,13 @@ export default function CheckoutPage() {
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card className="mt-8">
+                        <Card>
                             <CardHeader>
                                 <CardTitle>Payment Method</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <RadioGroup defaultValue="sslcommerz" name="paymentMethod" className="space-y-4">
-                                    <Label htmlFor="sslcommerz" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
+                                    <Label htmlFor="sslcommerz" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer transition-colors">
                                         <RadioGroupItem value="sslcommerz" id="sslcommerz" disabled={isProcessing}/>
                                         <CreditCard className="h-6 w-6" />
                                         <div className="flex-1">
@@ -155,7 +155,7 @@ export default function CheckoutPage() {
                                             <p className="text-sm text-muted-foreground">Pay with bKash, Nagad, Rocket, or Card</p>
                                         </div>
                                     </Label>
-                                     <Label htmlFor="stripe" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
+                                     <Label htmlFor="stripe" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer transition-colors">
                                         <RadioGroupItem value="stripe" id="stripe" disabled={isProcessing}/>
                                         <Landmark className="h-6 w-6" />
                                         <div className="flex-1">
@@ -163,7 +163,7 @@ export default function CheckoutPage() {
                                             <p className="text-sm text-muted-foreground">Pay with International Credit/Debit Card</p>
                                         </div>
                                     </Label>
-                                     <Label htmlFor="piprapay" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer">
+                                     <Label htmlFor="piprapay" className="flex items-center gap-4 p-4 rounded-lg border has-[:checked]:bg-accent has-[:checked]:border-primary cursor-pointer transition-colors">
                                         <RadioGroupItem value="piprapay" id="piprapay" disabled={isProcessing}/>
                                         <PipraPayIcon className="h-6 w-6" />
                                         <div className="flex-1">

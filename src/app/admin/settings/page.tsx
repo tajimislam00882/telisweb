@@ -128,7 +128,7 @@ export default function AdminSettingsPage() {
           <div className="grid gap-6 mt-6">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                         <CardTitle>SSL Commerz</CardTitle>
                         <CardDescription>
@@ -156,7 +156,7 @@ export default function AdminSettingsPage() {
             </Card>
              <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
                         <CardTitle>Pipra Pay</CardTitle>
                         <CardDescription>
