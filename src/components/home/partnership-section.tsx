@@ -7,8 +7,8 @@ import Link from "next/link";
 
 export default function PartnershipSection() {
     return (
-        <section className="py-20 bg-background">
-            <div className="container">
+        <section className="py-10">
+            <div className="container px-0">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold tracking-tight sm:text-4xl font-headline">
                         💼 Business Partnership Opportunities

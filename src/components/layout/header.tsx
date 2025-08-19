@@ -182,21 +182,6 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="p-0 text-sm font-medium text-muted-foreground hover:text-primary focus-visible:ring-0">
-                  Partnership <ChevronDown className="ml-1 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem asChild>
-                  <Link href="/affiliate-marketing">🤝 Become Affiliate</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                   <Link href="/dropshipping">📦 Become Supplier</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </nav>
         </div>
 

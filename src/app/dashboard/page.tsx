@@ -16,6 +16,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { DollarSign, ShoppingBag, Download } from 'lucide-react';
 import { purchaseHistory } from '@/lib/data';
+import PartnershipSection from '@/components/home/partnership-section';
 
 export default function DashboardPage() {
   return (
@@ -60,6 +61,8 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <PartnershipSection />
 
       <Card>
         <CardHeader>
