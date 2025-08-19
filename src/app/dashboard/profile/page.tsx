@@ -154,7 +154,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
       <input
         type="file"
         ref={avatarInputRef}
@@ -191,7 +191,7 @@ export default function ProfilePage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <FormField
                     control={profileForm.control}
                     name="firstName"
