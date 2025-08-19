@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -16,23 +18,25 @@ import {
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
 import { downloadItems } from '@/lib/data';
+import { useLanguage } from '@/context/language-context';
 
 export default function DownloadsPage() {
+  const { t } = useLanguage();
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Your Downloads</CardTitle>
+        <CardTitle>{t('dashboard_downloads_title')}</CardTitle>
         <CardDescription>
-          Access and download your purchased digital products here.
+          {t('dashboard_downloads_desc')}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Product Name</TableHead>
-              <TableHead>Purchase Date</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+              <TableHead>{t('dashboard_downloads_table_product')}</TableHead>
+              <TableHead>{t('dashboard_downloads_table_date')}</TableHead>
+              <TableHead className="text-right">{t('dashboard_downloads_table_action')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -44,7 +48,7 @@ export default function DownloadsPage() {
                   <Button asChild>
                     <a href={item.downloadUrl}>
                       <Download className="mr-2 h-4 w-4" />
-                      Download
+                      {t('dashboard_downloads_table_button')}
                     </a>
                   </Button>
                 </TableCell>

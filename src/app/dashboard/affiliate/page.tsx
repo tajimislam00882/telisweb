@@ -29,6 +29,7 @@ import { z } from 'zod';
 import type { Affiliate } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
+import { useLanguage } from '@/context/language-context';
 
 const affiliateSchema = z.object({
   payment_method: z.enum(['bkash', 'nagad', 'rocket', 'bank'], {
@@ -42,6 +43,7 @@ type AffiliateFormData = z.infer<typeof affiliateSchema>;
 export default function AffiliatePage() {
   const { user, supabase } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
   const [affiliate, setAffiliate] = useState<Affiliate | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,13 +108,13 @@ export default function AffiliatePage() {
 
       setAffiliate(newAffiliate);
       toast({
-        title: 'Application Submitted!',
-        description: 'Your affiliate application is pending approval.',
+        title: t('dashboard_affiliate_toast_submitted_title'),
+        description: t('dashboard_affiliate_toast_submitted_desc'),
       });
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Submission Failed',
+        title: t('dashboard_affiliate_toast_failed_title'),
         description: error.message,
       });
     } finally {
@@ -123,7 +125,7 @@ export default function AffiliatePage() {
   const copyToClipboard = () => {
     if (!affiliate?.affiliate_code) return;
     navigator.clipboard.writeText(`https://digitalemporium.com/ref/${affiliate.affiliate_code}`);
-    toast({ title: 'Copied to clipboard!' });
+    toast({ title: t('dashboard_affiliate_toast_copied') });
   };
 
   if (isLoading) {
@@ -140,23 +142,23 @@ export default function AffiliatePage() {
       <div className="space-y-6">
         <Card>
             <CardHeader>
-                <CardTitle>Your Affiliate Dashboard</CardTitle>
+                <CardTitle>{t('dashboard_affiliate_title')}</CardTitle>
                 <CardDescription>
-                    {affiliate.status === 'pending' && "Your application is under review. You'll be notified upon approval."}
-                    {affiliate.status === 'active' && "Welcome to the team! Start sharing your link to earn commissions."}
-                    {affiliate.status === 'suspended' && "Your affiliate account is currently suspended. Please contact support."}
+                    {affiliate.status === 'pending' && t('dashboard_affiliate_status_pending')}
+                    {affiliate.status === 'active' && t('dashboard_affiliate_status_active')}
+                    {affiliate.status === 'suspended' && t('dashboard_affiliate_status_suspended')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 {affiliate.status === 'pending' ? (
                      <div className="text-center p-8 bg-muted rounded-lg">
-                        <p className="font-semibold">Application Pending</p>
-                        <p className="text-muted-foreground text-sm mt-1">We are reviewing your application. This usually takes 1-2 business days.</p>
+                        <p className="font-semibold">{t('dashboard_affiliate_pending_title')}</p>
+                        <p className="text-muted-foreground text-sm mt-1">{t('dashboard_affiliate_pending_desc')}</p>
                     </div>
                 ) : (
                     <>
                     <div className="space-y-4">
-                        <Label htmlFor="affiliate-link">Your Unique Referral Link</Label>
+                        <Label htmlFor="affiliate-link">{t('dashboard_affiliate_referral_link')}</Label>
                         <div className="flex gap-2">
                         <Input id="affiliate-link" readOnly value={`https://digitalemporium.com/ref/${affiliate.affiliate_code}`} />
                         <Button onClick={copyToClipboard} variant="outline" size="icon"><Clipboard className="h-4 w-4" /></Button>
@@ -165,7 +167,7 @@ export default function AffiliatePage() {
                      <div className="grid gap-4 md:grid-cols-3 mt-6">
                         <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+                                <CardTitle className="text-sm font-medium">{t('dashboard_affiliate_earnings')}</CardTitle>
                                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
@@ -174,7 +176,7 @@ export default function AffiliatePage() {
                         </Card>
                          <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Referrals</CardTitle>
+                                <CardTitle className="text-sm font-medium">{t('dashboard_affiliate_referrals')}</CardTitle>
                                 <Users className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
@@ -183,7 +185,7 @@ export default function AffiliatePage() {
                         </Card>
                          <Card>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+                                <CardTitle className="text-sm font-medium">{t('dashboard_affiliate_conversion')}</CardTitle>
                                 <TrendingUp className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
@@ -195,7 +197,7 @@ export default function AffiliatePage() {
                 )}
             </CardContent>
              <CardFooter className="text-xs text-muted-foreground">
-                Joined on {format(new Date(affiliate.created_at), 'PPP')}
+                {t('dashboard_affiliate_joined_on')} {format(new Date(affiliate.created_at), 'PPP')}
              </CardFooter>
         </Card>
       </div>
@@ -211,43 +213,43 @@ export default function AffiliatePage() {
                 <Handshake className="h-8 w-8 text-primary" />
             </div>
             <div>
-            <CardTitle>Become an Affiliate Partner</CardTitle>
+            <CardTitle>{t('dashboard_affiliate_form_title')}</CardTitle>
             <CardDescription>
-              Join our team and earn commissions by promoting our products.
+              {t('dashboard_affiliate_form_desc')}
             </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <h3 className="font-semibold text-lg">How it works</h3>
+            <h3 className="font-semibold text-lg">{t('dashboard_affiliate_how_it_works')}</h3>
             <ol className="list-decimal list-inside text-muted-foreground space-y-1 mt-2 text-sm">
-              <li>Submit your application below.</li>
-              <li>Once approved, you will get a unique referral link.</li>
-              <li>Share the link on your website, blog, or social media.</li>
-              <li>Earn a commission for every sale made through your link!</li>
+              <li>{t('dashboard_affiliate_step1')}</li>
+              <li>{t('dashboard_affiliate_step2')}</li>
+              <li>{t('dashboard_affiliate_step3')}</li>
+              <li>{t('dashboard_affiliate_step4')}</li>
             </ol>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="payment_method">Preferred Payment Method</Label>
+            <Label htmlFor="payment_method">{t('dashboard_affiliate_payment_method')}</Label>
             <Select onValueChange={(value) => form.setValue('payment_method', value as any)} defaultValue="">
               <SelectTrigger id="payment_method">
-                <SelectValue placeholder="Select a method" />
+                <SelectValue placeholder={t('dashboard_affiliate_payment_method_placeholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="bkash">bKash</SelectItem>
-                <SelectItem value="nagad">Nagad</SelectItem>
-                <SelectItem value="rocket">Rocket</SelectItem>
-                <SelectItem value="bank">Bank Transfer</SelectItem>
+                <SelectItem value="bkash">{t('payment_bkash')}</SelectItem>
+                <SelectItem value="nagad">{t('payment_nagad')}</SelectItem>
+                <SelectItem value="rocket">{t('payment_rocket')}</SelectItem>
+                <SelectItem value="bank">{t('payment_bank')}</SelectItem>
               </SelectContent>
             </Select>
             {form.formState.errors.payment_method && <p className="text-sm text-destructive">{form.formState.errors.payment_method.message}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="payment_details">Payment Details</Label>
+            <Label htmlFor="payment_details">{t('dashboard_affiliate_payment_details')}</Label>
             <Input
               id="payment_details"
-              placeholder="e.g., Your bKash number or bank account info"
+              placeholder={t('dashboard_affiliate_payment_details_placeholder')}
               {...form.register('payment_details')}
             />
              {form.formState.errors.payment_details && <p className="text-sm text-destructive">{form.formState.errors.payment_details.message}</p>}
@@ -256,7 +258,7 @@ export default function AffiliatePage() {
         <CardFooter>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Submit Application
+            {t('dashboard_affiliate_submit_button')}
           </Button>
         </CardFooter>
       </form>

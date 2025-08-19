@@ -12,19 +12,7 @@ import AppShell from '@/components/layout/app-shell';
 import { useAuth } from '@/context/auth-context';
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  {
-    href: '/dashboard/purchases',
-    label: 'Purchase History',
-    icon: ShoppingBag,
-  },
-  { href: '/dashboard/downloads', label: 'Downloads', icon: Download },
-   { href: '/dashboard/affiliate', label: 'Affiliate Program', icon: Handshake },
-  { href: '/dashboard/profile', label: 'Profile', icon: UserCircle },
-];
-
+import { useLanguage } from '@/context/language-context';
 
 export default function DashboardLayout({
   children,
@@ -33,7 +21,19 @@ export default function DashboardLayout({
 }) {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
-    const pathname = usePathname();
+    const { t } = useLanguage();
+
+    const navItems = [
+      { href: '/dashboard', label: t('dashboard_nav_dashboard'), icon: LayoutDashboard },
+      {
+        href: '/dashboard/purchases',
+        label: t('dashboard_nav_purchases'),
+        icon: ShoppingBag,
+      },
+      { href: '/dashboard/downloads', label: t('dashboard_nav_downloads'), icon: Download },
+       { href: '/dashboard/affiliate', label: t('dashboard_nav_affiliate'), icon: Handshake },
+      { href: '/dashboard/profile', label: t('dashboard_nav_profile'), icon: UserCircle },
+    ];
 
     const handleLogout = async () => {
         await logout();
@@ -41,8 +41,8 @@ export default function DashboardLayout({
     }
 
     const footerNavItems = [
-        { href: '/', label: 'Back to Shop', icon: Home },
-        { href: '#', label: 'Logout', icon: LogOut, className: 'text-red-500 hover:text-red-500 hover:bg-red-500/10', action: handleLogout },
+        { href: '/', label: t('dashboard_nav_back_to_shop'), icon: Home },
+        { href: '#', label: t('dashboard_nav_logout'), icon: LogOut, className: 'text-red-500 hover:text-red-500 hover:bg-red-500/10', action: handleLogout },
     ];
 
     useEffect(() => {

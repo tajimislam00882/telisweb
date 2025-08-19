@@ -17,16 +17,7 @@ import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/auth-context';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-
-const navItems = [
-  { href: '/admin', label: 'Overview', icon: LayoutDashboard },
-  { href: '/admin/products', label: 'Products', icon: Box },
-  { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: 2 },
-  { href: '/admin/users', label: 'Users', icon: Users2 },
-  { href: '/admin/affiliates', label: 'Affiliates', icon: Handshake },
-  { href: '/admin/suppliers', label: 'Suppliers', icon: Truck },
-  { href: '/admin/settings', label: 'Settings', icon: Settings },
-];
+import { useLanguage } from '@/context/language-context';
 
 export default function AdminLayout({
   children,
@@ -36,6 +27,17 @@ export default function AdminLayout({
   const { user, isAdmin, loading, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: '/admin', label: t('admin_nav_overview'), icon: LayoutDashboard },
+    { href: '/admin/products', label: t('admin_nav_products'), icon: Box },
+    { href: '/admin/orders', label: t('admin_nav_orders'), icon: ShoppingCart },
+    { href: '/admin/users', label: t('admin_nav_users'), icon: Users2 },
+    { href: '/admin/affiliates', label: t('admin_nav_affiliates'), icon: Handshake },
+    { href: '/admin/suppliers', label: t('admin_nav_suppliers'), icon: Truck },
+    { href: '/admin/settings', label: t('admin_nav_settings'), icon: Settings },
+  ];
 
   const handleLogout = async () => {
     await logout();
@@ -43,10 +45,10 @@ export default function AdminLayout({
   };
 
   const footerNavItems = [
-    { href: '/', label: 'Back to Shop', icon: Home },
+    { href: '/', label: t('admin_nav_back_to_shop'), icon: Home },
     {
       href: '#',
-      label: 'Logout',
+      label: t('admin_nav_logout'),
       icon: LogOut,
       className: 'text-red-500 hover:text-red-500 hover:bg-red-500/10',
       action: handleLogout,
@@ -107,13 +109,13 @@ export default function AdminLayout({
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search..."
+                placeholder={t('search_placeholder')}
                 className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
               />
             </div>
           </form>
           <Button asChild>
-            <a href="/dashboard/profile">Account</a>
+            <a href="/dashboard/profile">{t('admin_header_account')}</a>
           </Button>
         </div>
       }
