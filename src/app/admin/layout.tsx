@@ -1,13 +1,14 @@
 'use client';
 import {
   LayoutDashboard,
-  Package,
+  Box,
   ShoppingCart,
-  Users,
+  Users2,
   Settings,
   Home,
   LogOut,
   Search,
+  Truck,
 } from 'lucide-react';
 import AppShell from '@/components/layout/app-shell';
 import { Button } from '@/components/ui/button';
@@ -18,9 +19,10 @@ import { useEffect } from 'react';
 
 const navItems = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
-  { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/products', label: 'Products', icon: Box },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, badge: 2 },
-  { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/users', label: 'Users', icon: Users2 },
+  { href: '/admin/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
