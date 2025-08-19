@@ -6,11 +6,12 @@ import {
   UserCircle,
   Home,
   LogOut,
+  Handshake,
 } from 'lucide-react';
 import AppShell from '@/components/layout/app-shell';
 import { useAuth } from '@/context/auth-context';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -20,6 +21,7 @@ const navItems = [
     icon: ShoppingBag,
   },
   { href: '/dashboard/downloads', label: 'Downloads', icon: Download },
+   { href: '/dashboard/affiliate', label: 'Affiliate Program', icon: Handshake },
   { href: '/dashboard/profile', label: 'Profile', icon: UserCircle },
 ];
 
@@ -31,6 +33,7 @@ export default function DashboardLayout({
 }) {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
 
     const handleLogout = async () => {
         await logout();

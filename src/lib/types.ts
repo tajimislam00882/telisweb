@@ -19,18 +19,18 @@ export interface Product {
   description: string;
   price: number;
   category: string;
-  image_url: string;
+  image_url: string | null;
   rating: number;
   reviews: number;
   sales?: number;
   tags: string[];
-  fileType?: string | null;
-  fileSize?: string | null;
+  file_type: string | null;
+  file_size: string | null;
   created_at?: string;
 
   // New fields for multi-business model
   business_model_id?: number;
-  supplier_id?: number | null;
+  supplier_id?: string | null; // Changed to string for UUID
   affiliate_url?: string | null;
   commission_rate?: number | null; // For affiliate
   supplier_price?: number | null; // For dropshipping
@@ -48,7 +48,7 @@ export interface BusinessModel {
 }
 
 export interface Supplier {
-    id: number;
+    id: string; // Changed to string for UUID
     company_name: string;
     contact_person?: string;
     email?: string;
@@ -57,6 +57,7 @@ export interface Supplier {
     api_endpoint?: string;
     status: 'active' | 'inactive' | 'pending';
     rating?: number;
+    created_at?: string;
 }
 
 export interface Order {
@@ -91,16 +92,17 @@ export interface DropshipOrder {
 }
 
 export interface Affiliate {
-    id: number;
+    id: string;
     user_id: string;
     affiliate_code: string;
     commission_rate: number;
     total_earnings: number;
     pending_earnings: number;
     paid_earnings: number;
-    status: 'active' | 'inactive' | 'suspended';
+    status: 'active' | 'inactive' | 'pending' | 'suspended';
     payment_method: 'bank' | 'bkash' | 'nagad' | 'rocket';
     payment_details?: any; // JSON
+    created_at: string;
 }
 
 export interface Commission {
