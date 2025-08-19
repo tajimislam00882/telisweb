@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardHeader className="p-0 relative">
         <Link href={`/product/${product.id}`} className="block">
           <Image
-            src={product.imageUrl}
+            src={product.image_url || 'https://placehold.co/600x400.png'}
             alt={product.name}
             width={600}
             height={400}
@@ -47,7 +47,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between p-4 pt-0">
         <p className="text-lg font-bold text-primary">${product.price}</p>
-        <Button size="sm" onClick={() => addToCart(product)}>
+        <Button size="sm" onClick={() => addToCart({
+            ...product,
+            // Ensure properties expected by CartItem are present
+            imageUrl: product.image_url || 'https://placehold.co/600x400.png',
+            fileType: product.file_type || 'N/A',
+            fileSize: product.file_size || 'N/A',
+        })}>
             <ShoppingCart className="mr-2 h-4 w-4" />
             Add to cart
           </Button>

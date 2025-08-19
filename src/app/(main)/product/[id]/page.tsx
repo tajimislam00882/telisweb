@@ -17,17 +17,25 @@ export default function ProductDetailPage() {
   const router = useRouter();
   
   const productId = typeof params.id === 'string' ? params.id : '';
+  // This is temporary, will be replaced with DB fetch
   const product = products.find((p) => p.id === productId);
   
   if (!product) {
     notFound();
   }
+  
+  const cartProduct = {
+      ...product,
+      imageUrl: product.image_url || 'https://placehold.co/600x400.png',
+      fileType: product.file_type || 'N/A',
+      fileSize: product.file_size || 'N/A',
+  };
 
   const relatedProducts = products.filter(p => p.category === product?.category && p.id !== product?.id).slice(0, 4);
 
 
   const handleBuyNow = () => {
-    addToCart(product);
+    addToCart(cartProduct);
     router.push('/cart');
   };
 
@@ -36,7 +44,7 @@ export default function ProductDetailPage() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
         <div>
           <Image
-            src={product.imageUrl}
+            src={cartProduct.imageUrl}
             alt={product.name}
             width={800}
             height={600}
@@ -63,11 +71,11 @@ export default function ProductDetailPage() {
           <div className="rounded-lg border border-border/20 bg-card p-4 space-y-2">
             <div className="flex items-center gap-2 text-sm">
                 <FileText className="h-4 w-4 text-muted-foreground" />
-                <span>File Type: <span className="font-medium text-foreground">{product.fileType}</span></span>
+                <span>File Type: <span className="font-medium text-foreground">{cartProduct.fileType}</span></span>
             </div>
             <div className="flex items-center gap-2 text-sm">
                 <DownloadCloud className="h-4 w-4 text-muted-foreground" />
-                <span>File Size: <span className="font-medium text-foreground">{product.fileSize}</span></span>
+                <span>File Size: <span className="font-medium text-foreground">{cartProduct.fileSize}</span></span>
             </div>
              <div className="flex items-center gap-2 text-sm">
                 <Zap className="h-4 w-4 text-muted-foreground" />
@@ -78,7 +86,7 @@ export default function ProductDetailPage() {
           <p className="text-4xl font-bold text-primary">${product.price}</p>
           
           <div className="flex flex-col gap-4 sm:flex-row">
-            <Button size="lg" className="w-full" onClick={() => addToCart(product)}>
+            <Button size="lg" className="w-full" onClick={() => addToCart(cartProduct)}>
               <ShoppingCart className="mr-2 h-5 w-5" />
               Add to Cart
             </Button>

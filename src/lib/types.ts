@@ -14,7 +14,7 @@ export interface PopularCategory extends Category {
 }
 
 export interface Product {
-  id: string;
+  id: string; // Now correctly represents UUID
   name: string;
   description: string;
   price: number;
@@ -61,7 +61,7 @@ export interface Supplier {
 }
 
 export interface Order {
-    id: number;
+    id: string;
     user_id: string;
     total_amount: number;
     status: 'pending' | 'completed' | 'failed' | 'refunded';
@@ -70,8 +70,8 @@ export interface Order {
 }
 
 export interface OrderItem {
-    id: number;
-    order_id: number;
+    id: string;
+    order_id: string;
     product_id: string;
     quantity: number;
     price: number;
@@ -79,9 +79,9 @@ export interface OrderItem {
 
 
 export interface DropshipOrder {
-    id: number;
-    order_id: number;
-    supplier_id: number;
+    id: string;
+    order_id: string;
+    supplier_id: string;
     supplier_order_id?: string;
     tracking_number?: string;
     supplier_status?: string;
@@ -112,9 +112,9 @@ export interface Affiliate {
 }
 
 export interface Commission {
-    id: number;
-    affiliate_id: number;
-    order_id: number;
+    id: string;
+    affiliate_id: string;
+    order_id: string;
     product_id: string;
     commission_amount: number;
     commission_rate: number;

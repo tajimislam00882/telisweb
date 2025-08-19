@@ -3,15 +3,22 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import type { Product } from '@/lib/types';
 
-export interface CartItem extends Product {
+// We define a simpler CartItem type here that is compatible with Product,
+// but only contains the fields necessary for the cart.
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  category: string;
   quantity: number;
 }
 
+
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity?: number) => void;
+  addToCart: (product: CartItem, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -39,7 +46,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: Product, quantity = 1) => {
+  const addToCart = (product: CartItem, quantity = 1) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
