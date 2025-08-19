@@ -362,16 +362,6 @@ export default function Header() {
                     </Link>
                   </SheetClose>
                 ))}
-                <SheetClose asChild>
-                  <Link href="/affiliate-marketing" className="text-muted-foreground hover:text-primary">
-                    Become Affiliate
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link href="/dropshipping" className="text-muted-foreground hover:text-primary">
-                    Become Supplier
-                  </Link>
-                </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>
