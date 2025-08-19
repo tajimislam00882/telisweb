@@ -52,16 +52,6 @@ export default function Footer() {
                     {t('nav_shop')}
                   </Link>
                 </li>
-                 <li>
-                  <Link href="/dropshipping" className="text-muted-foreground hover:text-primary">
-                    {t('nav_dropshipping')}
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/affiliate-marketing" className="text-muted-foreground hover:text-primary">
-                    {t('nav_affiliate')}
-                  </Link>
-                </li>
                 <li>
                   <Link href="/contact" className="text-muted-foreground hover:text-primary">
                     {t('nav_contact')}
@@ -77,21 +67,26 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-foreground">{t('footer_legal')}</h3>
+              <h3 className="font-semibold text-foreground">Partnership</h3>
               <ul className="mt-4 space-y-2">
-                <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
-                    {t('footer_terms')}
+                 <li>
+                  <Link href="/affiliate-marketing" className="text-muted-foreground hover:text-primary">
+                    Affiliate Program
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="text-muted-foreground hover:text-primary">
-                   {t('footer_privacy')}
+                  <Link href="/dropshipping" className="text-muted-foreground hover:text-primary">
+                    Become a Supplier
                   </Link>
                 </li>
-                <li>
+                 <li>
                   <Link href="#" className="text-muted-foreground hover:text-primary">
-                    {t('footer_refund')}
+                    Influencer Program
+                  </Link>
+                </li>
+                 <li>
+                  <Link href="#" className="text-muted-foreground hover:text-primary">
+                    Bulk Orders
                   </Link>
                 </li>
               </ul>
@@ -99,14 +94,14 @@ export default function Footer() {
             <div>
               <h3 className="font-semibold text-foreground">{t('footer_support')}</h3>
                <ul className="mt-4 space-y-2">
-                <li>
+                 <li>
                   <Link href="#" className="text-muted-foreground hover:text-primary">
-                    {t('footer_help')}
+                    {t('footer_terms')}
                   </Link>
                 </li>
                 <li>
                   <Link href="#" className="text-muted-foreground hover:text-primary">
-                    {t('footer_faq')}
+                   {t('footer_privacy')}
                   </Link>
                 </li>
                  <li>

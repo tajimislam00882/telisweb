@@ -12,6 +12,7 @@ import {
   Camera,
   User,
   LayoutDashboard,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -68,8 +69,6 @@ export default function Header() {
   const navItems: NavItem[] = [
     { href: '/', label: t('nav_home') },
     { href: '/shop', label: t('nav_shop') },
-    { href: '/dropshipping', label: t('nav_dropshipping') },
-    { href: '/affiliate-marketing', label: t('nav_affiliate') },
     { href: '/contact', label: t('nav_contact') },
   ];
 
@@ -183,6 +182,21 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
+             <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="p-0 text-sm font-medium text-muted-foreground hover:text-primary focus-visible:ring-0">
+                  Partnership <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                <DropdownMenuItem asChild>
+                  <Link href="/affiliate-marketing">🤝 Become Affiliate</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                   <Link href="/dropshipping">📦 Become Supplier</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
 
@@ -231,7 +245,7 @@ export default function Header() {
                           className="flex items-center gap-4 p-3 hover:bg-accent"
                         >
                           <Image
-                            src={product.imageUrl}
+                            src={product.image_url!}
                             alt={product.name}
                             width={40}
                             height={40}
@@ -363,6 +377,16 @@ export default function Header() {
                     </Link>
                   </SheetClose>
                 ))}
+                <SheetClose asChild>
+                  <Link href="/affiliate-marketing" className="text-muted-foreground hover:text-primary">
+                    Become Affiliate
+                  </Link>
+                </SheetClose>
+                <SheetClose asChild>
+                  <Link href="/dropshipping" className="text-muted-foreground hover:text-primary">
+                    Become Supplier
+                  </Link>
+                </SheetClose>
               </nav>
             </SheetContent>
           </Sheet>

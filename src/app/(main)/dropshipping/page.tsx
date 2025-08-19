@@ -1,77 +1,96 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+'use client';
+
 import { Button } from '@/components/ui/button';
-import { Package, Truck, BarChart } from 'lucide-react';
+import { Rocket, BarChart, Handshake } from 'lucide-react';
 import Link from 'next/link';
 
 export default function DropshippingPage() {
   return (
     <div className="container py-12 text-foreground">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-          আমাদের সাথে ড্রপশিপিং করুন
-        </h1>
-        <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
-          কোনো রকম ইনভেন্টরি ছাড়াই নিজের ব্যবসা শুরু করুন। আমরা আপনার জন্য পণ্য সংগ্রহ, প্যাকেজিং এবং ডেলিভারির দায়িত্ব নেব।
-        </p>
-      </div>
+      {/* Hero Section */}
+      <section className="text-center mb-20">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl font-headline">
+              📦 Become Our Dropshipping Partner
+          </h1>
+          <h2 className="text-2xl font-semibold text-primary mt-2">আমাদের Dropshipping Partner হয়ে ব্যবসা বাড়ান</h2>
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+              Expand your business reach without the hassle of inventory or marketing costs. We handle the rest.
+          </p>
+          <Button size="lg" asChild className="mt-8 h-12 px-8 text-base">
+              <Link href="/register">Apply Now</Link>
+          </Button>
+      </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-16">
-        <div className="flex flex-col items-center">
-            <div className="bg-primary/10 p-4 rounded-full mb-4">
-                <Package className="h-10 w-10 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">ইনভেন্টরি মুক্ত</h3>
-            <p className="text-muted-foreground mt-2">পণ্য স্টকে রাখার কোনো ঝামেলা নেই। আপনি শুধু বিক্রয়ে মনোযোগ দিন।</p>
-        </div>
-        <div className="flex flex-col items-center">
-             <div className="bg-primary/10 p-4 rounded-full mb-4">
-                <Truck className="h-10 w-10 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">দ্রুত ডেলিভারি</h3>
-            <p className="text-muted-foreground mt-2">আমরা আপনার গ্রাহকদের কাছে দ্রুত এবং নিরাপদে পণ্য পৌঁছে দেব।</p>
-        </div>
-        <div className="flex flex-col items-center">
-             <div className="bg-primary/10 p-4 rounded-full mb-4">
-                <BarChart className="h-10 w-10 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold">লাভজনক ব্যবসা</h3>
-            <p className="text-muted-foreground mt-2">কম ঝুঁকিতে নিজের অনলাইন ব্যবসা শুরু করুন এবং আকর্ষণীয় লাভ করুন।</p>
-        </div>
-      </div>
-
-      <Card className="bg-card border-border/20">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">ড্রপশিপিং প্রক্রিয়া</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">1</div>
-                <div>
-                    <h4 className="font-semibold text-lg">পণ্য নির্বাচন করুন</h4>
-                    <p className="text-muted-foreground">আমাদের ক্যাটালগ থেকে আপনার পছন্দের পণ্য নির্বাচন করে আপনার ওয়েবসাইটে যোগ করুন।</p>
+      {/* Benefits for Suppliers Section */}
+      <section className="mb-20">
+          <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold">Partner Benefits</h3>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg border">
+                  <div className="bg-primary/10 p-4 rounded-full mb-4">
+                      <Rocket className="h-10 w-10 text-primary" />
+                  </div>
+                  <h4 className="text-xl font-semibold mb-2">🚀 Increased Sales</h4>
+                  <p className="text-muted-foreground">
+                    Get your products in front of our large and growing customer base without any effort.
+                  </p>
+              </div>
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg border">
+                  <div className="bg-primary/10 p-4 rounded-full mb-4">
+                      <BarChart className="h-10 w-10 text-primary" />
+                  </div>
+                  <h4 className="text-xl font-semibold mb-2">📈 No Marketing Cost</h4>
+                  <p className="text-muted-foreground">
+                      We handle all the marketing and advertising, so you can focus on what you do best: sourcing great products.
+                  </p>
+              </div>
+              <div className="flex flex-col items-center p-6 bg-card rounded-lg border">
+                  <div className="bg-primary/10 p-4 rounded-full mb-4">
+                      <Handshake className="h-10 w-10 text-primary" />
+                  </div>
+                  <h4 className="text-xl font-semibold mb-2">💸 Fast Payments</h4>
+                  <p className="text-muted-foreground">
+                      Receive your payments quickly and reliably through weekly cycles via bKash, Nagad, or Bank Transfer.
+                  </p>
+              </div>
+          </div>
+      </section>
+       {/* How it works */}
+       <section className="text-center bg-card p-12 rounded-lg border">
+             <h3 className="text-3xl font-bold mb-4">How It Works</h3>
+             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
+                Joining our dropshipping program is simple.
+             </p>
+            <div className="grid md:grid-cols-3 gap-8 text-left">
+                <div className="flex gap-4">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">1</div>
+                    <div>
+                        <h4 className="font-semibold text-lg">Apply Online</h4>
+                        <p className="text-muted-foreground text-sm">Fill out our supplier registration form with your business and product details.</p>
+                    </div>
+                </div>
+                 <div className="flex gap-4">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">2</div>
+                    <div>
+                        <h4 className="font-semibold text-lg">Get Approved</h4>
+                        <p className="text-muted-foreground text-sm">Our team will review your application and products. Once approved, we integrate your products.</p>
+                    </div>
+                </div>
+                 <div className="flex gap-4">
+                    <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">3</div>
+                    <div>
+                        <h4 className="font-semibold text-lg">Fulfill Orders</h4>
+                        <p className="text-muted-foreground text-sm">When a customer buys your product, we send you the order. You ship it, we pay you.</p>
+                    </div>
                 </div>
             </div>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">2</div>
-                <div>
-                    <h4 className="font-semibold text-lg">অর্ডার গ্রহণ করুন</h4>
-                    <p className="text-muted-foreground">আপনার ওয়েবসাইট বা সোশ্যাল মিডিয়া পেজ থেকে গ্রাহকের অর্ডার গ্রহণ করুন।</p>
-                </div>
-            </div>
-            <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="flex items-center justify-center h-16 w-16 rounded-full bg-primary text-primary-foreground font-bold text-2xl flex-shrink-0">3</div>
-                <div>
-                    <h4 className="font-semibold text-lg">অর্ডার প্লেস করুন</h4>
-                    <p className="text-muted-foreground">গ্রাহকের ঠিকানা দিয়ে আমাদের ওয়েবসাইটে অর্ডারটি প্লেস করুন এবং বাকিটা আমাদের উপর ছেড়ে দিন।</p>
-                </div>
-            </div>
-             <div className="text-center mt-8">
+             <div className="mt-10">
                 <Button size="lg" asChild>
-                    <Link href="/register">ড্রপশিপার হিসেবে যোগ দিন</Link>
+                    <Link href="/register">Become a Supplier Today</Link>
                 </Button>
             </div>
-        </CardContent>
-      </Card>
+        </section>
     </div>
   );
 }
