@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
   SheetClose,
 } from '@/components/ui/sheet';
@@ -351,6 +353,9 @@ export default function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="bg-card flex flex-col p-4">
+               <SheetHeader>
+                <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+              </SheetHeader>
               <Logo />
               <nav className="grid gap-4 text-lg font-medium mt-8">
                 {navItems.map((item) => (
