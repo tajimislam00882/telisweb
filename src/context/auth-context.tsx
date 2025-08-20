@@ -80,13 +80,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await updateUser({ data: { avatar_url: publicUrl } });
   };
 
-
-  if (loading) {
-    return <Preloader />;
-  }
-
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading, logout, updateUser, uploadAvatar, supabase }}>
+      <Preloader isLoading={loading} />
       {children}
     </AuthContext.Provider>
   );
