@@ -18,7 +18,7 @@ export default function Preloader() {
     }
   }, [loading]);
 
-  if (!show) return null;
+  if (!show && !loading) return null;
 
   return (
     <div
