@@ -149,6 +149,7 @@ export interface SiteSettings {
   };
   appearance: {
     logo_url: string;
+    favicon_url: string;
     primary_color: string;
     background_color: string;
     accent_color: string;
@@ -183,5 +184,7 @@ export interface SiteSettings {
     send_order_confirmation: boolean;
   }
 }
+
+    
 
     

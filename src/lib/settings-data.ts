@@ -12,6 +12,7 @@ export const defaultSettings: SiteSettings = {
   },
   appearance: {
     logo_url: '/logo.svg', // Assuming a default logo path
+    favicon_url: '/favicon.ico',
     primary_color: '#22c55e', // Equivalent to green-500
     background_color: '#0f172a', // Equivalent to slate-900
     accent_color: '#334155', // Equivalent to slate-700
@@ -54,5 +55,7 @@ export const defaultSettings: SiteSettings = {
     send_order_confirmation: true,
   },
 };
+
+    
 
     

@@ -105,6 +105,11 @@ export default function AdminSettingsPage() {
                   <Input id="logo" type="file" />
                   <p className="text-sm text-muted-foreground">{t('admin_settings_appearance_logo_desc')}</p>
                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="favicon">Favicon</Label>
+                  <Input id="favicon" type="file" accept="image/x-icon, image/png, image/svg+xml" />
+                  <p className="text-sm text-muted-foreground">Upload a new favicon (.ico, .png, .svg).</p>
+               </div>
                <div>
                 <h4 className="font-medium mb-2">{t('admin_settings_appearance_colors')}</h4>
                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -346,5 +351,7 @@ export default function AdminSettingsPage() {
     </div>
   );
 }
+
+    
 
     
