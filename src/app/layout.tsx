@@ -6,10 +6,10 @@ import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Button } from '@/components/ui/button';
 import { MessageSquare } from 'lucide-react';
-import Preloader from '@/components/shared/preloader';
 import { LanguageProvider } from '@/context/language-context';
 import { AuthProvider } from '@/context/auth-context';
 import { CartProvider } from '@/context/cart-context';
+import Preloader from '@/components/shared/preloader';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const notoSerifBengali = Noto_Serif_Bengali({
@@ -19,9 +19,8 @@ const notoSerifBengali = Noto_Serif_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: 'Digital Emporium',
+  title: 'Telisweb',
   description: 'Your one-stop shop for premium digital products.',
-  keywords: 'digital products, software, ebooks, templates, assets',
 };
 
 export default function RootLayout({
@@ -32,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
         </CardHeader>
         <CardContent className="prose prose-lg dark:prose-invert max-w-none space-y-6">
           <p>
-            Welcome to Digital Emporium. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.
+            Welcome to Telisweb. We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website.
           </p>
 
           <section>
@@ -63,7 +63,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="text-2xl font-semibold">Contact Us</h2>
             <p>
-              If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@digitalemporium.com" className="text-primary hover:underline">privacy@digitalemporium.com</a>.
+              If you have any questions about this Privacy Policy, please contact us at <a href="mailto:privacy@telisweb.com" className="text-primary hover:underline">privacy@telisweb.com</a>.
             </p>
           </section>
         </CardContent>

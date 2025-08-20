@@ -124,7 +124,7 @@ export default function AffiliatePage() {
 
   const copyToClipboard = () => {
     if (!affiliate?.affiliate_code) return;
-    navigator.clipboard.writeText(`https://digitalemporium.com/ref/${affiliate.affiliate_code}`);
+    navigator.clipboard.writeText(`https://telisweb.com/ref/${affiliate.affiliate_code}`);
     toast({ title: t('dashboard_affiliate_toast_copied') });
   };
 
@@ -160,7 +160,7 @@ export default function AffiliatePage() {
                     <div className="space-y-4">
                         <Label htmlFor="affiliate-link">{t('dashboard_affiliate_referral_link')}</Label>
                         <div className="flex gap-2">
-                        <Input id="affiliate-link" readOnly value={`https://digitalemporium.com/ref/${affiliate.affiliate_code}`} />
+                        <Input id="affiliate-link" readOnly value={`https://telisweb.com/ref/${affiliate.affiliate_code}`} />
                         <Button onClick={copyToClipboard} variant="outline" size="icon"><Clipboard className="h-4 w-4" /></Button>
                         </div>
                     </div>

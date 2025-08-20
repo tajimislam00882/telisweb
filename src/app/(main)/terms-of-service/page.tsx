@@ -9,7 +9,7 @@ export default function TermsOfServicePage() {
         </CardHeader>
         <CardContent className="prose prose-lg dark:prose-invert max-w-none space-y-6">
           <p>
-            Please read these Terms of Service ("Terms") carefully before using the Digital Emporium website (the "Service") operated by us. Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms.
+            Please read these Terms of Service ("Terms") carefully before using the Telisweb website (the "Service") operated by us. Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms.
           </p>
 
           <section>
@@ -36,7 +36,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-semibold">4. Intellectual Property</h2>
             <p>
-              The Service and its original content (excluding content provided by users), features, and functionality are and will remain the exclusive property of Digital Emporium and its licensors.
+              The Service and its original content (excluding content provided by users), features, and functionality are and will remain the exclusive property of Telisweb and its licensors.
             </p>
           </section>
 
@@ -57,7 +57,7 @@ export default function TermsOfServicePage() {
           <section>
             <h2 className="text-2xl font-semibold">Contact Us</h2>
             <p>
-              If you have any questions about these Terms, please contact us at <a href="mailto:support@digitalemporium.com" className="text-primary hover:underline">support@digitalemporium.com</a>.
+              If you have any questions about these Terms, please contact us at <a href="mailto:support@telisweb.com" className="text-primary hover:underline">support@telisweb.com</a>.
             </p>
           </section>
         </CardContent>

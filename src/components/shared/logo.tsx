@@ -15,7 +15,7 @@ export default function Logo({ className }: { className?: string }) {
         <ShoppingBag className="h-6 w-6 text-primary-foreground" />
       </div>
       <span className="text-foreground">
-        Digital<span className="text-primary">Emporium</span>
+        Telis<span className="text-primary">web</span>
       </span>
     </Link>
   );

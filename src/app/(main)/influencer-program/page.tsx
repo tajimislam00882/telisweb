@@ -82,7 +82,7 @@ export default function InfluencerProgramPage() {
         </div>
         <div className="flex justify-center gap-4">
           <Button size="lg" asChild>
-            <a href="mailto:influencers@digitalemporium.com">{t('influencer_contact_us_button')}</a>
+            <a href="mailto:influencers@telisweb.com">{t('influencer_contact_us_button')}</a>
           </Button>
         </div>
       </section>

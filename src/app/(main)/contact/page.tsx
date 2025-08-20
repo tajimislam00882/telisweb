@@ -56,7 +56,7 @@ export default function ContactPage() {
                 <div>
                     <h3 className="text-xl font-semibold">{t('contact_email_title')}</h3>
                     <p className="text-muted-foreground">{t('contact_email_desc')}</p>
-                    <a href="mailto:support@digitalemporium.com" className="text-primary hover:underline">support@digitalemporium.com</a>
+                    <a href="mailto:support@telisweb.com" className="text-primary hover:underline">support@telisweb.com</a>
                 </div>
             </div>
             <div className="flex items-start gap-4">

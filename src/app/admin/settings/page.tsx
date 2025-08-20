@@ -63,7 +63,7 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="site-name">{t('admin_settings_general_site_name')}</Label>
-                <Input id="site-name" defaultValue="Digital Emporium" />
+                <Input id="site-name" defaultValue="Telisweb" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="site-currency">{t('admin_settings_general_currency')}</Label>
@@ -71,7 +71,7 @@ export default function AdminSettingsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="contact-email">{t('admin_settings_general_contact_email')}</Label>
-                <Input id="contact-email" type="email" defaultValue="support@digitalemporium.com" />
+                <Input id="contact-email" type="email" defaultValue="support@telisweb.com" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="company-address">{t('admin_settings_general_address')}</Label>
@@ -268,7 +268,7 @@ export default function AdminSettingsPage() {
                 </div>
                  <div className="space-y-2">
                   <Label htmlFor="from-email">{t('admin_settings_email_from_email')}</Label>
-                  <Input id="from-email" type="email" placeholder="noreply@digitalemporium.com" />
+                  <Input id="from-email" type="email" placeholder="noreply@telisweb.com" />
                    <p className="text-sm text-muted-foreground">{t('admin_settings_email_from_email_desc')}</p>
                 </div>
                  <div className="flex items-center space-x-2">

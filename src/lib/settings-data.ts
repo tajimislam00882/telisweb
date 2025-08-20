@@ -4,9 +4,9 @@ import type { SiteSettings } from './types';
 // In a real application, these values would be fetched from the database.
 export const defaultSettings: SiteSettings = {
   general: {
-    site_name: 'Digital Emporium',
+    site_name: 'Telisweb',
     currency: 'USD',
-    contact_email: 'support@digitalemporium.com',
+    contact_email: 'support@telisweb.com',
     company_address: '123 Digital Avenue, Tech City, 12345',
   },
   appearance: {
@@ -38,8 +38,8 @@ export const defaultSettings: SiteSettings = {
     google_translate_api_key: '',
   },
   email: {
-    admin_email: 'admin@digitalemporium.com',
-    from_email: 'noreply@digitalemporium.com',
+    admin_email: 'admin@telisweb.com',
+    from_email: 'noreply@telisweb.com',
     send_order_confirmation: true,
   },
 };
