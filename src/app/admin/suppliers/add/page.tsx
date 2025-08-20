@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -235,7 +236,7 @@ export default function AddSupplierPage() {
 
           </div>
 
-          <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+          <div className="grid auto-rows-max items-start gap-4 lg:col-span-1">
             <Card>
               <CardHeader>
                 <CardTitle>Status</CardTitle>

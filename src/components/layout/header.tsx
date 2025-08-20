@@ -12,7 +12,6 @@ import {
   Camera,
   User,
   LayoutDashboard,
-  ChevronDown,
   Moon,
   Sun,
   LogIn,
@@ -33,7 +32,6 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Input } from '../ui/input';
 import { useState, useEffect, useRef } from 'react';
-import { ThemeToggle } from '../shared/theme-toggle';
 import { useLanguage } from '@/context/language-context';
 import {
   DropdownMenu,
@@ -192,7 +190,7 @@ export default function Header() {
     <div className="hidden md:flex items-center gap-2">
         <div className="relative w-full max-w-xs">
             <form onSubmit={handleSearchSubmit}>
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
                 <Input
                     type="search"
                     placeholder={t('search_placeholder')}
@@ -201,21 +199,23 @@ export default function Header() {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => setIsSuggestionsVisible(true)}
                 />
+                 <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
+                    onClick={() => imageInputRef.current?.click()}
+                    disabled={isImageSearching}
+                    aria-label="Search by image"
+                    >
+                    {isImageSearching ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                        <Camera className="h-5 w-5 text-muted-foreground" />
+                    )}
+                </Button>
             </form>
-             <Button
-              variant="ghost"
-              size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8"
-              onClick={() => imageInputRef.current?.click()}
-              disabled={isImageSearching}
-              aria-label="Search by image"
-            >
-              {isImageSearching ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                <Camera className="h-5 w-5 text-muted-foreground" />
-              )}
-            </Button>
+           
             {isSuggestionsVisible && searchQuery && (
               <div className="absolute top-full mt-2 w-full rounded-md border bg-card shadow-lg z-50">
                 {isLoading ? (
@@ -268,7 +268,6 @@ export default function Header() {
               </div>
             )}
         </div>
-        <ThemeToggle />
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -455,24 +454,40 @@ export default function Header() {
         )}>
             <div className="container pt-4">
                 <form onSubmit={handleSearchSubmit} className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
                     <Input
                         ref={searchInputRef}
                         type="search"
                         placeholder={t('search_placeholder')}
-                        className="w-full pl-10 pr-10 text-lg h-12"
+                        className="w-full pl-10 pr-20 text-lg h-12"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10"
-                        onClick={() => setIsSearchOpen(false)}
-                    >
-                        <X className="h-6 w-6" />
-                    </Button>
+                    <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
+                         <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10"
+                            onClick={() => imageInputRef.current?.click()}
+                            disabled={isImageSearching}
+                        >
+                             {isImageSearching ? (
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                                <Camera className="h-5 w-5 text-muted-foreground" />
+                            )}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-10 w-10"
+                            onClick={() => setIsSearchOpen(false)}
+                        >
+                            <X className="h-6 w-6" />
+                        </Button>
+                    </div>
                 </form>
             </div>
         </div>

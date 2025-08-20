@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -161,8 +162,8 @@ export default function UploadProductPage() {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-        <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
+        <div className="grid auto-rows-max items-start gap-4 lg:col-span-2">
           {/* Business Model Selection */}
           <Card>
             <CardHeader>
@@ -323,7 +324,7 @@ export default function UploadProductPage() {
             </CardContent>
            </Card>
         </div>
-        <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
+        <div className="grid auto-rows-max items-start gap-4 lg:col-span-1">
           <Card>
             <CardHeader>
               <CardTitle>Pricing & Organization</CardTitle>
