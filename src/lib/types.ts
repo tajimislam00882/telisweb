@@ -1,3 +1,4 @@
+
 import type { LucideIcon } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 
@@ -161,6 +162,16 @@ export interface SiteSettings {
       store_password?: string;
     };
   };
+  social_links: {
+      twitter_url: string;
+      github_url: string;
+      linkedin_url: string;
+  };
+  seo: {
+      meta_title: string;
+      meta_description: string;
+      og_image_url: string;
+  };
   integrations: {
     google_analytics_id?: string;
     facebook_pixel_id?: string;
@@ -172,3 +183,5 @@ export interface SiteSettings {
     send_order_confirmation: boolean;
   }
 }
+
+    

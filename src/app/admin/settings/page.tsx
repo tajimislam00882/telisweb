@@ -20,7 +20,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Globe, Palette, Wallet, Share2, Mail, KeyRound } from 'lucide-react';
+import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
 
 export default function AdminSettingsPage() {
@@ -33,15 +33,21 @@ export default function AdminSettingsPage() {
         {t('admin_settings_subtitle')}
       </p>
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 md:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
           <TabsTrigger value="general">
-            <Globe className="mr-2 h-4 w-4" /> {t('admin_settings_tab_general')}
+            <Settings className="mr-2 h-4 w-4" /> {t('admin_settings_tab_general')}
           </TabsTrigger>
           <TabsTrigger value="appearance">
             <Palette className="mr-2 h-4 w-4" /> {t('admin_settings_tab_appearance')}
           </TabsTrigger>
           <TabsTrigger value="payment">
             <Wallet className="mr-2 h-4 w-4" /> {t('admin_settings_tab_payment')}
+          </TabsTrigger>
+           <TabsTrigger value="social">
+            <LinkIcon className="mr-2 h-4 w-4" /> Social Links
+          </TabsTrigger>
+          <TabsTrigger value="seo">
+            <SearchIcon className="mr-2 h-4 w-4" /> SEO
           </TabsTrigger>
           <TabsTrigger value="integrations">
             <Share2 className="mr-2 h-4 w-4" /> {t('admin_settings_tab_integrations')}
@@ -202,6 +208,61 @@ export default function AdminSettingsPage() {
               </CardFooter>
           </div>
         </TabsContent>
+
+        {/* Social Links Tab */}
+        <TabsContent value="social">
+            <Card className="mt-6">
+                <CardHeader>
+                    <CardTitle>Social Media Links</CardTitle>
+                    <CardDescription>Manage the social media links that appear in your site's header and footer.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                     <div className="space-y-2">
+                        <Label htmlFor="twitter-url">Twitter URL</Label>
+                        <Input id="twitter-url" placeholder="https://twitter.com/yourprofile" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="github-url">GitHub URL</Label>
+                        <Input id="github-url" placeholder="https://github.com/yourprofile" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="linkedin-url">LinkedIn URL</Label>
+                        <Input id="linkedin-url" placeholder="https://linkedin.com/in/yourprofile" />
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button>{t('admin_settings_save_button')}</Button>
+                </CardFooter>
+            </Card>
+        </TabsContent>
+
+        {/* SEO Tab */}
+        <TabsContent value="seo">
+            <Card className="mt-6">
+                <CardHeader>
+                    <CardTitle>Global SEO Settings</CardTitle>
+                    <CardDescription>Manage default SEO settings for your entire website.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="meta-title">Meta Title</Label>
+                        <Input id="meta-title" placeholder="Your Awesome Website Title" />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="meta-description">Meta Description</Label>
+                        <Textarea id="meta-description" placeholder="A brief, compelling description of your website." />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="og-image">Open Graph (OG) Image</Label>
+                        <Input id="og-image" type="file" />
+                        <p className="text-sm text-muted-foreground">Recommended size: 1200x630px. This image appears when you share links on social media.</p>
+                    </div>
+                </CardContent>
+                 <CardFooter>
+                    <Button>{t('admin_settings_save_button')}</Button>
+                </CardFooter>
+            </Card>
+        </TabsContent>
         
         {/* Integrations Tab */}
         <TabsContent value="integrations">
@@ -285,3 +346,5 @@ export default function AdminSettingsPage() {
     </div>
   );
 }
+
+    

@@ -1,3 +1,4 @@
+
 import type { SiteSettings } from './types';
 
 // This file provides default settings for the site.
@@ -32,6 +33,16 @@ export const defaultSettings: SiteSettings = {
         api_secret: ''
     }
   },
+  social_links: {
+    twitter_url: '',
+    github_url: '',
+    linkedin_url: '',
+  },
+  seo: {
+    meta_title: 'Telisweb - Your one-stop shop for premium digital products.',
+    meta_description: 'Discover high-quality digital assets, UI kits, templates, and e-books to supercharge your creative projects.',
+    og_image_url: '',
+  },
   integrations: {
     google_analytics_id: '',
     facebook_pixel_id: '',
@@ -43,3 +54,5 @@ export const defaultSettings: SiteSettings = {
     send_order_confirmation: true,
   },
 };
+
+    
