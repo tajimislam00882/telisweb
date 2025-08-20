@@ -49,6 +49,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { useTheme } from 'next-themes';
+import { ThemeToggle } from '../shared/theme-toggle';
 
 export default function Header() {
   const pathname = usePathname();
@@ -268,6 +269,7 @@ export default function Header() {
               </div>
             )}
         </div>
+        <ThemeToggle />
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
