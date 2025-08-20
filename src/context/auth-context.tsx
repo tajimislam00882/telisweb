@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import type { User, SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase';
-import Preloader from '@/components/shared/preloader';
 
 const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
@@ -82,7 +81,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return (
     <AuthContext.Provider value={{ user, isAdmin, loading, logout, updateUser, uploadAvatar, supabase }}>
-      <Preloader isLoading={loading} />
       {children}
     </AuthContext.Provider>
   );

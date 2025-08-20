@@ -1,29 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/auth-context';
 import Logo from './logo';
 import { cn } from '@/lib/utils';
+import { useEffect, useState } from 'react';
 
-interface PreloaderProps {
-  isLoading: boolean;
-}
-
-export default function Preloader({ isLoading }: PreloaderProps) {
-  const [isMounted, setIsMounted] = useState(false);
+export default function Preloader() {
+  const { loading } = useAuth();
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  
-  if (!isMounted) {
-      return null;
-  }
+    if (!loading) {
+      const timer = setTimeout(() => setShow(false), 500); // Wait for fade out animation
+      return () => clearTimeout(timer);
+    } else {
+        setShow(true);
+    }
+  }, [loading]);
+
+  if (!show) return null;
 
   return (
     <div
       className={cn(
         'fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm transition-opacity duration-500',
-        isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        loading ? 'opacity-100' : 'opacity-0 pointer-events-none'
       )}
     >
       <div className="animate-pulse">

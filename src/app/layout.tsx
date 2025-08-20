@@ -46,27 +46,28 @@ export default function RootLayout({
       <body
         className={`font-body antialiased bg-background ${inter.variable} ${notoSerifBengali.variable}`}
       >
-        <AuthProvider>
-          <LanguageProvider>
-            <CartProvider>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="dark"
-                enableSystem
-                disableTransitionOnChange
-              >
-                {children}
-                <div className="fixed bottom-4 right-4 z-50">
-                  <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
-                    <MessageSquare className="h-6 w-6" />
-                    <span className="sr-only">Live Chat</span>
-                  </Button>
-                </div>
-                <Toaster />
-              </ThemeProvider>
-            </CartProvider>
-          </LanguageProvider>
-        </AuthProvider>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+        >
+            <AuthProvider>
+              <Preloader />
+              <LanguageProvider>
+                <CartProvider>
+                    {children}
+                    <div className="fixed bottom-4 right-4 z-50">
+                    <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
+                        <MessageSquare className="h-6 w-6" />
+                        <span className="sr-only">Live Chat</span>
+                    </Button>
+                    </div>
+                    <Toaster />
+                </CartProvider>
+              </LanguageProvider>
+            </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
