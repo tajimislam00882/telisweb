@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -28,30 +29,99 @@ import { Button } from '@/components/ui/button';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase';
 import type { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/admin/products');
+      if (!response.ok) {
+        throw new Error('Failed to fetch products');
+      }
+      const data = await response.json();
+      setProducts(data);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-      if (error) {
-        console.error('Error fetching products:', error);
-      } else if (data) {
-        setProducts(data as Product[]);
-      }
-      setLoading(false);
-    };
-
     fetchProducts();
   }, []);
 
+  const handleDeleteProduct = async () => {
+    if (!productToDelete) return;
+
+    try {
+      const response = await fetch(`/api/admin/products/${productToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete product');
+      }
+
+      toast({
+        title: 'Product Deleted',
+        description: `"${productToDelete.name}" has been successfully deleted.`,
+      });
+      fetchProducts(); // Refresh the product list
+    } catch (error: any) {
+       toast({
+        variant: 'destructive',
+        title: 'Deletion Failed',
+        description: error.message,
+      });
+    } finally {
+      setProductToDelete(null);
+    }
+  };
+
+
   return (
+    <>
+    <AlertDialog open={!!productToDelete} onOpenChange={(isOpen) => !isOpen && setProductToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              product "{productToDelete?.name}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteProduct}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -147,7 +217,10 @@ export default function AdminProductsPage() {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => setProductToDelete(product)}
+                        >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -166,5 +239,6 @@ export default function AdminProductsPage() {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 }

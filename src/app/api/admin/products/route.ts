@@ -1,7 +1,9 @@
+
 // src/app/api/admin/products/route.ts
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
 const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
@@ -25,9 +27,10 @@ async function getSupabaseAdmin() {
         return null;
     }
     
-    // For admin operations, it's often better to use the service role key
-    // This should be done carefully and only in secure server environments
-    // For this implementation, we will proceed with the user's session if they are an admin.
+    // For admin operations that require elevated privileges,
+    // it's better to create a service role client.
+    // However, for user-authenticated admin actions like this,
+    // the user's session is sufficient.
     return supabase;
 }
 
@@ -58,25 +61,65 @@ export async function POST(request: Request) {
     }
 
     try {
-        const productData = await request.json();
+        const formData = await request.formData();
+        
+        const imageFile = formData.get('product_image') as File | null;
+        
+        if (!imageFile) {
+            return NextResponse.json({ error: 'Product image is required.' }, { status: 400 });
+        }
 
-        // Here you would add validation logic with Zod, for example.
-        // For simplicity, we're assuming the data is valid.
+        const imageExt = imageFile.name.split('.').pop();
+        const imagePath = `products/${uuidv4()}.${imageExt}`;
 
-        const { data, error } = await supabase
+        const { data: imageData, error: imageError } = await supabase.storage
             .from('products')
-            .insert(productData)
+            .upload(imagePath, imageFile);
+
+        if (imageError) {
+            throw new Error(`Image upload failed: ${imageError.message}`);
+        }
+
+        const { data: { publicUrl: imageUrl } } = supabase.storage
+            .from('products')
+            .getPublicUrl(imagePath);
+
+        const productData = {
+            id: formData.get('id') as string,
+            name: formData.get('name') as string,
+            description: formData.get('description') as string,
+            price: parseFloat(formData.get('price') as string),
+            category: formData.get('category') as string,
+            tags: (formData.get('tags') as string)?.split(',').map(tag => tag.trim()) || [],
+            image_url: imageUrl,
+            business_model_id: parseInt(formData.get('business_model_id') as string, 10),
+            affiliate_url: formData.get('affiliate_url') as string,
+            commission_rate: parseFloat(formData.get('commission_rate') as string),
+            supplier_price: parseFloat(formData.get('supplier_price') as string),
+            min_stock_alert: parseInt(formData.get('min_stock_alert') as string, 10),
+            auto_restock: (formData.get('auto_restock') as string) === 'true',
+            shipping_weight: parseFloat(formData.get('shipping_weight') as string),
+            rating: 0,
+            reviews: 0,
+        };
+
+        const { data, error: insertError } = await supabase
+            .from('products')
+            .insert([productData])
             .select()
             .single();
 
-        if (error) {
-            console.error('Supabase insert error:', error);
-            return NextResponse.json({ error: error.message }, { status: 400 });
+        if (insertError) {
+            // If DB insert fails, attempt to delete the uploaded image
+            await supabase.storage.from('products').remove([imagePath]);
+            console.error('Supabase insert error:', insertError);
+            return NextResponse.json({ error: insertError.message }, { status: 400 });
         }
 
         return NextResponse.json(data, { status: 201 });
 
-    } catch (e) {
-        return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    } catch (e: any) {
+        console.error("API Error:", e.message);
+        return NextResponse.json({ error: 'Invalid request or server error' }, { status: 500 });
     }
 }

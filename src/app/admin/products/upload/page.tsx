@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -29,8 +30,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { createClient } from '@/lib/supabase';
 import { v4 as uuidv4 } from 'uuid';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const formSchema = z.object({
   name: z.string().min(1, 'Product name is required'),
@@ -47,8 +48,8 @@ const formSchema = z.object({
   auto_restock: z.boolean().optional(),
   shipping_weight: z.coerce.number().optional(),
   
-  product_image: z.any().refine(file => file instanceof FileList && file.length > 0, 'Product image is required.'),
-  digital_file: z.any().optional(),
+  product_image: z.instanceof(FileList).refine(files => files.length > 0, 'Product image is required.'),
+  digital_file: z.instanceof(FileList).optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -59,7 +60,6 @@ export default function UploadProductPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const supabase = createClient();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -76,43 +76,42 @@ export default function UploadProductPage() {
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
+    
+    const formData = new FormData();
+    formData.append('id', uuidv4());
+    formData.append('name', data.name);
+    formData.append('description', data.description || '');
+    formData.append('price', String(data.price));
+    formData.append('category', data.category);
+    formData.append('tags', data.tags || '');
+    formData.append('business_model_id', String(data.business_model_id));
+    formData.append('affiliate_url', data.affiliate_url || '');
+    formData.append('commission_rate', String(data.commission_rate || 0));
+    formData.append('supplier_price', String(data.supplier_price || 0));
+    formData.append('min_stock_alert', String(data.min_stock_alert || 0));
+    formData.append('auto_restock', String(data.auto_restock || false));
+    formData.append('shipping_weight', String(data.shipping_weight || 0));
+    formData.append('rating', '0');
+    formData.append('reviews', '0');
+    
+    if (data.product_image[0]) {
+      formData.append('product_image', data.product_image[0]);
+    }
+     if (data.digital_file?.[0]) {
+      formData.append('digital_file', data.digital_file[0]);
+    }
+
     try {
-        const imageFile = data.product_image[0] as File;
-        const imageExt = imageFile.name.split('.').pop();
-        const imagePath = `products/${uuidv4()}.${imageExt}`;
+        const response = await fetch('/api/admin/products', {
+            method: 'POST',
+            body: formData, // No Content-Type header needed, browser sets it for FormData
+        });
 
-        const { data: imageData, error: imageError } = await supabase.storage
-            .from('products')
-            .upload(imagePath, imageFile);
+        const result = await response.json();
 
-        if (imageError) throw new Error(`Image upload failed: ${imageError.message}`);
-
-        const { data: { publicUrl: imageUrl } } = supabase.storage
-            .from('products')
-            .getPublicUrl(imagePath);
-
-        const productData = {
-            id: uuidv4(),
-            name: data.name,
-            description: data.description,
-            price: data.price,
-            category: data.category,
-            tags: data.tags?.split(',').map(tag => tag.trim()) || [],
-            image_url: imageUrl,
-            business_model_id: data.business_model_id,
-            affiliate_url: data.affiliate_url,
-            commission_rate: data.commission_rate,
-            supplier_price: data.supplier_price,
-            min_stock_alert: data.min_stock_alert,
-            auto_restock: data.auto_restock,
-            shipping_weight: data.shipping_weight,
-            rating: 0, // default
-            reviews: 0, // default
-        };
-
-        const { error: insertError } = await supabase.from('products').insert([productData]);
-
-        if (insertError) throw new Error(`Failed to save product: ${insertError.message}`);
+        if (!response.ok) {
+            throw new Error(result.error || 'Something went wrong');
+        }
 
         toast({
             title: 'Product Saved!',
@@ -138,6 +137,7 @@ export default function UploadProductPage() {
   }
 
   return (
+    <Form {...form}>
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" className="h-7 w-7" asChild>
@@ -196,20 +196,36 @@ export default function UploadProductPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">Product Name</Label>
-                <Input id="name" placeholder="e.g., Pro UI Kit" {...form.register('name')} disabled={isLoading} />
-                {form.formState.errors.name && <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="A short description of the product."
-                  {...form.register('description')}
-                  disabled={isLoading}
-                />
-              </div>
+              <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                  <FormItem>
+                      <FormLabel>Product Name</FormLabel>
+                      <FormControl>
+                      <Input placeholder="e.g., Pro UI Kit" {...field} disabled={isLoading} />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+                  )}
+              />
+              <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="A short description of the product."
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
             </CardContent>
           </Card>
 
@@ -222,28 +238,44 @@ export default function UploadProductPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="affiliate-url">Affiliate URL</Label>
-                <Input
-                  id="affiliate-url"
-                  placeholder="https://example.com/product-link"
-                  {...form.register('affiliate_url')}
-                  disabled={isLoading}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="commission-rate">Commission Rate</Label>
-                <div className="relative">
-                  <Input
-                    id="commission-rate"
-                    type="number"
-                    placeholder="5"
-                    {...form.register('commission_rate')}
-                    disabled={isLoading}
-                  />
-                  <Percent className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                </div>
-              </div>
+               <FormField
+                  control={form.control}
+                  name="affiliate_url"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Affiliate URL</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="https://example.com/product-link"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
+              <FormField
+                  control={form.control}
+                  name="commission_rate"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Commission Rate</FormLabel>
+                    <FormControl>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        placeholder="5"
+                        {...field}
+                        disabled={isLoading}
+                      />
+                      <Percent className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    </div>
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
             </CardContent>
           </Card>
 
@@ -254,15 +286,25 @@ export default function UploadProductPage() {
               <CardDescription>Upload preview images for the product.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Label htmlFor="product-image">Product Image</Label>
-                <Input 
-                    id="product-image" 
-                    type="file"
-                    accept="image/*"
-                    {...form.register('product_image')} 
-                    disabled={isLoading}
-                />
-                {form.formState.errors.product_image && <p className="text-sm text-destructive">{form.formState.errors.product_image.message as string}</p>}
+                 <FormField
+                  control={form.control}
+                  name="product_image"
+                  render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                     <FormLabel>Product Image</FormLabel>
+                    <FormControl>
+                      <Input 
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => onChange(e.target.files)}
+                          {...rest}
+                          disabled={isLoading}
+                      />
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
             </CardContent>
           </Card>
 
@@ -273,13 +315,24 @@ export default function UploadProductPage() {
                 <CardDescription>Upload the downloadable product file.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Label htmlFor="digital-file">Product File (.zip, .pdf, etc.)</Label>
-                <Input 
-                    id="digital-file" 
-                    type="file"
-                    {...form.register('digital_file')} 
-                    disabled={isLoading}
-                />
+                <FormField
+                  control={form.control}
+                  name="digital_file"
+                  render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel>Product File (.zip, .pdf, etc.)</FormLabel>
+                    <FormControl>
+                        <Input 
+                            type="file"
+                            onChange={(e) => onChange(e.target.files)}
+                            {...rest}
+                            disabled={isLoading}
+                        />
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
             </CardContent>
           </Card>
            
@@ -290,32 +343,61 @@ export default function UploadProductPage() {
                 <CardDescription>Manage stock and shipping details for dropshipping.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-                 <div className="space-y-2">
-                    <Label htmlFor="supplier-price">Supplier Price</Label>
+                 <FormField
+                  control={form.control}
+                  name="supplier_price"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Supplier Price</FormLabel>
+                    <FormControl>
                      <div className="relative">
-                        <Input id="supplier-price" type="number" placeholder="25.00" {...form.register('supplier_price')} disabled={isLoading} />
+                        <Input type="number" placeholder="25.00" {...field} disabled={isLoading} />
                         <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                      </div>
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="shipping-weight">Shipping Weight (kg)</Label>
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
+                <FormField
+                  control={form.control}
+                  name="shipping_weight"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Shipping Weight (kg)</FormLabel>
+                    <FormControl>
                     <div className="relative">
-                        <Input id="shipping-weight" type="number" placeholder="0.5" {...form.register('shipping_weight')} disabled={isLoading} />
+                        <Input type="number" placeholder="0.5" {...field} disabled={isLoading} />
                          <Package className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     </div>
-                </div>
-                 <div className="space-y-2">
-                    <Label htmlFor="min-stock">Minimum Stock Alert</Label>
-                    <Input id="min-stock" type="number" defaultValue="5" {...form.register('min_stock_alert')} disabled={isLoading} />
-                </div>
-                <Controller
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
+                 <FormField
+                  control={form.control}
+                  name="min_stock_alert"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Minimum Stock Alert</FormLabel>
+                    <FormControl>
+                      <Input type="number" defaultValue="5" {...field} disabled={isLoading} />
+                    </FormControl>
+                     <FormMessage />
+                  </FormItem>
+                  )}
+              />
+                <FormField
                     control={form.control}
                     name="auto_restock"
                     render={({ field }) => (
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="auto-restock" checked={field.value} onCheckedChange={field.onChange} disabled={isLoading} />
-                        <Label htmlFor="auto-restock" className="text-sm font-medium">Auto-restock from supplier</Label>
-                      </div>
+                      <FormItem className="flex items-center space-x-2 pt-4">
+                        <FormControl>
+                            <Checkbox checked={field.value} onCheckedChange={field.onChange} disabled={isLoading} />
+                        </FormControl>
+                        <FormLabel htmlFor="auto-restock" className="text-sm font-medium leading-none !mt-0">Auto-restock from supplier</FormLabel>
+                      </FormItem>
                     )}
                  />
             </CardContent>
@@ -327,24 +409,34 @@ export default function UploadProductPage() {
               <CardTitle>Pricing & Organization</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="price">Selling Price</Label>
-                 <div className="relative">
-                    <Input id="price" type="number" placeholder="49.99" {...form.register('price')} disabled={isLoading} />
-                    <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                </div>
-                 {form.formState.errors.price && <p className="text-sm text-destructive">{form.formState.errors.price.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="category">Category</Label>
-                <Controller
+              <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Selling Price</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                          <Input type="number" placeholder="49.99" {...field} disabled={isLoading} />
+                          <DollarSign className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                  )}
+              />
+              <FormField
                     control={form.control}
                     name="category"
                     render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Category</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoading}>
-                        <SelectTrigger id="category">
-                            <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                        </FormControl>
                         <SelectContent>
                             {categories
                             .filter((c) => c.id !== 'all')
@@ -355,17 +447,26 @@ export default function UploadProductPage() {
                             ))}
                         </SelectContent>
                         </Select>
+                        <FormMessage />
+                    </FormItem>
                     )}
                 />
-                 {form.formState.errors.category && <p className="text-sm text-destructive">{form.formState.errors.category.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tags">Tags</Label>
-                <Input id="tags" placeholder="web, react, tailwind" {...form.register('tags')} disabled={isLoading} />
-                <p className="text-xs text-muted-foreground">
-                  Comma-separated values.
-                </p>
-              </div>
+              <FormField
+                  control={form.control}
+                  name="tags"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tags</FormLabel>
+                    <FormControl>
+                        <Input placeholder="web, react, tailwind" {...field} disabled={isLoading} />
+                    </FormControl>
+                     <p className="text-xs text-muted-foreground">
+                        Comma-separated values.
+                    </p>
+                    <FormMessage />
+                  </FormItem>
+                  )}
+              />
             </CardContent>
           </Card>
           
@@ -399,5 +500,6 @@ export default function UploadProductPage() {
         </Button>
       </div>
     </form>
+    </Form>
   );
 }
