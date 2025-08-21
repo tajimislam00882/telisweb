@@ -20,11 +20,38 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon } from 'lucide-react';
+import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon, Copy, RefreshCw } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminSettingsPage() {
   const { t } = useLanguage();
+  const [apiKey, setApiKey] = useState('your-secret-api-key-placeholder');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
+
+  const generateApiKey = () => {
+    setIsGenerating(true);
+    // In a real app, this would be a secure, server-generated key.
+    const newKey = `telis_sk_${[...Array(32)].map(() => Math.random().toString(36)[2]).join('')}`;
+    setTimeout(() => {
+        setApiKey(newKey);
+        setIsGenerating(false);
+        toast({
+            title: "API Key Generated",
+            description: "Your new API key has been successfully generated.",
+        });
+    }, 500);
+  };
+  
+  const copyApiKey = () => {
+    navigator.clipboard.writeText(apiKey);
+    toast({
+        title: "Copied to Clipboard",
+        description: "The API key has been copied to your clipboard.",
+    });
+  }
   
   return (
     <div className="space-y-6">
@@ -33,7 +60,7 @@ export default function AdminSettingsPage() {
         {t('admin_settings_subtitle')}
       </p>
       <Tabs defaultValue="general" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-8">
           <TabsTrigger value="general">
             <Settings className="mr-2 h-4 w-4" /> {t('admin_settings_tab_general')}
           </TabsTrigger>
@@ -54,6 +81,9 @@ export default function AdminSettingsPage() {
           </TabsTrigger>
           <TabsTrigger value="email">
             <Mail className="mr-2 h-4 w-4" /> {t('admin_settings_tab_email')}
+          </TabsTrigger>
+          <TabsTrigger value="api-keys">
+            <KeyRound className="mr-2 h-4 w-4" /> API Keys
           </TabsTrigger>
         </TabsList>
 
@@ -347,11 +377,38 @@ export default function AdminSettingsPage() {
               </CardFooter>
             </Card>
         </TabsContent>
+
+        {/* API Keys Tab */}
+        <TabsContent value="api-keys">
+            <Card className="mt-6">
+                <CardHeader>
+                    <CardTitle>API Key Management</CardTitle>
+                    <CardDescription>Create and manage API keys for external services and automation.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="api-key">Your API Key</Label>
+                        <div className="flex items-center gap-2">
+                            <Input id="api-key" value={apiKey} readOnly />
+                            <Button variant="outline" size="icon" onClick={copyApiKey}>
+                                <Copy className="h-4 w-4" />
+                            </Button>
+                        </div>
+                         <p className="text-sm text-muted-foreground">
+                            Keep this key secure. Do not expose it in client-side code.
+                        </p>
+                    </div>
+                </CardContent>
+                <CardFooter className="border-t pt-6 justify-between">
+                    <p className="text-sm text-destructive">Generating a new key will invalidate the old one.</p>
+                    <Button onClick={generateApiKey} disabled={isGenerating}>
+                        {isGenerating && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
+                        Generate New API Key
+                    </Button>
+                </CardFooter>
+            </Card>
+        </TabsContent>
       </Tabs>
     </div>
   );
 }
-
-    
-
-    

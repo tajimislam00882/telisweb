@@ -180,6 +180,7 @@ export interface SiteSettings {
     google_analytics_id?: string;
     facebook_pixel_id?: string;
     google_translate_api_key?: string;
+    api_key?: string;
   };
   email: {
     admin_email: string;
@@ -187,8 +188,3 @@ export interface SiteSettings {
     send_order_confirmation: boolean;
   }
 }
-
-    
-
-    
-

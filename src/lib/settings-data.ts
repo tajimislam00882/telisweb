@@ -48,6 +48,7 @@ export const defaultSettings: SiteSettings = {
     google_analytics_id: '',
     facebook_pixel_id: '',
     google_translate_api_key: '',
+    api_key: '',
   },
   email: {
     admin_email: 'admin@telisweb.com',
@@ -55,7 +56,3 @@ export const defaultSettings: SiteSettings = {
     send_order_confirmation: true,
   },
 };
-
-    
-
-    
