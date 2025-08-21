@@ -1,0 +1,51 @@
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+import { NextResponse } from 'next/server';
+
+const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
+
+// GET: Fetch all users (admin only)
+export async function GET(request: Request) {
+    const cookieStore = cookies();
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value;
+                },
+            },
+        }
+    );
+    
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const supabaseAdmin = createServerClient(
+         process.env.NEXT_PUBLIC_SUPABASE_URL!,
+         process.env.SUPABASE_SERVICE_ROLE_KEY!,
+         {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value;
+                },
+            },
+        }
+    );
+
+    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({
+        sortBy: 'created_at',
+        sortOrder: 'desc'
+    });
+    
+    if (error) {
+        console.error('Error fetching users:', error);
+        return NextResponse.json({ error: 'Failed to fetch users. Ensure SUPABASE_SERVICE_ROLE_KEY is set.' }, { status: 500 });
+    }
+
+    return NextResponse.json({ users });
+}
