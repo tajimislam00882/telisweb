@@ -50,6 +50,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { useTheme } from 'next-themes';
 import { ThemeToggle } from '../shared/theme-toggle';
+import { useMounted } from '@/hooks/use-mounted';
 
 export default function Header() {
   const pathname = usePathname();
@@ -66,6 +67,7 @@ export default function Header() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const { theme, setTheme } = useTheme();
+  const isMounted = useMounted();
 
   const {
     suggestions,
@@ -289,14 +291,14 @@ export default function Header() {
           <Link href="/cart">
             <ShoppingCart className="h-5 w-5" />
             <span className="sr-only">Cart</span>
-            {totalCartItems > 0 && (
+            {isMounted && totalCartItems > 0 && (
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                 {totalCartItems}
               </span>
             )}
           </Link>
         </Button>
-        {user ? (
+        {isMounted && user ? (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -319,10 +321,12 @@ export default function Header() {
               <DropdownMenuItem onClick={logout}><LogOut className="mr-2 h-4 w-4" />Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        ) : (
+        ) : isMounted ? (
           <Button asChild>
             <Link href="/login">{t('login_button')}</Link>
           </Button>
+        ) : (
+           <div className="h-8 w-[76px] rounded-md bg-muted animate-pulse"></div>
         )}
     </div>
   );
@@ -339,7 +343,7 @@ export default function Header() {
               <Link href="/cart">
                 <ShoppingCart className="h-5 w-5" />
                 <span className="sr-only">Cart</span>
-                {totalCartItems > 0 && (
+                {isMounted && totalCartItems > 0 && (
                   <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     {totalCartItems}
                   </span>
@@ -405,7 +409,7 @@ export default function Header() {
               </div>
               <div className="mt-auto">
                 <Separator className="my-4" />
-                {user ? (
+                {isMounted && user ? (
                      <SheetClose asChild>
                         <Link href="/dashboard" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
                              <Avatar className="h-8 w-8">
@@ -415,14 +419,14 @@ export default function Header() {
                             <span>Profile</span>
                         </Link>
                     </SheetClose>
-                ) : (
+                ) : isMounted ? (
                      <SheetClose asChild>
                         <Link href="/login" className="flex items-center gap-4 text-lg font-medium text-muted-foreground hover:text-primary">
                             <LogIn className="h-5 w-5" />
                             <span>{t('login_button')}</span>
                         </Link>
                     </SheetClose>
-                )}
+                ) : null}
               </div>
             </SheetContent>
           </Sheet>

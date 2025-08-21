@@ -7,10 +7,12 @@ import Logo from '@/components/shared/logo';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/context/language-context';
 import { useAuth } from '@/context/auth-context';
+import { useMounted } from '@/hooks/use-mounted';
 
 export default function Footer() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const isMounted = useMounted();
 
   return (
     <footer className="border-t border-border/20 bg-card">
@@ -59,7 +61,7 @@ export default function Footer() {
                             {t('nav_contact')}
                         </Link>
                         </li>
-                        {user && (
+                        {isMounted && user && (
                             <li>
                                 <Link href="/dashboard" className="text-muted-foreground hover:text-primary">
                                 {t('footer_dashboard')}
