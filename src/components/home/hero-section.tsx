@@ -42,11 +42,6 @@ export default function HeroSection() {
                 {t('start_shopping_button')} <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base">
-                <Link href="#features">
-                {t('free_items_button')}
-                </Link>
-            </Button>
             </div>
         </div>
 
