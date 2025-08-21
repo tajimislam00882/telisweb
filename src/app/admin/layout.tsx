@@ -1,3 +1,4 @@
+
 'use client';
 import {
   LayoutDashboard,
@@ -10,6 +11,7 @@ import {
   Search,
   Truck,
   Handshake,
+  Palette,
 } from 'lucide-react';
 import AppShell from '@/components/layout/app-shell';
 import { Button } from '@/components/ui/button';
@@ -34,6 +36,7 @@ export default function AdminLayout({
     { href: '/admin/products', label: t('admin_nav_products'), icon: Box },
     { href: '/admin/orders', label: t('admin_nav_orders'), icon: ShoppingCart },
     { href: '/admin/users', label: t('admin_nav_users'), icon: Users2 },
+    { href: '/admin/customize', label: 'Customize', icon: Palette },
     { href: '/admin/affiliates', label: t('admin_nav_affiliates'), icon: Handshake },
     { href: '/admin/suppliers', label: t('admin_nav_suppliers'), icon: Truck },
     { href: '/admin/settings', label: t('admin_nav_settings'), icon: Settings },
