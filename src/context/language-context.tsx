@@ -20,6 +20,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [language, setLanguageState] = useState<Language>('en');
 
   useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This prevents a hydration mismatch.
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && ['en', 'bn'].includes(savedLanguage)) {
       setLanguageState(savedLanguage);

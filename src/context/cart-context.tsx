@@ -31,6 +31,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
+    // This effect runs only on the client, after the initial render.
+    // This prevents a hydration mismatch.
     try {
       const savedCart = localStorage.getItem('cart');
       if (savedCart) {
@@ -43,7 +45,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    // This effect ensures that localStorage is only updated when the cart state changes,
+    // and only on the client-side.
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
   }, [cart]);
 
   const addToCart = (product: CartItem, quantity = 1) => {

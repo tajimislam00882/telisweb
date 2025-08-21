@@ -88,7 +88,7 @@ export default function AffiliatePage() {
     setIsSubmitting(true);
     try {
       // Generate a unique affiliate code
-      const affiliate_code = `${user.user_metadata?.first_name?.toLowerCase() || 'user'}${Math.random().toString(36).substring(2, 8)}`;
+      const affiliate_code = `${user.user_metadata?.first_name?.toLowerCase().substring(0, 4) || 'user'}${Math.random().toString(36).substring(2, 6)}`;
 
       const { error } = await supabase.from('affiliates').insert({
         user_id: user.id,
