@@ -85,7 +85,7 @@ export interface OrderItem {
     order_id: string;
     product_id: string;
     quantity: number;
-    price_at_purchase: number; // Changed from price to price_at_purchase
+    price_at_purchase: number;
     products?: { // For joining with products table
       name: string;
       image_url: string | null;

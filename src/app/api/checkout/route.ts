@@ -75,7 +75,7 @@ export async function POST(request: Request) {
           total_amount: totalAmount,
           currency: 'BDT',
           tran_id: orderId,
-          success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/success`,
+          success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/success?order_id=${orderId}`,
           fail_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/fail`,
           cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/cancel`,
           ipn_url: `${process.env.NEXT_PUBLIC_BASE_URL}/api/payment/ipn`,
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
         id: orderId,
         user_id: userId,
         total_amount: totalAmount,
-        status: 'pending', // Default status
+        status: 'pending', // Default status, will be updated by IPN or success URL
         payment_method: paymentMethod,
       })
       .select()
@@ -138,7 +138,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Could not save order details.' }, { status: 500 });
     }
 
-    // 3. For now, since payment gateway is not live, we proceed directly to confirmation.
+    // 3. For now, since payment gateway is not live, we simulate a successful payment and update status.
+    // In a real app, this would be handled by a webhook (IPN) or on the success redirect.
+     await supabase
+        .from('orders')
+        .update({ status: 'completed' })
+        .eq('id', orderId);
+        
     return NextResponse.json({ message: 'success', orderId: orderId });
 
   } catch (e: any) {
