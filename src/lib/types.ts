@@ -28,6 +28,7 @@ export interface Product {
   sales?: number;
   file_type?: string | null;
   file_size?: string | null;
+  digital_file_url?: string | null;
   
   // Business model specific fields
   business_model_id?: number;
@@ -71,6 +72,12 @@ export interface Order {
     status: 'pending' | 'completed' | 'failed' | 'refunded';
     payment_method: string;
     created_at: string;
+    users?: { // For fetching user metadata
+        raw_user_meta_data?: {
+            first_name?: string;
+            last_name?: string;
+        }
+    } | null;
 }
 
 export interface OrderItem {
@@ -79,6 +86,11 @@ export interface OrderItem {
     product_id: string;
     quantity: number;
     price_at_purchase: number; // Changed from price to price_at_purchase
+    products?: { // For joining with products table
+      name: string;
+      image_url: string | null;
+      digital_file_url: string | null;
+    }
 }
 
 

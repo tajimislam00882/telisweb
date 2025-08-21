@@ -64,14 +64,15 @@ export async function POST(request: Request) {
         const formData = await request.formData();
         
         const imageFile = formData.get('product_image') as File | null;
+        const digitalFile = formData.get('digital_file') as File | null;
         
         if (!imageFile) {
             return NextResponse.json({ error: 'Product image is required.' }, { status: 400 });
         }
 
+        // Upload Product Image
         const imageExt = imageFile.name.split('.').pop();
-        const imagePath = `products/${uuidv4()}.${imageExt}`;
-
+        const imagePath = `products/images/${uuidv4()}.${imageExt}`;
         const { data: imageData, error: imageError } = await supabase.storage
             .from('products')
             .upload(imagePath, imageFile);
@@ -84,6 +85,28 @@ export async function POST(request: Request) {
             .from('products')
             .getPublicUrl(imagePath);
 
+        let digitalFileUrl = null;
+        // Upload Digital File if it exists
+        if (digitalFile) {
+            const digitalFileExt = digitalFile.name.split('.').pop();
+            const digitalFilePath = `products/files/${uuidv4()}.${digitalFileExt}`;
+            const { error: fileError } = await supabase.storage
+                .from('products')
+                .upload(digitalFilePath, digitalFile);
+
+            if (fileError) {
+                // Attempt to clean up the already uploaded image if file upload fails
+                await supabase.storage.from('products').remove([imagePath]);
+                throw new Error(`Digital file upload failed: ${fileError.message}`);
+            }
+
+            const { data: { publicUrl } } = supabase.storage
+              .from('products')
+              .getPublicUrl(digitalFilePath);
+            digitalFileUrl = publicUrl;
+        }
+
+
         const productData = {
             id: formData.get('id') as string,
             name: formData.get('name') as string,
@@ -92,6 +115,7 @@ export async function POST(request: Request) {
             category: formData.get('category') as string,
             tags: (formData.get('tags') as string)?.split(',').map(tag => tag.trim()) || [],
             image_url: imageUrl,
+            digital_file_url: digitalFileUrl,
             business_model_id: parseInt(formData.get('business_model_id') as string, 10),
             affiliate_url: formData.get('affiliate_url') as string,
             commission_rate: parseFloat(formData.get('commission_rate') as string),
@@ -110,8 +134,14 @@ export async function POST(request: Request) {
             .single();
 
         if (insertError) {
-            // If DB insert fails, attempt to delete the uploaded image
+            // If DB insert fails, attempt to delete the uploaded files
             await supabase.storage.from('products').remove([imagePath]);
+            if (digitalFileUrl) {
+                const digitalFilePath = digitalFileUrl.split('/').pop();
+                if (digitalFilePath) {
+                    await supabase.storage.from('products').remove([`files/${digitalFilePath}`]);
+                }
+            }
             console.error('Supabase insert error:', insertError);
             return NextResponse.json({ error: insertError.message }, { status: 400 });
         }

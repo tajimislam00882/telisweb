@@ -1,3 +1,6 @@
+
+'use client';
+
 import {
   Card,
   CardContent,
@@ -24,10 +27,52 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, ListFilter, File } from 'lucide-react';
-import { adminOrders } from '@/lib/data';
+import { MoreHorizontal, ListFilter, File, Loader2 } from 'lucide-react';
+import type { Order } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
 
 export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/admin/orders');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to fetch orders');
+      }
+      const data = await response.json();
+      setOrders(data);
+    } catch (error: any) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+  
+  const getCustomerName = (order: Order) => {
+    const metaData = order.users?.raw_user_meta_data;
+    if (metaData?.first_name && metaData?.last_name) {
+      return `${metaData.first_name} ${metaData.last_name}`;
+    }
+    return 'N/A';
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -81,18 +126,35 @@ export default function AdminOrdersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {adminOrders.map((order) => (
-              <TableRow key={order.orderId}>
-                <TableCell className="font-medium">{order.orderId}</TableCell>
-                <TableCell>{order.customer}</TableCell>
-                <TableCell>{order.date}</TableCell>
+            {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                      <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                      <TableCell><MoreHorizontal className="h-4 w-4 text-muted-foreground" /></TableCell>
+                    </TableRow>
+                ))
+            ) : orders.length > 0 ? (
+              orders.map((order) => (
+              <TableRow key={order.id}>
+                <TableCell className="font-medium">#{order.id.substring(0,7)}</TableCell>
+                <TableCell>{getCustomerName(order)}</TableCell>
+                <TableCell>{format(new Date(order.created_at), 'PPP')}</TableCell>
                 <TableCell>
-                  <Badge variant={order.status === 'Completed' ? 'default' : 'secondary'}>
+                  <Badge variant="outline" className={cn(
+                    order.status === 'completed' && 'bg-green-100 text-green-800 border-green-300 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700',
+                    order.status === 'pending' && 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700',
+                    order.status === 'failed' && 'bg-red-100 text-red-800 border-red-300 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700'
+                  )}>
                     {order.status}
                   </Badge>
                 </TableCell>
-                <TableCell>{order.paymentMethod}</TableCell>
-                <TableCell className="text-right">${order.total.toFixed(2)}</TableCell>
+                <TableCell>{order.payment_method}</TableCell>
+                <TableCell className="text-right">${order.total_amount.toFixed(2)}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -112,7 +174,14 @@ export default function AdminOrdersPage() {
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            ))
+            ) : (
+                <TableRow>
+                    <TableCell colSpan={7} className="h-24 text-center">
+                        No orders found.
+                    </TableCell>
+                </TableRow>
+            )}
           </TableBody>
         </Table>
       </CardContent>
