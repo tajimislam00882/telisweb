@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -23,6 +24,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
@@ -32,28 +43,73 @@ import type { Supplier } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminSuppliersPage() {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(true);
+  const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(null);
+  const { toast } = useToast();
+
+  const fetchSuppliers = async () => {
+    setLoading(true);
+    const supabase = createClient();
+    const { data, error } = await supabase.from('suppliers').select('*').order('created_at', { ascending: false });
+    if (error) {
+      console.error('Error fetching suppliers:', error);
+      toast({ variant: 'destructive', title: 'Error', description: 'Failed to fetch suppliers.' });
+    } else if (data) {
+      setSuppliers(data as any[] as Supplier[]);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    const fetchSuppliers = async () => {
-      setLoading(true);
-      const supabase = createClient();
-      const { data, error } = await supabase.from('suppliers').select('*').order('created_at', { ascending: false });
-      if (error) {
-        console.error('Error fetching suppliers:', error);
-      } else if (data) {
-        setSuppliers(data as any[] as Supplier[]);
-      }
-      setLoading(false);
-    };
-
     fetchSuppliers();
   }, []);
+  
+  const handleDeleteSupplier = async () => {
+    if (!supplierToDelete) return;
+    const supabase = createClient();
+    
+    try {
+        const { error } = await supabase.from('suppliers').delete().eq('id', supplierToDelete.id);
+        if (error) throw error;
+        
+        toast({
+            title: 'Supplier Deleted',
+            description: `"${supplierToDelete.company_name}" has been successfully deleted.`
+        });
+        fetchSuppliers();
+    } catch(error: any) {
+         toast({
+            variant: 'destructive',
+            title: 'Deletion Failed',
+            description: error.message
+        });
+    } finally {
+        setSupplierToDelete(null);
+    }
+  }
 
   return (
+    <>
+    <AlertDialog open={!!supplierToDelete} onOpenChange={(isOpen) => !isOpen && setSupplierToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the
+              supplier "{supplierToDelete?.company_name}".
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteSupplier}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
@@ -128,7 +184,10 @@ export default function AdminSuppliersPage() {
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem>Edit</DropdownMenuItem>
                         <DropdownMenuItem>View Details</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem
+                          className="text-destructive"
+                          onClick={() => setSupplierToDelete(supplier)}
+                        >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -147,5 +206,6 @@ export default function AdminSuppliersPage() {
         </Table>
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -1,5 +1,7 @@
-'use client';
 
+
+import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
 import {
   Card,
   CardContent,
@@ -24,43 +26,77 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase';
 import type { User } from '@supabase/supabase-js';
-import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 interface AppUser extends User {
     totalSpent?: number;
 }
 
+const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
-export default function AdminUsersPage() {
-    const [users, setUsers] = useState<AppUser[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+// This is a server component, so we can fetch data directly here.
+async function fetchUsers() {
+    const cookieStore = cookies();
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value;
+                },
+            },
+        }
+    );
+    
+    // Check if the current user is an admin
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+       // This will prevent non-admins from even attempting to fetch users.
+       // The layout will redirect, but this is an extra layer of security.
+       redirect('/admin/login');
+    }
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            // NOTE: Listing users is a protected operation and requires admin privileges
-            // configured in Supabase RLS (Row Level Security) and potentially a server-side call
-            // with a service_role key.
-            // The 'AuthApiError: User not allowed' error indicates the current client-side
-            // user does not have permission to perform this action.
-            // This is expected for security reasons.
-            // A proper implementation requires a secure backend endpoint (e.g., a Next.js API route)
-            // that uses the Supabase service role key to fetch users.
+    // Creating a service role client to bypass RLS for fetching users.
+    // IMPORTANT: This uses an environment variable that should ONLY be available on the server.
+    const supabaseAdmin = createServerClient(
+         process.env.NEXT_PUBLIC_SUPABASE_URL!,
+         process.env.SUPABASE_SERVICE_ROLE_KEY!, // Use the service role key
+         {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value;
+                },
+            },
+        }
+    )
 
-            // For now, we will simulate loading and show an informative message.
-            setLoading(true);
-            setError("Fetching users from the client-side is disabled for security reasons. This functionality requires a secure server-side implementation.");
-            setLoading(false);
-        };
+    // listUsers is an admin-only function
+    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
+    
+    if (error) {
+        console.error('Error fetching users:', error);
+        return { users: [], error: 'Failed to fetch users. Check server logs.' };
+    }
 
-        fetchUsers();
-    }, []);
+    return { users, error: null };
+}
+
+
+export default async function AdminUsersPage() {
+    const { users, error } = await fetchUsers();
+    
+    const getFullName = (user: AppUser) => {
+        const { first_name, last_name } = user.user_metadata;
+        if (first_name && last_name) return `${first_name} ${last_name}`;
+        if (first_name) return first_name;
+        if (last_name) return last_name;
+        return user.email?.split('@')[0] || 'N/A';
+    }
 
   return (
     <Card>
@@ -70,15 +106,15 @@ export default function AdminUsersPage() {
       </CardHeader>
       <CardContent>
         {error && (
-            <Alert>
+            <Alert variant="destructive" className="mb-4">
               <Terminal className="h-4 w-4" />
-              <AlertTitle>Feature Not Available</AlertTitle>
+              <AlertTitle>Error Fetching Users</AlertTitle>
               <AlertDescription>
-                {error} Please implement a secure API route to fetch user data.
+                {error} Ensure your `SUPABASE_SERVICE_ROLE_KEY` environment variable is set correctly.
               </AlertDescription>
             </Alert>
         )}
-        <Table className={error ? 'mt-4' : ''}>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
@@ -91,23 +127,13 @@ export default function AdminUsersPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {loading ? (
-                 Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i}>
-                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
-                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                        <TableCell className="text-right"><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
-                        <TableCell><MoreHorizontal className="h-4 w-4 text-muted-foreground" /></TableCell>
-                    </TableRow>
-                 ))
-            ) : (
+            {users && users.length > 0 ? (
              users.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.user_metadata?.first_name || 'N/A'}</TableCell>
+                <TableCell className="font-medium">{getFullName(user as AppUser)}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.created_at ? format(new Date(user.created_at), 'PPP') : 'N/A'}</TableCell>
-                <TableCell className="text-right">${(user.totalSpent || 0).toFixed(2)}</TableCell>
+                <TableCell className="text-right">${((user as AppUser).totalSpent || 0).toFixed(2)}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -128,10 +154,9 @@ export default function AdminUsersPage() {
                 </TableCell>
               </TableRow>
              ))
-            )}
-            {!loading && users.length === 0 && !error && (
-                 <TableRow>
-                    <TableCell colSpan={5} className="text-center">No users found.</TableCell>
+            ) : (
+                <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">No users found.</TableCell>
                 </TableRow>
             )}
           </TableBody>
