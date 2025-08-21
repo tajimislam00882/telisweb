@@ -20,20 +20,135 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon, Copy, RefreshCw } from 'lucide-react';
+import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon, Copy, RefreshCw, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { z } from 'zod';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
+const themeSchema = z.object({
+  primary: z.string().regex(/^\d{1,3}\s\d{1,3}%\s\d{1,3}%$/, "Invalid HSL format"),
+  background: z.string().regex(/^\d{1,3}\s\d{1,3}%\s\d{1,3}%$/, "Invalid HSL format"),
+  accent: z.string().regex(/^\d{1,3}\s\d{1,3}%\s\d{1,3}%$/, "Invalid HSL format"),
+});
+
+type ThemeFormData = z.infer<typeof themeSchema>;
+
+function hslStringToColor(hslString: string) {
+    if (!hslString) return '#000000';
+    const [h, s, l] = hslString.split(' ').map(val => parseFloat(val.replace('%', '')));
+    let r, g, b;
+    const saturation = s / 100;
+    const lightness = l / 100;
+
+    if (saturation === 0) {
+        r = g = b = lightness;
+    } else {
+        const hue2rgb = (p: number, q: number, t: number) => {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1 / 6) return p + (q - p) * 6 * t;
+            if (t < 1 / 2) return q;
+            if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+            return p;
+        };
+        const q = lightness < 0.5 ? lightness * (1 + saturation) : lightness + saturation - lightness * saturation;
+        const p = 2 * lightness - q;
+        const hue = h / 360;
+        r = hue2rgb(p, q, hue + 1 / 3);
+        g = hue2rgb(p, q, hue);
+        b = hue2rgb(p, q, hue - 1 / 3);
+    }
+    const toHex = (x: number) => {
+        const hex = Math.round(x * 255).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+    };
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
+
+function colorToHslString(hex: string): string {
+    let r = 0, g = 0, b = 0;
+    if (hex.length === 4) {
+        r = parseInt(hex[1] + hex[1], 16);
+        g = parseInt(hex[2] + hex[2], 16);
+        b = parseInt(hex[3] + hex[3], 16);
+    } else if (hex.length === 7) {
+        r = parseInt(hex[1] + hex[2], 16);
+        g = parseInt(hex[3] + hex[4], 16);
+        b = parseInt(hex[5] + hex[6], 16);
+    }
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = 0, s = 0, l = (max + min) / 2;
+
+    if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    h = Math.round(h * 360);
+    s = Math.round(s * 100);
+    l = Math.round(l * 100);
+    return `${h} ${s}% ${l}%`;
+}
+
 
 export default function AdminSettingsPage() {
   const { t } = useLanguage();
   const [apiKey, setApiKey] = useState('your-secret-api-key-placeholder');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isThemeSubmitting, setIsThemeSubmitting] = useState(false);
   const { toast } = useToast();
+
+  const themeForm = useForm<ThemeFormData>({
+    resolver: zodResolver(themeSchema),
+    defaultValues: {
+      primary: "142 76% 43%",
+      background: "220 20% 7%",
+      accent: "220 20% 18%",
+    },
+  });
+
+  const onThemeSubmit = async (data: ThemeFormData) => {
+    setIsThemeSubmitting(true);
+    try {
+        const response = await fetch('/api/admin/theme', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update theme.');
+        }
+
+        toast({
+            title: 'Theme Updated',
+            description: 'Your new color theme has been applied. You may need to refresh the page to see all changes.',
+        });
+
+    } catch (error: any) {
+        toast({
+            variant: 'destructive',
+            title: 'Theme Update Failed',
+            description: error.message,
+        });
+    } finally {
+        setIsThemeSubmitting(false);
+    }
+  }
 
   const generateApiKey = () => {
     setIsGenerating(true);
-    // In a real app, this would be a secure, server-generated key.
     const newKey = `telis_sk_${[...Array(32)].map(() => Math.random().toString(36)[2]).join('')}`;
     setTimeout(() => {
         setApiKey(newKey);
@@ -122,46 +237,105 @@ export default function AdminSettingsPage() {
 
         {/* Appearance Settings Tab */}
         <TabsContent value="appearance">
-          <Card className="mt-6">
-            <CardHeader>
-              <CardTitle>{t('admin_settings_appearance_title')}</CardTitle>
-              <CardDescription>
-                {t('admin_settings_appearance_desc')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-               <div className="space-y-2">
-                  <Label htmlFor="logo">{t('admin_settings_appearance_logo')}</Label>
-                  <Input id="logo" type="file" />
-                  <p className="text-sm text-muted-foreground">{t('admin_settings_appearance_logo_desc')}</p>
-               </div>
-                <div className="space-y-2">
-                  <Label htmlFor="favicon">Favicon</Label>
-                  <Input id="favicon" type="file" accept="image/x-icon, image/png, image/svg+xml" />
-                  <p className="text-sm text-muted-foreground">Upload a new favicon (.ico, .png, .svg).</p>
-               </div>
-               <div>
-                <h4 className="font-medium mb-2">{t('admin_settings_appearance_colors')}</h4>
-                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <Form {...themeForm}>
+            <form onSubmit={themeForm.handleSubmit(onThemeSubmit)}>
+              <Card className="mt-6">
+                <CardHeader>
+                  <CardTitle>{t('admin_settings_appearance_title')}</CardTitle>
+                  <CardDescription>
+                    {t('admin_settings_appearance_desc')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                      <Label htmlFor="logo">{t('admin_settings_appearance_logo')}</Label>
+                      <Input id="logo" type="file" />
+                      <p className="text-sm text-muted-foreground">{t('admin_settings_appearance_logo_desc')}</p>
+                  </div>
                     <div className="space-y-2">
-                        <Label htmlFor="primary-color">{t('admin_settings_appearance_primary')}</Label>
-                        <Input id="primary-color" type="color" defaultValue="#22c55e" className="p-1"/>
+                      <Label htmlFor="favicon">Favicon</Label>
+                      <Input id="favicon" type="file" accept="image/x-icon, image/png, image/svg+xml" />
+                      <p className="text-sm text-muted-foreground">Upload a new favicon (.ico, .png, .svg).</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium mb-2">{t('admin_settings_appearance_colors')}</h4>
+                    <p className="text-sm text-muted-foreground mb-4">Change the HSL values to update the site's theme. Use a tool like <a href="https://hslpicker.com/" target="_blank" rel="noopener noreferrer" className="underline text-primary">hslpicker.com</a> to find colors.</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <FormField
+                            control={themeForm.control}
+                            name="primary"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>{t('admin_settings_appearance_primary')}</FormLabel>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="color"
+                                        value={hslStringToColor(field.value)}
+                                        onChange={(e) => field.onChange(colorToHslString(e.target.value))}
+                                        className="p-1 h-10 w-10 flex-shrink-0"
+                                    />
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                </div>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={themeForm.control}
+                            name="background"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>{t('admin_settings_appearance_background')}</FormLabel>
+                                 <div className="flex items-center gap-2">
+                                    <Input
+                                        type="color"
+                                        value={hslStringToColor(field.value)}
+                                        onChange={(e) => field.onChange(colorToHslString(e.target.value))}
+                                        className="p-1 h-10 w-10 flex-shrink-0"
+                                    />
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                </div>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                         <FormField
+                            control={themeForm.control}
+                            name="accent"
+                            render={({ field }) => (
+                                <FormItem>
+                                <FormLabel>{t('admin_settings_appearance_accent')}</FormLabel>
+                                 <div className="flex items-center gap-2">
+                                    <Input
+                                        type="color"
+                                        value={hslStringToColor(field.value)}
+                                        onChange={(e) => field.onChange(colorToHslString(e.target.value))}
+                                        className="p-1 h-10 w-10 flex-shrink-0"
+                                    />
+                                    <FormControl>
+                                      <Input {...field} />
+                                    </FormControl>
+                                </div>
+                                <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                     </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="background-color">{t('admin_settings_appearance_background')}</Label>
-                        <Input id="background-color" type="color" defaultValue="#0f172a" className="p-1"/>
-                    </div>
-                     <div className="space-y-2">
-                        <Label htmlFor="accent-color">{t('admin_settings_appearance_accent')}</Label>
-                        <Input id="accent-color" type="color" defaultValue="#334155" className="p-1"/>
-                    </div>
-                 </div>
-               </div>
-            </CardContent>
-             <CardFooter>
-              <Button>{t('admin_settings_save_button')}</Button>
-            </CardFooter>
-          </Card>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button type="submit" disabled={isThemeSubmitting}>
+                     {isThemeSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {t('admin_settings_save_button')}
+                  </Button>
+                </CardFooter>
+              </Card>
+            </form>
+          </Form>
         </TabsContent>
         
         {/* Payment Gateway Tab */}
