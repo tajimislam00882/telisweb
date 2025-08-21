@@ -13,6 +13,9 @@ const checkoutSchema = z.object({
     imageUrl: z.string(),
     category: z.string(),
     quantity: z.number(),
+    // Add other fields from CartItem if they exist and are sent from client
+    fileType: z.string().optional(),
+    fileSize: z.string().optional(),
   })),
   userId: z.string().uuid(),
   totalAmount: z.number(),
@@ -32,6 +35,7 @@ export async function POST(request: Request) {
     const validatedFields = checkoutSchema.safeParse(body);
 
     if (!validatedFields.success) {
+      console.error('Checkout validation error:', validatedFields.error.errors);
       return NextResponse.json({ error: 'Invalid form data. Please check your inputs.' }, { status: 400 });
     }
 
@@ -90,7 +94,8 @@ export async function POST(request: Request) {
         id: orderId,
         user_id: userId,
         total_amount: totalAmount,
-        status: 'pending',
+        status: 'pending', // Default status
+        payment_method: paymentMethod,
       })
       .select()
       .single();

@@ -15,32 +15,33 @@ export interface PopularCategory extends Category {
 }
 
 export interface Product {
-  id: string; // Now correctly represents UUID
+  id: string;
+  created_at: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
   category: string;
   image_url: string | null;
+  tags: string[];
   rating: number;
   reviews: number;
   sales?: number;
-  tags: string[];
-  file_type: string | null;
-  file_size: string | null;
-  created_at?: string;
-
-  // New fields for multi-business model
+  file_type?: string | null;
+  file_size?: string | null;
+  
+  // Business model specific fields
   business_model_id?: number;
   supplier_id?: string | null; 
   affiliate_url?: string | null;
-  commission_rate?: number | null; // For affiliate
-  supplier_price?: number | null; // For dropshipping
-  profit_margin?: number | null; // For dropshipping
+  commission_rate?: number | null;
+  supplier_price?: number | null;
+  profit_margin?: number | null;
   min_stock_alert?: number;
   auto_restock?: boolean;
   shipping_weight?: number | null;
   shipping_dimensions?: string | null;
 }
+
 
 export interface BusinessModel {
     id: number;
@@ -59,6 +60,8 @@ export interface Supplier {
     status: 'active' | 'inactive' | 'pending';
     rating?: number;
     created_at?: string;
+    payment_terms?: string;
+    shipping_policy?: string;
 }
 
 export interface Order {
@@ -75,7 +78,7 @@ export interface OrderItem {
     order_id: string;
     product_id: string;
     quantity: number;
-    price: number;
+    price_at_purchase: number; // Changed from price to price_at_purchase
 }
 
 
@@ -188,3 +191,4 @@ export interface SiteSettings {
     
 
     
+

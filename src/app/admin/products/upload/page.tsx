@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -14,7 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Upload, DollarSign, Percent, Package, Loader2 } from 'lucide-react';
+import { ArrowLeft, Loader2, DollarSign, Percent, Package } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -40,7 +39,6 @@ const formSchema = z.object({
   category: z.string().min(1, 'Category is required'),
   tags: z.string().optional(),
   
-  // Business model specific
   business_model_id: z.coerce.number(),
   affiliate_url: z.string().optional(),
   commission_rate: z.coerce.number().optional(),
@@ -49,8 +47,7 @@ const formSchema = z.object({
   auto_restock: z.boolean().optional(),
   shipping_weight: z.coerce.number().optional(),
   
-  // Files
-  product_image: z.any().refine(file => file instanceof File, 'Product image is required.'),
+  product_image: z.any().refine(file => file instanceof FileList && file.length > 0, 'Product image is required.'),
   digital_file: z.any().optional(),
 });
 
@@ -73,14 +70,14 @@ export default function UploadProductPage() {
       category: '',
       tags: '',
       business_model_id: 1, // Default to digital
+      auto_restock: false,
     },
   });
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     try {
-        // 1. Handle image upload
-        const imageFile = data.product_image as File;
+        const imageFile = data.product_image[0] as File;
         const imageExt = imageFile.name.split('.').pop();
         const imagePath = `products/${uuidv4()}.${imageExt}`;
 
@@ -94,7 +91,6 @@ export default function UploadProductPage() {
             .from('products')
             .getPublicUrl(imagePath);
 
-        // 2. Prepare data for insertion
         const productData = {
             id: uuidv4(),
             name: data.name,
@@ -110,9 +106,10 @@ export default function UploadProductPage() {
             min_stock_alert: data.min_stock_alert,
             auto_restock: data.auto_restock,
             shipping_weight: data.shipping_weight,
+            rating: 0, // default
+            reviews: 0, // default
         };
 
-        // 3. Insert product data
         const { error: insertError } = await supabase.from('products').insert([productData]);
 
         if (insertError) throw new Error(`Failed to save product: ${insertError.message}`);
