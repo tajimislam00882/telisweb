@@ -63,16 +63,13 @@ export async function POST(request: Request) {
     // For now, we simulate this.
     const isSslCommerz = paymentMethod === 'sslcommerz';
     const isPipraPay = paymentMethod === 'piprapay';
+    
+    const storeId = process.env.SSLCZ_STORE_ID;
+    const storePassword = process.env.SSLCZ_STORE_PASSWORD;
+    const isLive = false; // Set to true for production
 
-    if (isSslCommerz) {
-      // TODO: Fetch credentials from DB
-      const storeId = process.env.SSLCZ_STORE_ID;
-      const storePassword = process.env.SSLCZ_STORE_PASSWORD;
-      const isLive = false; // Set to true for production
 
-      if (!storeId || !storePassword) {
-        console.warn("SSL Commerz credentials not set. Skipping payment gateway. Order will be 'pending'.");
-      } else {
+    if (isSslCommerz && storeId && storePassword) {
         //  const sslcz = new SSLCommerz(storeId, storePassword, isLive);
         const paymentData = {
           total_amount: totalAmount,
@@ -96,7 +93,9 @@ export async function POST(request: Request) {
           cus_phone: 'N/A',
         };
         console.log("Would redirect to SSL Commerz with data:", paymentData);
-      }
+      
+    } else if (isSslCommerz) {
+         console.warn("SSL Commerz credentials not set. Skipping payment gateway. Order will be 'pending'.");
     }
 
     if (isPipraPay) {
