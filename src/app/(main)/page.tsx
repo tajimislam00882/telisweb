@@ -20,30 +20,37 @@ async function getHomepageSettings(): Promise<HomepageSettings> {
         }
     );
 
-    const { data, error } = await supabase
-        .from('site_settings')
-        .select('settings')
-        .eq('name', 'homepage')
-        .single();
-    
-    // If data is successfully fetched and settings exist, return them.
-    if (data && data.settings) {
-        return data.settings as HomepageSettings;
-    }
-    
-    // If there's an error, but it's the expected "no rows found" error,
-    // we don't need to log it. We'll proceed to return defaults.
-    // We only log an error if it's an *unexpected* database issue.
-    if (error && error.code !== 'PGRST116') {
-        console.error("Unexpected error fetching homepage settings:", error);
-    }
-    
-    // For any other case (no data, no settings, or PGRST116 error), return defaults.
-    return {
+    const returnDefaults = () => ({
         hero_title: "Bangladesh's Best Digital Product Shop",
         hero_subtitle: "Get quality e-books, software, templates and much more here.",
         hero_cta_text: "Start Shopping"
-    };
+    });
+
+    try {
+        const { data, error } = await supabase
+            .from('site_settings')
+            .select('settings')
+            .eq('name', 'homepage')
+            .single();
+
+        if (error) {
+            // This will catch "PGRST116" (no rows found) and other potential errors.
+            // In any error case, we gracefully fall back to defaults without logging.
+            return returnDefaults();
+        }
+
+        if (data && data.settings) {
+            return data.settings as HomepageSettings;
+        }
+
+        // If there's no data or no settings property, return defaults.
+        return returnDefaults();
+
+    } catch (e) {
+        // Catch any unexpected exceptions during the async operation.
+        console.error("A critical error occurred while fetching homepage settings:", e);
+        return returnDefaults();
+    }
 }
 
 
