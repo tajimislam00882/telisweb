@@ -156,47 +156,28 @@ export interface NavItem {
 }
 
 export interface SiteSettings {
-  general: {
+  name: 'homepage' | 'general' | 'seo';
+  settings: HomepageSettings | GeneralSettings | SeoSettings;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface HomepageSettings {
+    hero_title: string;
+    hero_subtitle: string;
+    hero_cta_text: string;
+    hero_image_url?: string;
+}
+
+export interface GeneralSettings {
     site_name: string;
     currency: string;
     contact_email: string;
     company_address: string;
-  };
-  appearance: {
-    logo_url: string;
-    favicon_url: string;
-    primary_color: string;
-    background_color: string;
-    accent_color: string;
-  };
-  payment_gateways: {
-    [key: string]: {
-      enabled: boolean;
-      api_key?: string;
-      api_secret?: string;
-      store_id?: string;
-      store_password?: string;
-    };
-  };
-  social_links: {
-      twitter_url: string;
-      github_url: string;
-      linkedin_url: string;
-  };
-  seo: {
-      meta_title: string;
-      meta_description: string;
-      og_image_url: string;
-  };
-  integrations: {
-    google_analytics_id?: string;
-    facebook_pixel_id?: string;
-    google_translate_api_key?: string;
-    api_key?: string;
-  };
-  email: {
-    admin_email: string;
-    from_email: string;
-    send_order_confirmation: boolean;
-  }
+}
+
+export interface SeoSettings {
+    meta_title: string;
+    meta_description: string;
+    og_image_url?: string;
 }

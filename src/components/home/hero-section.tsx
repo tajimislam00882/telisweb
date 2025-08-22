@@ -6,8 +6,13 @@ import { ArrowRight, Star } from 'lucide-react';
 import Link from 'next/link';
 import { popularCategories } from '@/lib/data';
 import CategoryCard from './category-card';
+import type { HomepageSettings } from '@/lib/types';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  settings: HomepageSettings;
+}
+
+export default function HeroSection({ settings }: HeroSectionProps) {
   const { t } = useLanguage();
   const displayCategories = popularCategories.slice(0, 4);
 
@@ -19,10 +24,10 @@ export default function HeroSection() {
       <div className="container grid lg:grid-cols-2 gap-12 items-center py-20 lg:py-32 relative z-10">
         <div className="text-center lg:text-left">
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl font-headline">
-            {t('hero_title')}
+            {settings.hero_title}
             </h1>
             <p className="mx-auto lg:mx-0 mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-            {t('hero_subtitle')}
+            {settings.hero_subtitle}
             </p>
             <div className="mt-8 flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-2 text-muted-foreground">
                 <div className="flex items-center gap-2">
@@ -39,7 +44,7 @@ export default function HeroSection() {
             <div className="mt-10 flex flex-col items-center justify-center lg:justify-start gap-4 sm:flex-row">
             <Button asChild size="lg" className="h-12 px-8 text-base">
                 <Link href="/shop">
-                {t('start_shopping_button')} <ArrowRight className="ml-2 h-5 w-5" />
+                {settings.hero_cta_text} <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
             </Button>
             </div>
