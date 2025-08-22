@@ -181,3 +181,15 @@ export interface SeoSettings {
     meta_description: string;
     og_image_url?: string;
 }
+
+
+export interface DashboardStats {
+  totalRevenue: number;
+  totalSales: number;
+  totalUsers: number;
+}
+
+export interface DashboardData {
+    stats: DashboardStats;
+    recentOrders: Order[];
+}
