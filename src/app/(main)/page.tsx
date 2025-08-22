@@ -5,7 +5,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import type { HomepageSettings } from '@/lib/types';
 
-async function getHomepageSettings() {
+async function getHomepageSettings(): Promise<HomepageSettings> {
     const cookieStore = cookies();
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,14 +25,15 @@ async function getHomepageSettings() {
         .eq('name', 'homepage')
         .single();
     
-    // This handles the case where no settings row exists yet. It's expected.
-    // We only log an error if it's something other than "no rows found".
+    // If there's an error BUT it's the expected "no rows found" error,
+    // or if there's no data for any other reason, we proceed to return defaults.
+    // We only log an error if it's an *unexpected* database issue.
     if (error && error.code !== 'PGRST116') {
-        console.error("Could not fetch homepage settings:", error);
+        console.error("Unexpected error fetching homepage settings:", error);
     }
     
-    if (!data || error) {
-         return {
+    if (!data || !data.settings) {
+        return {
             hero_title: "Bangladesh's Best Digital Product Shop",
             hero_subtitle: "Get quality e-books, software, templates and much more here.",
             hero_cta_text: "Start Shopping"
