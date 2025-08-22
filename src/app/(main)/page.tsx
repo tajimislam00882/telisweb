@@ -25,9 +25,14 @@ async function getHomepageSettings() {
         .eq('name', 'homepage')
         .single();
     
-    if (error || !data) {
-        console.error("Could not fetch homepage settings, returning defaults.", error);
-        return {
+    // This handles the case where no settings row exists yet. It's expected.
+    // We only log an error if it's something other than "no rows found".
+    if (error && error.code !== 'PGRST116') {
+        console.error("Could not fetch homepage settings:", error);
+    }
+    
+    if (!data || error) {
+         return {
             hero_title: "Bangladesh's Best Digital Product Shop",
             hero_subtitle: "Get quality e-books, software, templates and much more here.",
             hero_cta_text: "Start Shopping"
