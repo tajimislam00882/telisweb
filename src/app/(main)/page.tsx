@@ -26,22 +26,24 @@ async function getHomepageSettings(): Promise<HomepageSettings> {
         .eq('name', 'homepage')
         .single();
     
-    // If there's an error BUT it's the expected "no rows found" error,
-    // or if there's no data for any other reason, we proceed to return defaults.
+    // If data is successfully fetched and settings exist, return them.
+    if (data && data.settings) {
+        return data.settings as HomepageSettings;
+    }
+    
+    // If there's an error, but it's the expected "no rows found" error,
+    // we don't need to log it. We'll proceed to return defaults.
     // We only log an error if it's an *unexpected* database issue.
     if (error && error.code !== 'PGRST116') {
         console.error("Unexpected error fetching homepage settings:", error);
     }
     
-    if (!data || !data.settings) {
-        return {
-            hero_title: "Bangladesh's Best Digital Product Shop",
-            hero_subtitle: "Get quality e-books, software, templates and much more here.",
-            hero_cta_text: "Start Shopping"
-        };
-    }
-    
-    return data.settings as HomepageSettings;
+    // For any other case (no data, no settings, or PGRST116 error), return defaults.
+    return {
+        hero_title: "Bangladesh's Best Digital Product Shop",
+        hero_subtitle: "Get quality e-books, software, templates and much more here.",
+        hero_cta_text: "Start Shopping"
+    };
 }
 
 
