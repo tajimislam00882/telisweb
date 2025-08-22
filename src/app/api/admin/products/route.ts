@@ -27,10 +27,6 @@ async function getSupabaseAdmin() {
         return null;
     }
     
-    // For admin operations that require elevated privileges,
-    // it's better to create a service role client.
-    // However, for user-authenticated admin actions like this,
-    // the user's session is sufficient.
     return supabase;
 }
 
@@ -70,7 +66,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Product image is required.' }, { status: 400 });
         }
 
-        // Upload Product Image
+        // 1. Upload Product Image
         const imageExt = imageFile.name.split('.').pop();
         const imagePath = `products/images/${uuidv4()}.${imageExt}`;
         const { data: imageData, error: imageError } = await supabase.storage
@@ -78,6 +74,7 @@ export async function POST(request: Request) {
             .upload(imagePath, imageFile);
 
         if (imageError) {
+            console.error("Image upload failed:", imageError);
             throw new Error(`Image upload failed: ${imageError.message}`);
         }
 
@@ -85,8 +82,11 @@ export async function POST(request: Request) {
             .from('products')
             .getPublicUrl(imagePath);
 
-        let digitalFileUrl = null;
-        // Upload Digital File if it exists
+        // 2. Upload Digital File (if provided)
+        let digitalFileUrl: string | null = null;
+        let fileSize: string | null = null;
+        let fileType: string | null = null;
+
         if (digitalFile) {
             const digitalFileExt = digitalFile.name.split('.').pop();
             const digitalFilePath = `products/files/${uuidv4()}.${digitalFileExt}`;
@@ -95,41 +95,57 @@ export async function POST(request: Request) {
                 .upload(digitalFilePath, digitalFile);
 
             if (fileError) {
-                // Attempt to clean up the already uploaded image if file upload fails
-                await supabase.storage.from('products').remove([imagePath]);
+                await supabase.storage.from('products').remove([imagePath]); // Clean up image
+                console.error("Digital file upload failed:", fileError);
                 throw new Error(`Digital file upload failed: ${fileError.message}`);
             }
 
             const { data: { publicUrl } } = supabase.storage
               .from('products')
               .getPublicUrl(digitalFilePath);
+            
             digitalFileUrl = publicUrl;
+            fileSize = `${(digitalFile.size / 1024 / 1024).toFixed(2)}MB`;
+            fileType = digitalFileExt || 'file';
         }
 
+        // 3. Prepare product data for insertion
         const tagsValue = formData.get('tags') as string;
-        const tags = tagsValue ? tagsValue.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+        const tags = tagsValue ? tagsValue.split(',').map(tag => tag.trim()).filter(Boolean) : [];
 
+        const getFloat = (key: string) => {
+            const val = formData.get(key) as string;
+            return val ? parseFloat(val) : null;
+        }
+        const getInt = (key: string) => {
+            const val = formData.get(key) as string;
+            return val ? parseInt(val, 10) : null;
+        }
+        const getBool = (key: string) => (formData.get(key) as string) === 'true';
 
         const productData = {
             id: formData.get('id') as string,
             name: formData.get('name') as string,
-            description: formData.get('description') as string,
-            price: parseFloat(formData.get('price') as string),
+            description: formData.get('description') as string | null,
+            price: getFloat('price') || 0,
             category: formData.get('category') as string,
             tags: tags,
             image_url: imageUrl,
             digital_file_url: digitalFileUrl,
-            business_model_id: parseInt(formData.get('business_model_id') as string, 10),
-            affiliate_url: formData.get('affiliate_url') as string,
-            commission_rate: formData.get('commission_rate') ? parseFloat(formData.get('commission_rate') as string) : null,
-            supplier_price: formData.get('supplier_price') ? parseFloat(formData.get('supplier_price') as string) : null,
-            min_stock_alert: formData.get('min_stock_alert') ? parseInt(formData.get('min_stock_alert') as string, 10) : null,
-            auto_restock: (formData.get('auto_restock') as string) === 'true',
-            shipping_weight: formData.get('shipping_weight') ? parseFloat(formData.get('shipping_weight') as string) : null,
+            file_size: fileSize,
+            file_type: fileType,
+            business_model_id: getInt('business_model_id') || 1,
+            affiliate_url: formData.get('affiliate_url') as string | null,
+            commission_rate: getFloat('commission_rate'),
+            supplier_price: getFloat('supplier_price'),
+            min_stock_alert: getInt('min_stock_alert'),
+            auto_restock: getBool('auto_restock'),
+            shipping_weight: getFloat('shipping_weight'),
             rating: 0,
             reviews: 0,
         };
 
+        // 4. Insert into database
         const { data, error: insertError } = await supabase
             .from('products')
             .insert([productData])
@@ -137,22 +153,20 @@ export async function POST(request: Request) {
             .single();
 
         if (insertError) {
-            // If DB insert fails, attempt to delete the uploaded files
+            // If DB insert fails, clean up uploaded files
             await supabase.storage.from('products').remove([imagePath]);
             if (digitalFileUrl) {
-                const digitalFilePath = digitalFileUrl.split('/').pop();
-                if (digitalFilePath) {
-                    await supabase.storage.from('products').remove([`files/${digitalFilePath}`]);
-                }
+                const digitalFilePath = `files/${digitalFileUrl.split('/files/')[1]}`;
+                await supabase.storage.from('products').remove([digitalFilePath]);
             }
             console.error('Supabase insert error:', insertError);
-            return NextResponse.json({ error: insertError.message }, { status: 400 });
+            throw new Error(`Database insert failed: ${insertError.message}`);
         }
 
         return NextResponse.json(data, { status: 201 });
 
     } catch (e: any) {
-        console.error("API Error:", e.message);
+        console.error("API Error in POST /api/admin/products:", e.message);
         return NextResponse.json({ error: 'Invalid request or server error' }, { status: 500 });
     }
 }

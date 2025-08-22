@@ -26,7 +26,7 @@ import { categories } from '@/lib/data';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Checkbox } from '@/components/ui/checkbox';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
@@ -41,7 +41,7 @@ const formSchema = z.object({
   tags: z.string().optional(),
   
   business_model_id: z.coerce.number(),
-  affiliate_url: z.string().optional(),
+  affiliate_url: z.string().url().or(z.literal('')).optional(),
   commission_rate: z.coerce.number().optional(),
   supplier_price: z.coerce.number().optional(),
   min_stock_alert: z.coerce.number().optional(),
@@ -85,19 +85,18 @@ export default function UploadProductPage() {
     const formData = new FormData();
     formData.append('id', uuidv4());
     formData.append('name', data.name);
-    formData.append('description', data.description || '');
+    if(data.description) formData.append('description', data.description);
     formData.append('price', String(data.price));
     formData.append('category', data.category);
-    formData.append('tags', data.tags || '');
+    if(data.tags) formData.append('tags', data.tags);
     formData.append('business_model_id', String(data.business_model_id));
-    formData.append('affiliate_url', data.affiliate_url || '');
-    formData.append('commission_rate', String(data.commission_rate || 0));
-    formData.append('supplier_price', String(data.supplier_price || 0));
-    formData.append('min_stock_alert', String(data.min_stock_alert || 0));
-    formData.append('auto_restock', String(data.auto_restock || false));
-    formData.append('shipping_weight', String(data.shipping_weight || 0));
-    formData.append('rating', '0');
-    formData.append('reviews', '0');
+    
+    if (data.affiliate_url) formData.append('affiliate_url', data.affiliate_url);
+    if (data.commission_rate) formData.append('commission_rate', String(data.commission_rate));
+    if (data.supplier_price) formData.append('supplier_price', String(data.supplier_price));
+    if (data.min_stock_alert) formData.append('min_stock_alert', String(data.min_stock_alert));
+    if (data.auto_restock) formData.append('auto_restock', String(data.auto_restock));
+    if (data.shipping_weight) formData.append('shipping_weight', String(data.shipping_weight));
     
     if (data.product_image?.[0]) {
       formData.append('product_image', data.product_image[0]);
