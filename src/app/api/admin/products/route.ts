@@ -106,6 +106,9 @@ export async function POST(request: Request) {
             digitalFileUrl = publicUrl;
         }
 
+        const tagsValue = formData.get('tags') as string;
+        const tags = tagsValue ? tagsValue.split(',').map(tag => tag.trim()).filter(tag => tag) : [];
+
 
         const productData = {
             id: formData.get('id') as string,
@@ -113,16 +116,16 @@ export async function POST(request: Request) {
             description: formData.get('description') as string,
             price: parseFloat(formData.get('price') as string),
             category: formData.get('category') as string,
-            tags: (formData.get('tags') as string)?.split(',').map(tag => tag.trim()) || [],
+            tags: tags,
             image_url: imageUrl,
             digital_file_url: digitalFileUrl,
             business_model_id: parseInt(formData.get('business_model_id') as string, 10),
             affiliate_url: formData.get('affiliate_url') as string,
-            commission_rate: parseFloat(formData.get('commission_rate') as string),
-            supplier_price: parseFloat(formData.get('supplier_price') as string),
-            min_stock_alert: parseInt(formData.get('min_stock_alert') as string, 10),
+            commission_rate: formData.get('commission_rate') ? parseFloat(formData.get('commission_rate') as string) : null,
+            supplier_price: formData.get('supplier_price') ? parseFloat(formData.get('supplier_price') as string) : null,
+            min_stock_alert: formData.get('min_stock_alert') ? parseInt(formData.get('min_stock_alert') as string, 10) : null,
             auto_restock: (formData.get('auto_restock') as string) === 'true',
-            shipping_weight: parseFloat(formData.get('shipping_weight') as string),
+            shipping_weight: formData.get('shipping_weight') ? parseFloat(formData.get('shipping_weight') as string) : null,
             rating: 0,
             reviews: 0,
         };

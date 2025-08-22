@@ -48,7 +48,7 @@ const formSchema = z.object({
   auto_restock: z.boolean().optional(),
   shipping_weight: z.coerce.number().optional(),
   
-  product_image: z.instanceof(FileList).refine(files => files.length > 0, 'Product image is required.'),
+  product_image: z.instanceof(FileList).refine(files => files?.length > 0, 'Product image is required.'),
   digital_file: z.instanceof(FileList).optional(),
 });
 
@@ -70,7 +70,12 @@ export default function UploadProductPage() {
       category: '',
       tags: '',
       business_model_id: 1, // Default to digital
+      affiliate_url: '',
+      commission_rate: undefined,
+      supplier_price: undefined,
+      min_stock_alert: 5,
       auto_restock: false,
+      shipping_weight: undefined,
     },
   });
 
@@ -94,7 +99,7 @@ export default function UploadProductPage() {
     formData.append('rating', '0');
     formData.append('reviews', '0');
     
-    if (data.product_image[0]) {
+    if (data.product_image?.[0]) {
       formData.append('product_image', data.product_image[0]);
     }
      if (data.digital_file?.[0]) {
