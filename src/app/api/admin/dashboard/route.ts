@@ -5,9 +5,26 @@ import { NextResponse } from 'next/server';
 
 const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
-async function getSupabaseAdmin() {
-    const cookieStore = cookies();
+async function getSupabaseAdmin(cookieStore: any) {
     const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                get(name: string) {
+                    return cookieStore.get(name)?.value;
+                },
+            },
+        }
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
+        return null;
+    }
+    
+    // Return service role client only if user is admin
+    return createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.SUPABASE_SERVICE_ROLE_KEY!,
         {
@@ -18,18 +35,12 @@ async function getSupabaseAdmin() {
             },
         }
     );
-
-    // Verify the user is an admin before returning the service role client
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
-        return null;
-    }
-    
-    return supabase;
 }
 
 export async function GET(request: Request) {
-    const supabase = await getSupabaseAdmin();
+    const cookieStore = cookies();
+    const supabase = await getSupabaseAdmin(cookieStore);
+    
     if (!supabase) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -77,6 +88,6 @@ export async function GET(request: Request) {
 
     } catch (error: any) {
         console.error('Error fetching dashboard data:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'An internal server error occurred.' }, { status: 500 });
     }
 }
