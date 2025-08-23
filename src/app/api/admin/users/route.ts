@@ -37,15 +37,20 @@ export async function GET(request: Request) {
         }
     );
 
-    const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({
-        sortBy: 'created_at',
-        sortOrder: 'desc'
-    });
-    
-    if (error) {
-        console.error('Error fetching users:', error);
-        return NextResponse.json({ error: 'Failed to fetch users. Ensure SUPABASE_SERVICE_ROLE_KEY is set.' }, { status: 500 });
-    }
+    try {
+        const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers({
+            sortBy: 'created_at',
+            sortOrder: 'desc'
+        });
+        
+        if (error) {
+            console.error('Error fetching users:', error);
+            return NextResponse.json({ error: 'Failed to fetch users. Ensure SUPABASE_SERVICE_ROLE_KEY is set.' }, { status: 500 });
+        }
 
-    return NextResponse.json({ users });
+        return NextResponse.json({ users });
+    } catch (e: any) {
+        console.error('Server error in /api/admin/users:', e);
+        return NextResponse.json({ error: 'An internal server error occurred.' }, { status: 500 });
+    }
 }
