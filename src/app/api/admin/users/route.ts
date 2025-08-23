@@ -9,7 +9,7 @@ const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 export async function GET(request: Request) {
     const cookieStore = cookies();
     
-    // First, check if the user is an admin
+    // First, check if the calling user is an admin
     const supabaseUserClient = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -22,9 +22,14 @@ export async function GET(request: Request) {
         }
     );
     
-    const { data: { user } } = await supabaseUserClient.auth.getUser();
-    if (!user || !ADMIN_EMAILS.includes(user.email || '')) {
-       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const { data: { user }, error: userError } = await supabaseUserClient.auth.getUser();
+
+    if (userError || !user) {
+       return NextResponse.json({ error: 'Unauthorized: Could not retrieve user.' }, { status: 401 });
+    }
+    
+    if (!ADMIN_EMAILS.includes(user.email || '')) {
+       return NextResponse.json({ error: 'Unauthorized: Not an admin.' }, { status: 401 });
     }
 
     // If user is admin, use the service role client to fetch users
