@@ -23,37 +23,20 @@ export default function DashboardLayout({
     const router = useRouter();
     const { t } = useLanguage();
 
-    const navItems = [
-      { href: '/dashboard', label: t('dashboard_nav_dashboard'), icon: LayoutDashboard },
-      {
-        href: '/dashboard/purchases',
-        label: t('dashboard_nav_purchases'),
-        icon: ShoppingBag,
-      },
-      { href: '/dashboard/downloads', label: t('dashboard_nav_downloads'), icon: Download },
-       { href: '/dashboard/affiliate', label: t('dashboard_nav_affiliate'), icon: Handshake },
-      { href: '/dashboard/profile', label: t('dashboard_nav_profile'), icon: UserCircle },
-    ];
-
-    const handleLogout = async () => {
-        await logout();
-        router.push('/login');
-    }
-
-    const footerNavItems = [
-        { href: '/', label: t('dashboard_nav_back_to_shop'), icon: Home },
-        { href: '#', label: t('dashboard_nav_logout'), icon: LogOut, className: 'text-red-500 hover:text-red-500 hover:bg-red-500/10', action: handleLogout },
-    ];
-
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
         }
     }, [user, loading, router]);
 
+    const handleLogout = async () => {
+        await logout();
+        router.push('/login');
+    }
+
     if (loading || !user) {
         return (
-            <div className="flex h-screen items-center justify-center">
+            <div className="flex h-screen items-center justify-center bg-background">
                 <svg
                     className="animate-spin h-8 w-8 text-primary"
                     xmlns="http://www.w3.org/2000/svg"
@@ -77,6 +60,24 @@ export default function DashboardLayout({
             </div>
         );
     }
+    
+    const navItems = [
+      { href: '/dashboard', label: t('dashboard_nav_dashboard'), icon: LayoutDashboard },
+      {
+        href: '/dashboard/purchases',
+        label: t('dashboard_nav_purchases'),
+        icon: ShoppingBag,
+      },
+      { href: '/dashboard/downloads', label: t('dashboard_nav_downloads'), icon: Download },
+       { href: '/dashboard/affiliate', label: t('dashboard_nav_affiliate'), icon: Handshake },
+      { href: '/dashboard/profile', label: t('dashboard_nav_profile'), icon: UserCircle },
+    ];
+
+    const footerNavItems = [
+        { href: '/', label: t('dashboard_nav_back_to_shop'), icon: Home },
+        { href: '#', label: t('dashboard_nav_logout'), icon: LogOut, className: 'text-red-500 hover:text-red-500 hover:bg-red-500/10', action: handleLogout },
+    ];
+
 
   return (
     <AppShell navItems={navItems} footerNavItems={footerNavItems}>

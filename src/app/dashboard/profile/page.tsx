@@ -19,7 +19,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Loader2, Upload } from 'lucide-react';
-import { Form, FormField, FormControl, FormMessage, FormLabel } from '@/components/ui/form';
+import { Form, FormField, FormControl, FormMessage, FormLabel, FormItem } from '@/components/ui/form';
 
 const profileSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
