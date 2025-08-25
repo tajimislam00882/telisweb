@@ -24,7 +24,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/context/language-context';
@@ -73,7 +73,7 @@ export default function LoginPage() {
   const router = useRouter();
   const { t } = useLanguage();
   const { isAdmin } = useAuth();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

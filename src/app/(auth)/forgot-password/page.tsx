@@ -22,7 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase';
 import { ArrowLeft } from 'lucide-react';
@@ -34,7 +34,7 @@ const formSchema = z.object({
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

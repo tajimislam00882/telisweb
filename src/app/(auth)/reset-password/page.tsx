@@ -22,7 +22,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
@@ -38,7 +38,7 @@ const formSchema = z.object({
 export default function ResetPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   
   const form = useForm<z.infer<typeof formSchema>>({
