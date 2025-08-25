@@ -3,6 +3,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import en from '@/locales/en.json';
 import bn from '@/locales/bn.json';
+import { useMounted } from '@/hooks/use-mounted';
 
 type Language = 'en' | 'bn';
 
@@ -18,23 +19,26 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>('en');
+  const isMounted = useMounted();
 
   useEffect(() => {
-    // This effect runs only on the client, after the initial render.
-    // This prevents a hydration mismatch.
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && ['en', 'bn'].includes(savedLanguage)) {
-      setLanguageState(savedLanguage);
-      document.body.classList.toggle('font-bn', savedLanguage === 'bn');
-    } else {
+    if (isMounted) {
+      const savedLanguage = localStorage.getItem('language') as Language;
+      if (savedLanguage && ['en', 'bn'].includes(savedLanguage)) {
+        setLanguageState(savedLanguage);
+        document.body.classList.toggle('font-bn', savedLanguage === 'bn');
+      } else {
         document.body.classList.remove('font-bn');
+      }
     }
-  }, []);
+  }, [isMounted]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
-    document.body.classList.toggle('font-bn', lang === 'bn');
+    if (isMounted) {
+      localStorage.setItem('language', lang);
+      document.body.classList.toggle('font-bn', lang === 'bn');
+    }
   };
 
   const t = useCallback((key: string, replacements?: { [key: string]: string | number }) => {
