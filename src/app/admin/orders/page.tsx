@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, ListFilter, File, Loader2 } from 'lucide-react';
+import { MoreHorizontal, ListFilter, File } from 'lucide-react';
 import type { Order } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -40,30 +40,29 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/admin/orders');
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch orders');
-      }
-      const data = await response.json();
-      setOrders(data);
-    } catch (error: any) {
-      toast({
-        variant: 'destructive',
-        title: 'Error',
-        description: error.message,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchOrders = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/admin/orders');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch orders');
+        }
+        const data = await response.json();
+        setOrders(data);
+      } catch (error: any) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: error.message,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchOrders();
-  }, []);
+  }, [toast]);
   
   const getCustomerName = (order: Order) => {
     const metaData = order.users?.raw_user_meta_data;

@@ -1,7 +1,7 @@
 /**
  * @fileOverview An AI flow for performing searches based on image content.
  *
- * - imageSearch - A function that takes an image and returns a search query.
+ * - imageSearch - a function that takes an image and returns a search query.
  * - ImageSearchInput - The input type for the imageSearch function.
  * - ImageSearchOutput - The return type for the imageSearch function.
  */

@@ -38,7 +38,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase';
 import type { Supplier } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
@@ -53,15 +52,18 @@ export default function AdminSuppliersPage() {
 
   const fetchSuppliers = async () => {
     setLoading(true);
-    const supabase = createClient();
-    const { data, error } = await supabase.from('suppliers').select('*').order('created_at', { ascending: false });
-    if (error) {
-      console.error('Error fetching suppliers:', error);
-      toast({ variant: 'destructive', title: 'Error', description: 'Failed to fetch suppliers.' });
-    } else if (data) {
-      setSuppliers(data as any[] as Supplier[]);
+    try {
+      const response = await fetch('/api/admin/suppliers');
+      if (!response.ok) {
+        throw new Error('Failed to fetch suppliers');
+      }
+      const data = await response.json();
+      setSuppliers(data);
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -70,11 +72,15 @@ export default function AdminSuppliersPage() {
   
   const handleDeleteSupplier = async () => {
     if (!supplierToDelete) return;
-    const supabase = createClient();
     
     try {
-        const { error } = await supabase.from('suppliers').delete().eq('id', supplierToDelete.id);
-        if (error) throw error;
+        const response = await fetch(`/api/admin/suppliers/${supplierToDelete.id}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to delete supplier');
+        }
         
         toast({
             title: 'Supplier Deleted',

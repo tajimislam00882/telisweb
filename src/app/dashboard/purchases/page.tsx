@@ -59,7 +59,9 @@ export default function PurchasesPage() {
             }
         };
 
-        fetchOrders();
+        if (user) {
+            fetchOrders();
+        }
     }, [user, toast]);
 
   return (

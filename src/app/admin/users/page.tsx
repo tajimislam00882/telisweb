@@ -35,7 +35,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Terminal, Loader2 } from 'lucide-react';
+import { MoreHorizontal, Terminal } from 'lucide-react';
 import type { User } from '@supabase/supabase-js';
 import { format } from 'date-fns';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';

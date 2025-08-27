@@ -20,13 +20,11 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Home, LayoutTemplate, Palette, Loader2 } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { useEffect, useState } from 'react';
-import type { HomepageSettings } from '@/lib/types';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 
@@ -34,7 +32,6 @@ const heroSchema = z.object({
   hero_title: z.string().min(1, 'Title is required'),
   hero_subtitle: z.string().min(1, 'Subtitle is required'),
   hero_cta_text: z.string().min(1, 'Button text is required'),
-  // hero_image_url: z.string().url().optional().or(z.literal('')),
 });
 
 type HeroFormData = z.infer<typeof heroSchema>;

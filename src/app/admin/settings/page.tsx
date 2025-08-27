@@ -22,10 +22,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Globe, Palette, Wallet, Share2, Mail, KeyRound, Settings, Link as LinkIcon, Search as SearchIcon, Copy, RefreshCw, Loader2 } from 'lucide-react';
 import { useLanguage } from '@/context/language-context';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { z } from 'zod';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 

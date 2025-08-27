@@ -37,12 +37,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { createClient } from '@/lib/supabase';
 import type { Affiliate } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@/lib/supabase';
 
 export default function AdminAffiliatesPage() {
   const [affiliates, setAffiliates] = useState<Affiliate[]>([]);

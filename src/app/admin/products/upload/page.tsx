@@ -11,7 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Loader2, DollarSign, Percent, Package } from 'lucide-react';
@@ -108,7 +107,7 @@ export default function UploadProductPage() {
     try {
         const response = await fetch('/api/admin/products', {
             method: 'POST',
-            body: formData, // No Content-Type header needed, browser sets it for FormData
+            body: formData,
         });
 
         const result = await response.json();

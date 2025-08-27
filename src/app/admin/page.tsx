@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, ShoppingCart, Users, Activity, Terminal } from 'lucide-react';
+import { DollarSign, ShoppingCart, Users, Terminal } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { DashboardData, Order } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';

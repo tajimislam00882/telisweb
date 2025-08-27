@@ -15,7 +15,6 @@ import {
   Moon,
   Sun,
   LogIn,
-  LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +46,6 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
-import { useTheme } from 'next-themes';
 import { ThemeToggle } from '../shared/theme-toggle';
 import { useMounted } from '@/hooks/use-mounted';
 
@@ -171,12 +169,20 @@ export default function Header() {
       });
     } finally {
       setIsImageSearching(false);
-      // Reset file input
       if (imageInputRef.current) {
         imageInputRef.current.value = '';
       }
     }
   };
+
+  const handleLogout = async () => {
+    await logout();
+    router.push('/login');
+    toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out."
+    });
+  }
   
   const DesktopNav = () => (
      <div className="hidden md:flex items-center gap-6">
@@ -329,7 +335,7 @@ export default function Header() {
                   </DropdownMenuItem>
               )}
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logout}><LogOut className="mr-2 h-4 w-4" />Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : isMounted ? (

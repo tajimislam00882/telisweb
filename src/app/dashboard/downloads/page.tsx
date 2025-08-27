@@ -29,7 +29,7 @@ import Image from 'next/image';
 
 export default function DownloadsPage() {
   const { t } = useLanguage();
-  const { supabase, user } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [downloads, setDownloads] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,9 @@ export default function DownloadsPage() {
       }
     };
 
-    fetchDownloads();
+    if (user) {
+        fetchDownloads();
+    }
   }, [user, toast]);
 
 
