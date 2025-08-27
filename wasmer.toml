@@ -1,18 +1,11 @@
 [package]
-name = "your-username/your-project-name"
+name = "firebase-studio/your-project-name"
 version = "0.1.0"
 description = "My Next.js app running on Wasmer"
 
 [dependencies]
 "wasmer/node" = "20.12.2"
 
-[[command]]
-name = "start"
-module = "wasmer/node"
-runner = "https://webc.org/command/node"
-
-[command.annotations.wasi]
-main-args = [
-    "npm",
-    "start",
-]
+[fs]
+"/out" = "./out"
+"/" = "/out"
