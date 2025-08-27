@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview An AI flow for performing searches based on image content.
  *

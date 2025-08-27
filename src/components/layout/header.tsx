@@ -44,7 +44,6 @@ import { useAuth } from '@/context/auth-context';
 import { useCart } from '@/context/cart-context';
 import { useSearchSuggestions } from '@/hooks/use-search-suggestions';
 import Image from 'next/image';
-import { imageSearch } from '@/ai/flows/image-search-flow';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
@@ -138,7 +137,19 @@ export default function Header() {
       const reader = new FileReader();
       reader.onloadend = async () => {
         const imageDataUri = reader.result as string;
-        const result = await imageSearch({ imageDataUri });
+        
+        const response = await fetch('/api/ai/image-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageDataUri }),
+        });
+
+        if (!response.ok) {
+           throw new Error("Failed to get search query from server.");
+        }
+        
+        const result = await response.json();
+
         if (result.searchQuery) {
           router.push(`/shop?q=${encodeURIComponent(result.searchQuery)}`);
           toast({
