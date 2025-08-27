@@ -1,11 +1,8 @@
 
 [package]
-name = "firebase-studio/your-project-name"
+name = "firebase-studio/your-project-name-static"
 version = "0.1.0"
 description = "My Next.js app running on Wasmer"
-
-[dependencies]
-"wasmer/node" = "20.12.2"
 
 [[command]]
 name = "start"
@@ -13,5 +10,5 @@ module = "wasmer/node:20.12.2"
 runner = "https"
 
 [command.annotations]
-run = "npm start"
-build = "npm install && npm run build"
+run = "npm run start"
+build = "npm ci && npm run build"

@@ -20,6 +20,7 @@ import { useAuth } from '@/context/auth-context';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useLanguage } from '@/context/language-context';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function AdminLayout({
   children,
@@ -40,7 +41,7 @@ export default function AdminLayout({
     { href: '/admin/affiliates', label: t('admin_nav_affiliates'), icon: Handshake },
     { href: '/admin/suppliers', label: t('admin_nav_suppliers'), icon: Truck },
     { href: '/admin/settings', label: t('admin_nav_settings'), icon: Settings },
-  ];
+  ].map(item => ({...item, active: pathname === item.href}));
 
   const handleLogout = async () => {
     await logout();
@@ -118,7 +119,7 @@ export default function AdminLayout({
             </div>
           </form>
           <Button asChild>
-            <a href="/dashboard/profile">{t('admin_header_account')}</a>
+            <Link href="/dashboard/profile">{t('admin_header_account')}</Link>
           </Button>
         </div>
       }

@@ -22,6 +22,7 @@ export default function DashboardLayout({
 }) {
     const { user, loading, logout } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -72,7 +73,7 @@ export default function DashboardLayout({
       { href: '/dashboard/downloads', label: t('dashboard_nav_downloads'), icon: Download },
        { href: '/dashboard/affiliate', label: t('dashboard_nav_affiliate'), icon: Handshake },
       { href: '/dashboard/profile', label: t('dashboard_nav_profile'), icon: UserCircle },
-    ];
+    ].map(item => ({...item, active: pathname === item.href}));
 
     const footerNavItems = [
         { href: '/', label: t('dashboard_nav_back_to_shop'), icon: Home },
