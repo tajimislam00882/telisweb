@@ -48,6 +48,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Separator } from '../ui/separator';
 import { ThemeToggle } from '../shared/theme-toggle';
 import { useMounted } from '@/hooks/use-mounted';
+import { useTheme } from 'next-themes';
 
 export default function Header() {
   const pathname = usePathname();
