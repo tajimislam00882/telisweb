@@ -4,12 +4,11 @@ import { Inter, Noto_Serif_Bengali } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/providers/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
-import { Button } from '@/components/ui/button';
-import { MessageSquare } from 'lucide-react';
 import { LanguageProvider } from '@/context/language-context';
 import { AuthProvider } from '@/context/auth-context';
 import { CartProvider } from '@/context/cart-context';
 import Preloader from '@/components/shared/preloader';
+import Chatbot from '@/components/shared/chatbot';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const notoSerifBengali = Noto_Serif_Bengali({
@@ -57,12 +56,7 @@ export default function RootLayout({
               <LanguageProvider>
                 <CartProvider>
                     {children}
-                    <div className="fixed bottom-4 right-4 z-50">
-                    <Button size="icon" className="rounded-full h-14 w-14 shadow-lg">
-                        <MessageSquare className="h-6 w-6" />
-                        <span className="sr-only">Live Chat</span>
-                    </Button>
-                    </div>
+                    <Chatbot />
                     <Toaster />
                 </CartProvider>
               </LanguageProvider>
