@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, ShoppingCart, Users, Terminal } from 'lucide-react';
+import { DollarSign, ShoppingCart, Users, Terminal, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { DashboardData, Order } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -24,6 +24,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Pie, PieChart, Cell } from 'recharts';
+import { ChartContainer, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+
 
 export default function AdminDashboardPage() {
     const [data, setData] = useState<DashboardData | null>(null);
@@ -63,8 +66,30 @@ export default function AdminDashboardPage() {
         if (metaData?.first_name && metaData?.last_name) {
             return `${metaData.first_name} ${metaData.last_name}`;
         }
-        return 'N/A';
+        return order.users?.email || 'N/A';
     }
+
+    const pieChartConfig = {
+      sales: {
+        label: "Sales",
+      },
+      "ui-kits": {
+        label: "UI Kits",
+        color: "hsl(var(--chart-1))",
+      },
+      icons: {
+        label: "Icons",
+        color: "hsl(var(--chart-2))",
+      },
+      templates: {
+        label: "Templates",
+        color: "hsl(var(--chart-3))",
+      },
+      ebooks: {
+        label: "E-Books",
+        color: "hsl(var(--chart-4))",
+      },
+    } satisfies import("@/components/ui/chart").ChartConfig
 
   return (
     <div className="space-y-6">
@@ -113,6 +138,80 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-muted-foreground">
               Total registered users
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="lg:col-span-4">
+          <CardHeader>
+            <CardTitle>Monthly Revenue</CardTitle>
+             <CardDescription>Overview of sales revenue for the past 6 months.</CardDescription>
+          </CardHeader>
+          <CardContent className="pl-2">
+             {loading ? <Skeleton className="h-[350px] w-full" /> :
+             <ChartContainer config={{}} className="h-[350px] w-full">
+              <BarChart accessibilityLayer data={data?.monthlyRevenue}>
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => value.slice(0, 3)}
+                />
+                <YAxis
+                    stroke="#888888"
+                    fontSize={12}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(value) => `$${value}`}
+                />
+                 <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent indicator="dot" />}
+                  />
+                <Bar dataKey="revenue" fill="hsl(var(--primary))" radius={4} />
+              </BarChart>
+            </ChartContainer>
+            }
+          </CardContent>
+        </Card>
+
+         <Card className="lg:col-span-3">
+          <CardHeader>
+            <CardTitle>Sales by Category</CardTitle>
+            <CardDescription>
+                Breakdown of sales across different product categories.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 pb-0">
+             {loading ? <Skeleton className="h-[350px] w-full" /> :
+              <ChartContainer
+                config={pieChartConfig}
+                className="mx-auto aspect-square h-[350px]"
+              >
+                <PieChart>
+                   <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Pie
+                    data={data?.salesByCategory}
+                    dataKey="sales"
+                    nameKey="category"
+                    innerRadius={60}
+                  >
+                     {data?.salesByCategory.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={pieChartConfig[entry.category as keyof typeof pieChartConfig]?.color} />
+                    ))}
+                  </Pie>
+                   <ChartLegend
+                    content={<ChartLegendContent nameKey="category" />}
+                    className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/4 [&>*]:justify-center"
+                  />
+                </PieChart>
+              </ChartContainer>
+            }
           </CardContent>
         </Card>
       </div>

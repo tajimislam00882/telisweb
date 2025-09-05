@@ -2,6 +2,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { startOfMonth, subMonths, format } from 'date-fns';
 
 const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
 
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
         // Fetch Total Revenue and Sales from 'orders' table
         const { data: ordersData, error: ordersError } = await supabase
             .from('orders')
-            .select('total_amount')
+            .select('total_amount, created_at')
             .eq('status', 'completed');
         
         if (ordersError) throw ordersError;
@@ -75,6 +76,7 @@ export async function GET(request: Request) {
             .select(`
                 *,
                 users (
+                    email,
                     raw_user_meta_data
                 )
             `)
@@ -83,6 +85,49 @@ export async function GET(request: Request) {
 
         if (recentOrdersError) throw recentOrdersError;
 
+         // --- Chart Data ---
+        
+        // 1. Monthly Revenue
+        const monthlyRevenue: { month: string; revenue: number }[] = [];
+        const monthLabels: string[] = [];
+        const now = new Date();
+        for (let i = 5; i >= 0; i--) {
+            const date = subMonths(now, i);
+            monthLabels.push(format(date, 'MMM yyyy'));
+            monthlyRevenue.push({ month: format(date, 'MMM'), revenue: 0 });
+        }
+
+        ordersData.forEach(order => {
+            const month = format(new Date(order.created_at), 'MMM');
+            const monthIndex = monthlyRevenue.findIndex(m => m.month === month);
+            if (monthIndex > -1) {
+                monthlyRevenue[monthIndex].revenue += order.total_amount;
+            }
+        });
+        
+        // 2. Sales by Category
+        const { data: categorySales, error: categoryError } = await supabase
+            .from('order_items')
+            .select(`
+                products (
+                    category
+                )
+            `)
+            .in('order_id', ordersData.map(o => (o as any).id));
+
+        if (categoryError) throw categoryError;
+
+        const salesByCategoryMap = new Map<string, number>();
+        categorySales?.forEach(item => {
+            if (item.products?.category) {
+                const category = item.products.category;
+                salesByCategoryMap.set(category, (salesByCategoryMap.get(category) || 0) + 1);
+            }
+        });
+        
+        const salesByCategory = Array.from(salesByCategoryMap, ([category, sales]) => ({ category, sales }));
+
+
         return NextResponse.json({
             stats: {
                 totalRevenue,
@@ -90,6 +135,8 @@ export async function GET(request: Request) {
                 totalUsers,
             },
             recentOrders,
+            monthlyRevenue,
+            salesByCategory,
         });
 
     } catch (error: any) {

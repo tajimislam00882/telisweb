@@ -73,6 +73,7 @@ export interface Order {
     payment_method: string;
     created_at: string;
     users?: { // For fetching user metadata
+        email?: string;
         raw_user_meta_data?: {
             first_name?: string;
             last_name?: string;
@@ -192,4 +193,6 @@ export interface DashboardStats {
 export interface DashboardData {
     stats: DashboardStats;
     recentOrders: Order[];
+    monthlyRevenue: { month: string, revenue: number }[];
+    salesByCategory: { category: string, sales: number }[];
 }
