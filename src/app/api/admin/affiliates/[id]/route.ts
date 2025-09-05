@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'telisweb@alchosting.xyz').split(',');
 
 async function getSupabaseAdmin() {
     const cookieStore = cookies();

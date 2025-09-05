@@ -1,9 +1,10 @@
+
 // src/app/api/admin/products/[id]/route.ts
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'telisweb@alchosting.xyz').split(',');
 
 async function getSupabaseAdmin() {
     const cookieStore = cookies();

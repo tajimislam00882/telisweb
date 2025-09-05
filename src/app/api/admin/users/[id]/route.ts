@@ -3,7 +3,7 @@ import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'telisweb@alchosting.xyz').split(',');
 
 // DELETE: Delete a user
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {

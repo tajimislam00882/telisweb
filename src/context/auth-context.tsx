@@ -1,10 +1,11 @@
+
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import type { User, SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase';
 
-const ADMIN_EMAILS = ['telisweb@alchosting.xyz'];
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || 'telisweb@alchosting.xyz').split(',');
 
 interface AuthContextType {
   user: User | null;

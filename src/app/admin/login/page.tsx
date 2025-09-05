@@ -34,6 +34,8 @@ const formSchema = z.object({
   password: z.string().min(1, { message: 'Password cannot be empty.' }),
 });
 
+const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAILS || 'telisweb@alchosting.xyz').split(',');
+
 export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -66,9 +68,7 @@ export default function AdminLoginPage() {
 
       if (error) throw error;
       
-      // The auth context will handle the user state update.
-      // We need to check if the signed-in user is an admin.
-      const userIsAdmin = data.user?.email && ['telisweb@alchosting.xyz'].includes(data.user.email);
+      const userIsAdmin = data.user?.email && ADMIN_EMAILS.includes(data.user.email);
       
       if (userIsAdmin) {
         toast({
@@ -78,7 +78,6 @@ export default function AdminLoginPage() {
         router.push('/admin');
         router.refresh();
       } else {
-        // If not an admin, sign them out and show an error
         await supabase.auth.signOut();
         toast({
           variant: 'destructive',
@@ -186,4 +185,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-
