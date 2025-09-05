@@ -88,7 +88,7 @@ export default function Footer() {
                             Influencer Program
                         </Link>
                         </li>
-                        <li>
+                         <li>
                         <Link href="/bulk-orders" className="text-muted-foreground hover:text-primary">
                             Bulk Orders
                         </Link>
@@ -105,10 +105,10 @@ export default function Footer() {
                         </li>
                         <li>
                         <Link href="/privacy-policy" className="text-muted-foreground hover:text-primary">
-                        {t('footer_privacy')}
+                           {t('footer_privacy')}
                         </Link>
                         </li>
-                        <li>
+                         <li>
                         <Link href="/contact" className="text-muted-foreground hover:text-primary">
                             {t('footer_contact_us')}
                         </Link>
