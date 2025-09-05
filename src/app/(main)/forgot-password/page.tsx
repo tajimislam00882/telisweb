@@ -25,50 +25,43 @@ import {
 import { useMemo, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { createClient } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const formSchema = z.object({
-    password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
-    confirmPassword: z.string()
-}).refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword']
+  email: z.string().email({ message: 'Invalid email address.' }),
 });
 
-export default function ResetPasswordPage() {
+export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const supabase = useMemo(() => createClient(), []);
-  const router = useRouter();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-        password: '',
-        confirmPassword: ''
+      email: '',
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: values.password
+      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+        redirectTo: `${location.origin}/reset-password`,
       });
 
       if (error) throw error;
 
       toast({
-        title: 'Password Updated',
-        description: 'Your password has been successfully updated. Please log in.',
+        title: 'Check your email',
+        description: 'A password reset link has been sent to your email address.',
       });
-
-      router.push('/login');
+      form.reset();
 
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Update Failed',
+        title: 'Request Failed',
         description: error.message,
       });
     } finally {
@@ -77,13 +70,13 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
+    <div className="flex min-h-[calc(100vh-14rem)] items-center justify-center bg-muted/40 p-4">
       <Card className="mx-auto w-full max-w-sm">
         <CardHeader className="text-center">
           <Logo className="mb-4 justify-center" />
-          <CardTitle className="text-2xl">Reset Your Password</CardTitle>
+          <CardTitle className="text-2xl">Forgot Your Password?</CardTitle>
           <CardDescription>
-            Enter your new password below.
+            Enter your email and we'll send you a link to reset your password.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -91,30 +84,13 @@ export default function ResetPasswordPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
               <FormField
                 control={form.control}
-                name="password"
+                name="email"
                 render={({ field }) => (
                   <FormItem className="grid gap-2">
-                    <FormLabel>New Password</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        type="password"
-                        {...field}
-                        disabled={isLoading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel>Confirm New Password</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="password"
+                        placeholder="m@example.com"
                         {...field}
                         disabled={isLoading}
                       />
@@ -150,14 +126,17 @@ export default function ResetPasswordPage() {
                     ></path>
                   </svg>
                 )}
-                Reset Password
+                Send Reset Link
               </Button>
             </form>
           </Form>
+          <div className="mt-4 text-center text-sm">
+            <Link href="/login" className="underline flex items-center justify-center gap-1">
+              <ArrowLeft className="h-4 w-4"/> Back to login
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-
-    
